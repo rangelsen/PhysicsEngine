@@ -7,7 +7,7 @@ void Run() {
 
 	clock_t clocks_0 = 0;
 	clock_t clocks_1;
-	float delta_time = 200;
+	int delta_time = 200;
 	float elapsed_ms;
 
 	while(true) {
@@ -17,8 +17,9 @@ void Run() {
 
 		if(elapsed_ms >= delta_time) {
 			clocks_0 = clocks_1;
-			
+
 			// Do computations
+
 		}
 	}
 }
