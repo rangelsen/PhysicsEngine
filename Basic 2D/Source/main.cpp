@@ -1,13 +1,16 @@
 #include <iostream>
 #include <time.h>
+#include "World.h"
+#include "PhysicsSolver.h"
+#include "Object.h"
 
 using namespace std;
 
-void Run() {
+void Run(World *world) {
 
 	clock_t clocks_0 = 0;
 	clock_t clocks_1;
-	int delta_time = 200;
+	int delta_time = 500;
 	float elapsed_ms;
 
 	while(true) {
@@ -19,14 +22,19 @@ void Run() {
 			clocks_0 = clocks_1;
 
 			// Do computations
-
+			PhysicsSolver::resolveTimeStep(world, delta_time);
 		}
 	}
 }
 
 int main(int argc, char** argv) {
 
-	Run();
+	World *world = new World();
+	world->add_object(new Object());
+
+	printf("Number of objects in world: %d\n", world->get_number_of_objects());
+
+	Run(world);
 
 	return 0;
 }
