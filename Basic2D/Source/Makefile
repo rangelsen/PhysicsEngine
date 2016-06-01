@@ -1,8 +1,6 @@
 INCLUDE_PATH = C:\Users\Roy Angelsen\Documents\Programmering\PhysicsEngine\Basic 2D\Include
 SOURCE_PATH = C:\Users\Roy Angelsen\Documents\Programmering\PhysicsEngine\Basic 2D\Source
 
-CXX = g++
-
 CXXFLAGS = -I "$(INCLUDE_PATH)"
 
 SRC = main.cpp World.cpp PhysicsSolver.cpp Object.cpp
@@ -12,7 +10,7 @@ OBJS = $(SRC:.cpp=.o)
 TARGET = PhysicsEngine
 
 $(TARGET): $(OBJS)
-	$(CXX) $** $(CXXFLAGS) -o $@
+	$(CXX) $^ $(CXXFLAGS) -o $@
 
 main.o: main.cpp
 	$(CXX) -c $(CXXFLAGS) main.cpp
