@@ -7,7 +7,6 @@ class PhysicsSolver {
 private:
 public:
 	static void resolveTimeStep(World *world, int delta_time);
-	static void some_other_fun();
 };
 
 #endif

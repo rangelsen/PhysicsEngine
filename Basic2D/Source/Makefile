@@ -15,17 +15,5 @@ $(TARGET): $(OBJS)
 %.o : %.cpp $(INC_PATH)/%.h
 	$(CXX) -c $(CXXFLAGS) $^
 
-#main.o: main.cpp
-#	$(CXX) -c $(CXXFLAGS) main.cpp
-
-#PhysicsSolver.o: PhysicsSolver.cpp $(INCLUDE_PATH)/PhysicsSolver.h
-#	$(CXX) -c $(CXXFLAGS) PhysicsSolver.cpp
-
-#World.o: World.cpp $(INCLUDE_PATH)/World.h
-#	$(CXX) -c $(CXXFLAGS) World.cpp
-
-#Object.o: Object.cpp $(INCLUDE_PATH)/Object.h
-#	$(CXX) -c $(CXXFLAGS) Object.cpp
-
 clean:
-	rm *.o
+	rm *.o $(TARGET)
