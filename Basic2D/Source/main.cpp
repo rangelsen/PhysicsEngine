@@ -29,12 +29,7 @@ void Run(World *world) {
 
 int main(int argc, char** argv) {
 
-	World *world = new World();
-	world->add_object(new Object());
-
-	printf("Number of objects in world:: %d\n", world->get_number_of_objects());
-
-	Run(world);
+	Vec
 
 	return 0;
 }
