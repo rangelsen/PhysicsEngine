@@ -16,4 +16,4 @@ $(TARGET): $(OBJS)
 	$(CXX) -c $(CXXFLAGS) $^
 
 clean:
-	rm *.o $(TARGET)
+	rm *.o $(TARGET) $(INC_PATH)/*.h.gch
