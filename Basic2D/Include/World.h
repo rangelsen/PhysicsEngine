@@ -12,6 +12,7 @@ public:
 	World();
 	void add_object(Object *object);
 	int get_number_of_objects();
+	void some_func();
 };
 
 #endif

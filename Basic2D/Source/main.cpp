@@ -1,4 +1,4 @@
-#include <iostream>
+#include <stdio.h>
 #include <time.h>
 #include "World.h"
 #include "PhysicsSolver.h"
@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 	World *world = new World();
 	world->add_object(new Object());
 
-	printf("Number of objects in world: %d\n", world->get_number_of_objects());
+	printf("Number of objects in world:: %d\n", world->get_number_of_objects());
 
 	Run(world);
 
