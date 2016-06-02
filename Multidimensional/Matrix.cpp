@@ -1,6 +1,7 @@
 #include <vector>
 #include <assert.h>
 #include <stdio.h>
+#include <iostream>
 
 #include "Matrix.h"
 
@@ -33,7 +34,55 @@ Matrix::Matrix(unsigned int _m, unsigned int _n) : m(_m), n(_n) {
 	}
 }
 
+Matrix::Matrix(string initializer, unsigned int _m, unsigned int _n) : m(_m), n(_n) {
+
+	assert(_m >= 0);
+	assert(_n >= 0);
+	assert(this->is_valid_initializer(initializer));
+
+	const unsigned int rows = this->m;
+	const unsigned int cols = this->n;
+
+	this->entries = new double*[rows];
+
+	for(int k = 0; k < rows; k++) {
+		this->entries[k] = new double[cols];
+	}
+
+	if(initializer == "zeros") {
+
+		for(int i = 0; i < rows; i++) {
+			for(int j = 0; j < cols; j++) {
+				this->set(i, j, 0);
+			}
+		}
+	}
+	else if(initializer == "ones") {
+
+		for(int i = 0; i < rows; i++) {
+			for(int j = 0; j < cols; j++) {
+				this->set(i, j, 1);
+			}
+		}
+	}
+	else {
+		cout << "ERROR: Use different constructor for initializer " << initializer << endl;
+
+	}
+}
+
+Matrix::~Matrix() {
+
+	for(int i = 0; i < this->m; i++) {
+		delete[] this->entries[i];
+	}
+}
+
 // --- Operators ---
+
+double * Matrix::operator[] (unsigned int m) const {
+	return this->entries[m];
+}
 
 // --- Utility ---
 
@@ -66,4 +115,18 @@ void Matrix::print_console() const {
 		}
 		printf("\n");
 	}
+}
+
+bool Matrix::is_valid_initializer(string initializer) {
+
+	bool output = false;
+
+	for(int i = 0; i < this->initializers.size(); i++) {
+		if(initializer == this->initializers.at(i)) {
+			output = true;
+			break;
+		}
+	}
+
+	return output;
 }
