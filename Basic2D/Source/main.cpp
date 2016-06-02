@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <time.h>
+#include <iostream>
+
 #include "World.h"
 #include "PhysicsSolver.h"
 #include "Object.h"
+#include "Matrix.h"
 
 using namespace std;
 
@@ -29,7 +32,13 @@ void Run(World *world) {
 
 int main(int argc, char** argv) {
 
-	Vec
+	Matrix *vertices = new Matrix[2];
+
+	vertices = new Matrix(2, 2);
+
+	vertices[0].print_console();
+
+	delete vertices;
 
 	return 0;
 }

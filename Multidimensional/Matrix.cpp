@@ -84,6 +84,11 @@ double * Matrix::operator[] (unsigned int m) const {
 	return this->entries[m];
 }
 
+Matrix Matrix::operator= (Matrix *matrix) {
+
+	this = matrix;
+}
+
 // --- Utility ---
 
 vector<unsigned int> Matrix::get_dimensions() const {
@@ -129,4 +134,9 @@ bool Matrix::is_valid_initializer(string initializer) {
 	}
 
 	return output;
+}
+
+void Matrix::print_dimensions() const {
+
+	printf("Matrix dimension: [%u, %u]\n", this->m, this->n);
 }

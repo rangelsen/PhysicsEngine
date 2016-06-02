@@ -8,10 +8,14 @@ class Matrix {
 
 private:
 
+	// -- Variables ---
 	unsigned int m;
 	unsigned int n;
 	double **entries;
 	const std::vector<std::string> initializers = {"zeros", "ones", "identity"};
+
+	// --- Functions ---
+	bool is_valid_initializer(std::string initializer);
 
 public:
 
@@ -23,12 +27,13 @@ public:
 	~Matrix();
 	// --- Operators ---
 	double * operator[] (unsigned int m) const;
+	Matrix operator= (Matrix *matrix);
 
 	// --- Utility ---
 	std::vector<unsigned int> get_dimensions() const;
 	void set(unsigned int m, unsigned int n, double entry);
 	void print_console() const;
-	bool is_valid_initializer(std::string initializer);
+	void print_dimensions() const;
 };
 
 #endif
