@@ -3,7 +3,7 @@ SRC_PATH = /home/roy/Documents/Programmering/PhysicsEngine/Basic2D/Source
 
 CXXFLAGS = -I $(INC_PATH) -std=c++11
 
-SRC = main.cpp World.cpp PhysicsSolver.cpp Object.cpp Matrix.cpp
+SRC = main.cpp World.cpp PhysicsSolver.cpp Object.cpp Matrix.cpp Display.cpp
 
 OBJS = $(SRC:.cpp=.o)
 

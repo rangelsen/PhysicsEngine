@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <time.h>
 #include <iostream>
+#include <vector>
 
 #include "World.h"
 #include "PhysicsSolver.h"
 #include "Object.h"
 #include "Matrix.h"
+#include "Display.h"
 
 using namespace std;
 
@@ -30,21 +32,36 @@ void Run(World *world) {
 	}
 }
 
-int main(int argc, char** argv) {
+vector<Object*> generate_objects(int n_objects, int n_vertices) {
 
-	int vertex_count = 4;
-	Matrix **vertices = new Matrix*[vertex_count];
+	vector<Object*> objects;
+	vector<Matrix*> vertices;
 
-	for(int i = 0; i < vertex_count; i++) {
+	for(int n = 0; n < n_objects; n++) {
+		
+		vertices.clear();
 
-		vertices[i] = new Matrix(2, 1);
-		vertices[i]->set(0, 0, rand() % 20 + 1);
-		vertices[i]->set(1, 0, rand() % 20 + 1);
+		for(int i = 0; i < n_vertices; i++) {
 
-		vertices[i]->print_console();
+			Matrix *vertex = new Matrix(2, 1);
+			vertex->set(0, 0, rand() % 20 + 1);
+			vertex->set(1, 0, rand() % 20 + 1);
+
+			vertices.push_back(vertex);
+		}
+
+		Object *object = new Object(vertices);
+		objects.push_back(object);
 	}
 
-	delete[] vertices;
+	return objects;
+}
+
+int main(int argc, char** argv) {
+
+	vector<Object*> objects = generate_objects(2, 4);
+
+	Display::color_print(WHITE, objects.at(0));
 
 	return 0;
 }
