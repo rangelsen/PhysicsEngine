@@ -32,13 +32,19 @@ void Run(World *world) {
 
 int main(int argc, char** argv) {
 
-	Matrix *vertices = new Matrix[2];
+	int vertex_count = 4;
+	Matrix **vertices = new Matrix*[vertex_count];
 
-	vertices = new Matrix(2, 2);
+	for(int i = 0; i < vertex_count; i++) {
 
-	vertices[0].print_console();
+		vertices[i] = new Matrix(2, 1);
+		vertices[i]->set(0, 0, rand() % 20 + 1);
+		vertices[i]->set(1, 0, rand() % 20 + 1);
 
-	delete vertices;
+		vertices[i]->print_console();
+	}
+
+	delete[] vertices;
 
 	return 0;
 }

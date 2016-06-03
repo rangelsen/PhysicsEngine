@@ -30,7 +30,6 @@ public:
 
 	// --- Operators ---
 	double * operator[] (unsigned int m) const;
-	// void operator= (Matrix *matrix);
 
 	// --- Utility ---
 	std::vector<unsigned int> get_dimensions() const;

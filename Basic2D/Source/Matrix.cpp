@@ -108,13 +108,6 @@ double * Matrix::operator[] (unsigned int m) const {
 	return this->entries[m];
 }
 
-/*
-void Matrix::operator= (Matrix *matrix) {
-
-	Matrix *output = new Matrix(matrix);
-}
-*/
-
 // - - - - - Utility - - - - -
 
 vector<unsigned int> Matrix::get_dimensions() const {
