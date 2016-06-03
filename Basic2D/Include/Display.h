@@ -2,6 +2,7 @@
 #define DISPLAY_H
 
 #include <vector>
+#include <string>
 
 class Object;
 
@@ -17,7 +18,8 @@ typedef enum {
 } Color;
 
 struct Display{
-	static void object(Color color, Object* objects);
+	static void object(Object* objects, Color color);
+	static void error(std::string message);
 };
 
 #endif

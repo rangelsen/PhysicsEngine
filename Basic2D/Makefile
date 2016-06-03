@@ -15,3 +15,8 @@ $(TARGET): $(OBJECTS)
 $(OBJECTDIR)/%.o: $(SOURCEDIR)/%.cpp
 	$(CXX) $(CFLAGS) -c $^ -o $@
 
+clean:
+	rm $(OBJECTDIR)/*.o
+
+deepclean:
+	rm $(OBJECTDIR)/*.o PhysicsEngine

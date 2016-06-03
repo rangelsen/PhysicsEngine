@@ -7,7 +7,7 @@
 class Matrix {
 
 private:
-
+	
 	unsigned int m;
 	unsigned int n;
 	double **entries;
