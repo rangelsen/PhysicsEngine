@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void Display::color_print(Color color, Object* object) {
+void Display::object(Color color, Object* object) {
 	printf("\x1b[%d;1m", color);
 
 	printf("Object vertices: \n");

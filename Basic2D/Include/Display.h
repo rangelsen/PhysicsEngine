@@ -17,7 +17,7 @@ typedef enum {
 } Color;
 
 struct Display{
-	static void color_print(Color color, Object* objects);
+	static void object(Color color, Object* objects);
 };
 
 #endif

@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
 
 	vector<Object*> objects = generate_objects(2, 4);
 
-	Display::color_print(WHITE, objects.at(0));
+	Display::object(WHITE, objects.at(0));
 
 	return 0;
 }
