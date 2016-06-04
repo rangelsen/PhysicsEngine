@@ -3,23 +3,23 @@
 
 #include <vector>
 
-class Matrix;
+class Vector;
 
 class Object {
 
 private:
 
-	std::vector<Matrix*> vertices;
+	std::vector<Vector*> vertices;
 	float x, y;
 
 public:
 	
 	// --- Constructors ---
 	Object();
-	Object(std::vector<Matrix*> vertices);
+	Object(std::vector<Vector*> vertices);
 
 	// --- Utility ---
-	std::vector<Matrix*> get_vertices() const;
+	std::vector<Vector*> get_vertices() const;
 	void print_vertices() const;
 	void set_x(float x);
 	void set_y(float y);

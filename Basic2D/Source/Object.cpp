@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "Object.h"
-#include "Matrix.h"
+#include "Vector.h"
 #include "Display.h"
 
 using namespace std;
@@ -14,15 +14,14 @@ Object::Object() {
 	this->y = 0;
 }
 
-Object::Object(vector<Matrix*> vertices) {
-	this->x = 0;
-	this->y = 0;
+Object::Object(vector<Vector*> vertices) {
 	this->vertices = vertices;
+	this->update_centroid_position();
 }
 
 // - - - - - Utility - - - - -
 
-vector<Matrix*> Object::get_vertices() const {
+vector<Vector*> Object::get_vertices() const {
 	return this->vertices;
 }
 
@@ -30,16 +29,24 @@ void Object::print_vertices() const {
 	printf("Object vertices: \n");
 	
 	for(int i = 0; i < this->vertices.size(); i++) {
-		Matrix *vertex = this->vertices.at(i);
-		vector<unsigned int> dimension = vertex->get_dimensions();
+		Vector *vertex = this->vertices.at(i);
+		unsigned int dimension = vertex->get_dimension();
 		printf("Vertex: [");
 
-		for(int j = 0; j < dimension.size(); j++)
-			printf("%f, ", *((*vertex)[j]));
+		for(int j = 0; j < dimension; j++)
+			printf("%f, ", (*vertex)[j]);
 
 		printf("]\n");
 		delete vertex;
 	}
+}
+
+void Object::set_x(float position) {
+	this->x = position;
+}
+
+void Object::set_y(float position) {
+	this->y = position;
 }
 
 vector<float> Object::calculate_centroid() const {
@@ -52,13 +59,13 @@ vector<float> Object::calculate_centroid() const {
 
 	if(n_vertices > 2) {
 		for(int i = 0; i < n_vertices - 1; i++) {
-			Matrix *current_vertex = this->vertices.at(i);
-			Matrix *next_vertex    = this->vertices.at(i+1);
+			Vector *current_vertex = this->vertices.at(i);
+			Vector *next_vertex    = this->vertices.at(i+1);
 
-			float cross_factor = (*current_vertex)[0][0]*(*next_vertex)[0][1] - (*next_vertex)[0][0]*(*current_vertex)[0][0];
+			float cross_factor = (*current_vertex)[0]*(*next_vertex)[1] - (*next_vertex)[0]*(*current_vertex)[0];
 
-			c_x += ((*current_vertex)[0][0] + (*next_vertex)[0][0]) * cross_factor;
-			c_y += ((*current_vertex)[1][0] + (*next_vertex)[1][0]) * cross_factor;
+			c_x += ((*current_vertex)[0] + (*next_vertex)[0]) * cross_factor;
+			c_y += ((*current_vertex)[1] + (*next_vertex)[1]) * cross_factor;
 		}
 	}
 
@@ -87,14 +94,21 @@ float Object::calculate_signed_area() const {
 
 	if(n_vertices > 2) {
 		for(int i = 0; i < n_vertices-1; i++) {
-			Matrix *current_vertex = this->vertices.at(i);
-			Matrix *next_vertex    = this->vertices.at(i+1);
+			Vector *current_vertex = this->vertices.at(i);
+			Vector *next_vertex    = this->vertices.at(i+1);
 
-			output += ((*current_vertex)[0][0]*(*next_vertex)[1][0] - (*next_vertex)[0][0]*(*current_vertex)[1][0]);
+			output += ((*current_vertex)[0]*(*next_vertex)[1] - (*next_vertex)[0]*(*current_vertex)[1]);
 		}
 	}
 
 	output /= 2;
 
 	return output;
+}
+
+void Object::update_centroid_position() {
+	vector<float> centroid = this->calculate_centroid();
+	
+	this->set_x(centroid.at(0));
+	this->set_y(centroid.at(1));
 }

@@ -4,10 +4,11 @@
 #include <vector>
 
 #include "World.h"
-#include "PhysicsSolver.h"
+#include "EOMSolver.h"
 #include "Object.h"
 #include "Matrix.h"
 #include "Display.h"
+#include "Vector.h"
 
 using namespace std;
 
@@ -15,7 +16,7 @@ void Run(World *world) {
 
 	clock_t clocks_0 = 0;
 	clock_t clocks_1;
-	int delta_time = 200;
+	unsigned int delta_time = 200;
 	float elapsed_ms;
 
 	while(true) {
@@ -26,7 +27,7 @@ void Run(World *world) {
 			clocks_0 = clocks_1;
 
 			// Do computations
-			PhysicsSolver::resolveTimeStep(world, delta_time);
+			EOMSolver::resolve_time_step(world, delta_time);
 		}
 	}
 }
@@ -34,60 +35,34 @@ void Run(World *world) {
 vector<Object*> generate_objects(int n_objects, int n_vertices) {
 
 	vector<Object*> objects;
-	vector<Matrix*> vertices;
-/*
-	for(int n = 0; n < n_objects; n++) {
-		
+	vector<Vector*> vertices;
+
+	srand(time(NULL));
+
+	for(int i = 0; i < n_objects; i++) {
 		vertices.clear();
 
-		for(int i = 0; i < n_vertices; i++) {
-
-			Matrix *vertex = new Matrix(2, 1);
-			vertex->set(0, 0, rand() % 20 + 1);
-			vertex->set(1, 0, rand() % 20 + 1);
-
+		for(int j = 0; j < n_vertices; j++) {
+			Vector *vertex = new Vector(rand() % 20 + 1, rand() % 20 + 1);
 			vertices.push_back(vertex);
 		}
-
 		Object *object = new Object(vertices);
 		objects.push_back(object);
 	}
-*/
-
-	Matrix *v1 = new Matrix(2, 1);
-	v1->set(0, 0, -1);
-	v1->set(1, 0, 1);
-	vertices.push_back(v1);
-
-	Matrix *v2 = new Matrix(2, 1);
-	v2->set(0, 0, 1);
-	v2->set(1, 0, 1);
-	vertices.push_back(v2);
-
-	Matrix *v3 = new Matrix(2, 1);
-	v3->set(0, 0, 1);
-	v3->set(1, 0, -1);
-	vertices.push_back(v3);
-
-	Matrix *v4 = new Matrix(2, 1);
-	v4->set(0, 0, -1);
-	v4->set(1, 0, -1);
-	vertices.push_back(v4);
-
-	Object *object = new Object(vertices);
-	objects.push_back(object);
 
 	return objects;
 }
 
 int main(int argc, char** argv) {
 
-	vector<Object*> objects = generate_objects(2, 4);
+	vector<Object*> objects = generate_objects(3, 3);
 
-	vector<float> centroids = objects.at(0)-> calculate_centroid();
+	Display::object(objects.at(0), WHITE);
+	Display::object(objects.at(1), WHITE);
 
-	printf("centroids: %f, %f\n", centroids.at(0), centroids.at(1));
-	// World *world = new World(objects);
-	// Run(world);
+	World *world = new World(objects);
+
+	Run(world);
+
 	return 0;
 }
