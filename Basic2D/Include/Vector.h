@@ -20,7 +20,6 @@ public:
 
 	// Utility
 	unsigned int get_dimension() const;
-	std::vector<Vector*> get_vertices() const;
 };
 
 #endif

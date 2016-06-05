@@ -14,7 +14,7 @@ public:
 	World(std::vector<Object*> _objects);
 
 	// --- Utility ---
-	void add_object(Object *object);
+	// void add_object(Object object);
 	int get_number_of_objects();
 };
 

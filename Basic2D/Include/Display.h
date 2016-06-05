@@ -19,7 +19,7 @@ typedef enum {
 } Color;
 
 struct Display{
-	static void object(Object* object, Color color);
+	static void object(Object *object, Color color);
 	static void error(std::string message);
 };
 

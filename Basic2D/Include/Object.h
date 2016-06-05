@@ -9,18 +9,17 @@ class Object {
 
 private:
 
-	std::vector<Vector*> vertices;
+	std::vector<Vector> vertices;
 	float x, y;
 
 public:
 	
 	// --- Constructors ---
 	Object();
-	Object(std::vector<Vector*> vertices);
+	Object(std::vector<Vector> vertices);
 
 	// --- Utility ---
-	std::vector<Vector*> get_vertices() const;
-	void print_vertices() const;
+	std::vector<Vector> get_vertices() const;
 	void set_x(float x);
 	void set_y(float y);
 	std::vector<float> calculate_centroid() const;

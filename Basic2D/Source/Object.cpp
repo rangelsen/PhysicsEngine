@@ -14,31 +14,15 @@ Object::Object() {
 	this->y = 0;
 }
 
-Object::Object(vector<Vector*> vertices) {
+Object::Object(vector<Vector> vertices) {
 	this->vertices = vertices;
 	this->update_centroid_position();
 }
 
 // - - - - - Utility - - - - -
 
-vector<Vector*> Object::get_vertices() const {
+vector<Vector> Object::get_vertices() const {
 	return this->vertices;
-}
-
-void Object::print_vertices() const {
-	printf("Object vertices: \n");
-	
-	for(int i = 0; i < this->vertices.size(); i++) {
-		Vector *vertex = this->vertices.at(i);
-		unsigned int dimension = vertex->get_dimension();
-		printf("Vertex: [");
-
-		for(int j = 0; j < dimension; j++)
-			printf("%f, ", (*vertex)[j]);
-
-		printf("]\n");
-		delete vertex;
-	}
 }
 
 void Object::set_x(float position) {
@@ -59,13 +43,13 @@ vector<float> Object::calculate_centroid() const {
 
 	if(n_vertices > 2) {
 		for(int i = 0; i < n_vertices - 1; i++) {
-			Vector *current_vertex = this->vertices.at(i);
-			Vector *next_vertex    = this->vertices.at(i+1);
+			Vector current_vertex = this->vertices.at(i);
+			Vector next_vertex    = this->vertices.at(i+1);
 
-			float cross_factor = (*current_vertex)[0]*(*next_vertex)[1] - (*next_vertex)[0]*(*current_vertex)[0];
+			float cross_factor = current_vertex[0]*next_vertex[1] - next_vertex[0]*current_vertex[0];
 
-			c_x += ((*current_vertex)[0] + (*next_vertex)[0]) * cross_factor;
-			c_y += ((*current_vertex)[1] + (*next_vertex)[1]) * cross_factor;
+			c_x += (current_vertex[0] + next_vertex[0]) * cross_factor;
+			c_y += (current_vertex[1] + next_vertex[1]) * cross_factor;
 		}
 	}
 
@@ -94,10 +78,10 @@ float Object::calculate_signed_area() const {
 
 	if(n_vertices > 2) {
 		for(int i = 0; i < n_vertices-1; i++) {
-			Vector *current_vertex = this->vertices.at(i);
-			Vector *next_vertex    = this->vertices.at(i+1);
+			Vector current_vertex = this->vertices.at(i);
+			Vector next_vertex    = this->vertices.at(i+1);
 
-			output += ((*current_vertex)[0]*(*next_vertex)[1] - (*next_vertex)[0]*(*current_vertex)[1]);
+			output += (current_vertex[0]*next_vertex[1] - next_vertex[0]*current_vertex[1]);
 		}
 	}
 

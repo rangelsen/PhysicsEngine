@@ -15,16 +15,15 @@ void Display::object(Object* object, Color color) {
 	printf("Object vertices: \n");
 
 	int n_vertices = object->get_vertices().size();
-	Vector *vertex;
 	
 	for(int i = 0; i < n_vertices; i++) {
-		vertex = object->get_vertices().at(i);
-		unsigned int dimension = vertex->get_dimension();
+		Vector vertex = object->get_vertices().at(i);
+		unsigned int dimension = vertex.get_dimension();
 		
 		printf("Vertex: [");
 
 		for(int j = 0; j < dimension; j++) {		
-			printf("%f", (*vertex)[j]);
+			printf("%f", vertex[j]);
 			if(j == dimension - 1)
 				printf("]");
 			else
@@ -32,7 +31,6 @@ void Display::object(Object* object, Color color) {
 		}
 		printf("\n");
 	}
-	delete vertex;
 	printf("\x1b[0m");
 }
 

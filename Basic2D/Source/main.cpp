@@ -16,7 +16,7 @@ void Run(World *world) {
 
 	clock_t clocks_0 = 0;
 	clock_t clocks_1;
-	unsigned int delta_time = 200;
+	unsigned int delta_time = 500;
 	float elapsed_ms;
 
 	while(true) {
@@ -35,7 +35,7 @@ void Run(World *world) {
 vector<Object*> generate_objects(int n_objects, int n_vertices) {
 
 	vector<Object*> objects;
-	vector<Vector*> vertices;
+	vector<Vector> vertices;
 
 	srand(time(NULL));
 
@@ -43,7 +43,7 @@ vector<Object*> generate_objects(int n_objects, int n_vertices) {
 		vertices.clear();
 
 		for(int j = 0; j < n_vertices; j++) {
-			Vector *vertex = new Vector(rand() % 20 + 1, rand() % 20 + 1);
+			Vector vertex(rand() % 20 + 1, rand() % 20 + 1);
 			vertices.push_back(vertex);
 		}
 		Object *object = new Object(vertices);
@@ -55,14 +55,6 @@ vector<Object*> generate_objects(int n_objects, int n_vertices) {
 
 int main(int argc, char** argv) {
 
-	vector<Object*> objects = generate_objects(3, 3);
-
-	Display::object(objects.at(0), WHITE);
-	Display::object(objects.at(1), WHITE);
-
-	World *world = new World(objects);
-
-	Run(world);
-
+	vector<Object*> objects = generate_objects(4, 4);
 	return 0;
 }
