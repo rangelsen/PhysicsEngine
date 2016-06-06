@@ -7,7 +7,8 @@
 class Matrix {
 
 private:
-	
+
+	// -- Variables ---
 	unsigned int m;
 	unsigned int n;
 	double **entries;
@@ -23,13 +24,11 @@ public:
 	Matrix(unsigned int _m, unsigned int _n);
 	Matrix(std::string initializer, unsigned int m, unsigned int n);
 	Matrix(std::string initializer, unsigned int diagonal);
-	Matrix(Matrix *matrix);
-
-	// --- Destructors ---
 	~Matrix();
-
+	
 	// --- Operators ---
 	double * operator[] (unsigned int m) const;
+	Matrix operator= (Matrix *matrix);
 
 	// --- Utility ---
 	std::vector<unsigned int> get_dimensions() const;

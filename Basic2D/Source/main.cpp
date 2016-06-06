@@ -9,15 +9,18 @@
 #include "Matrix.h"
 #include "Display.h"
 #include "Vector.h"
+#include "Constants.h"
 
 using namespace std;
 
-void Run(World *world) {
+void Run(World &world) {
 
 	clock_t clocks_0 = 0;
 	clock_t clocks_1;
 	unsigned int delta_time = 500;
 	float elapsed_ms;
+
+	EOMSolver solver;
 
 	while(true) {
 		clocks_1 = clock();
@@ -55,6 +58,12 @@ vector<Object*> generate_objects(int n_objects, int n_vertices) {
 
 int main(int argc, char** argv) {
 
+	Constants::initialize();
+
 	vector<Object*> objects = generate_objects(4, 4);
+	World world(objects);
+
+	Run(world);
+
 	return 0;
 }

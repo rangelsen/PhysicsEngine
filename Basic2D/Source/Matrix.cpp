@@ -7,7 +7,7 @@
 
 using namespace std;
 
-//  - - - - - Constructors - - - - -
+// --- Constructors ---
 Matrix::Matrix() {
 
 	this->m = 0;
@@ -71,29 +71,6 @@ Matrix::Matrix(string initializer, unsigned int _m, unsigned int _n) : m(_m), n(
 	}
 }
 
-Matrix::Matrix(Matrix *matrix) {
-
-	vector<unsigned int> dimension = matrix->get_dimensions();
-	
-	this->m = dimension.at(0);
-	this->n = dimension.at(1);
-
-	this->entries = new double*[this->m];
-	
-	for(int h = 0; h < this->m; h++)
-		this->entries[h] = new double[this->n];
-
-	
-	for(int i = 0; i < this->m; i++) {
-		for(int j = 0; j < this->n; j++) {
-
-			this->entries[i][j] = (*matrix)[i][j];
-		}
-	}
-}
-
-// - - - - - Destructors - - - - -
-
 Matrix::~Matrix() {
 
 	for(int i = 0; i < this->m; i++) {
@@ -101,14 +78,13 @@ Matrix::~Matrix() {
 	}
 }
 
-// - - - - - Operators - - - - -
+// --- Operators ---
 
 double * Matrix::operator[] (unsigned int m) const {
-	
 	return this->entries[m];
 }
 
-// - - - - - Utility - - - - -
+// --- Utility ---
 
 vector<unsigned int> Matrix::get_dimensions() const {
 
@@ -156,5 +132,6 @@ bool Matrix::is_valid_initializer(string initializer) {
 }
 
 void Matrix::print_dimensions() const {
+
 	printf("Matrix dimension: [%u, %u]\n", this->m, this->n);
 }
