@@ -5,6 +5,7 @@
 #include "World.h"
 #include "Object.h"
 #include "Vector.h"
+#include "Constants.h"
 
 using namespace std;
 
@@ -18,7 +19,7 @@ void EOMSolver::resolve_time_step(World &world, unsigned int time_step) {
 }
 
 void EOMSolver::simulate_object(Object *object, unsigned int time_step) {
-
+	
 }
 
 Vector EOMSolver::compute_EOM_object(Object *object) {

@@ -1,15 +1,14 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-class Matrix;
+class Constants {
 
-struct Constants {
-
-// Physical constants
-	static const float g;
-	static Matrix A;
-
-// Functions
-	static void initialize();
+private:
+	Constants(){};
+	static Constants *instance;
+public:
+	const float g = 9.81;
+	static Constants *Instance();
 };
+
 #endif

@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "Constants.h"
-#include "Matrix.h"
 
-const float Constants::g = 9.81;
+Constants *Constants::instance = NULL;
 
-void Constants::initialize() {
-
+Constants* Constants::Instance() {
+	instance = new Constants;
+	return instance; 
 }

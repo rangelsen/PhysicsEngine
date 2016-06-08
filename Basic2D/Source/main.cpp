@@ -58,12 +58,10 @@ vector<Object*> generate_objects(int n_objects, int n_vertices) {
 
 int main(int argc, char** argv) {
 
-	Constants::initialize();
-
 	vector<Object*> objects = generate_objects(4, 4);
 	World world(objects);
 
 	Run(world);
-
+	
 	return 0;
 }
