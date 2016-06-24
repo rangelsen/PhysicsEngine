@@ -12,11 +12,11 @@
 using namespace std;
 
 void EOMSolver::resolve_time_step(World &world, unsigned int time_step) {
-	printf("#\n");
 	vector<Object*> objects = world.get_objects();
 	for(int i = 0; i < objects.size(); i++) {
 		EOMSolver::simulate_object(*objects.at(i), time_step);
-		Display::object(*objects.at(i), WHITE);
+
+		Display::vector(objects.at(i)->get_state(), RED);
 	}
 	printf("--------------\n");
 }
@@ -32,7 +32,7 @@ void EOMSolver::simulate_object(Object &object, unsigned int time_step) {
 
 Vector EOMSolver::evaluate_object_EOM(Object &object) {
 	Vector B("zeros", 6);
-	B.at(4) = Constants::Instance()->g;
+	B.at(3) = -Constants::Instance()->g;
 
 
 	Vector f = *Constants::Instance()->A * object.get_state() + B;

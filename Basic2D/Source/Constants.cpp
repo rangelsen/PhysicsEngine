@@ -11,8 +11,8 @@ Constants::Constants() {
 	matrix->set(0, 3, 1);
 	matrix->set(1, 4, 1);
 	matrix->set(2, 5, 1);
-	matrix->set(3, 3, -drag_coefficient/mass);
-	matrix->set(4, 4, -drag_coefficient/mass);
+	matrix->set(3, 3, drag_coefficient/mass);
+	matrix->set(4, 4, drag_coefficient/mass);
 
 	this->A = new Matrix(*matrix);
 	delete matrix;
