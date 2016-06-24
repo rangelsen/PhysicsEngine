@@ -1,46 +1,38 @@
+#include <stdio.h>
 #include <assert.h>
-#include <vector>
-
 #include "Vector.h"
 
-using namespace std;
-
-// - - - - - Constructors - - - - -
-
-Vector::Vector() {
-	this->m = 0;
+double & Vector::at(unsigned int _m) const {
+	return Matrix::at(_m, 0);
 }
 
-Vector::Vector(unsigned int _m) : m(_m) {
-	assert(_m >= 0);
-
-	this->entries = new double[this->m];
+Vector::Vector(double x, double y) : Matrix(2, 1) {
+	Matrix::at(0, 0) = x;
+	Matrix::at(1, 0) = y;
 }
 
-Vector::Vector(double x, double y) : m(2) {
-	this->entries = new double[2];
-	
-	this->entries[0] = x;
-	this->entries[1] = y;
+Vector Vector::operator* (double rhs) const {
+	Vector output(*this);
+
+	for(int i = 0; i < this->get_dimension(); i++) {
+		output.at(i) = this->at(i) * 2;
+	}
+	return output;
 }
 
-Vector::Vector(double x, double y, double z) : m(3) {
-	this->entries = new double[3];
-	
-	this->entries[0] = x;
-	this->entries[1] = y;
-	this->entries[2] = z;
+Vector Vector::operator+ (const Vector &rhs) const {
+	if(this->get_dimension() == rhs.get_dimension()) {
+		Vector output(*this);
+
+		for(int i = 0; i < this->get_dimension(); i++)
+			output.at(i) += rhs.at(i);
+
+		return output;
+	}
+	else
+		return Vector();
 }
-
-// - - - - - Operators - - - - -
-
-double Vector::operator[] (unsigned int index) const {
-	assert(index < this->m);
-	return this->entries[index];
-}
-
-// - - - - - Utility - - - - -
 
 unsigned int Vector::get_dimension() const {
-	return this->m;
+	return this->rows();
 }

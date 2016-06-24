@@ -3,7 +3,6 @@
 
 #include "Object.h"
 #include "Vector.h"
-#include "Display.h"
 
 using namespace std;
 
@@ -12,25 +11,14 @@ using namespace std;
 Object::Object() {
 	this->x = 0;
 	this->y = 0;
-	this->theta = 0;
-	this->d_x = 0;
-	this->d_y = 0;
-	this->omega = 0;
 }
 
 Object::Object(vector<Vector> vertices) {
 	this->vertices = vertices;
-	this->update_centroid_position();
-	this->theta = 0;
-	this->d_x = 0;
-	this->d_y = 0;
-	this->omega = 0;
+	// this->update_centroid_position();
 }
 
-Object::~Object() {
-	printf("deleting object\n");
-}
-
+/*
 // - - - - - Utility - - - - -
 
 vector<Vector> Object::get_vertices() const {
@@ -58,10 +46,10 @@ vector<float> Object::calculate_centroid() const {
 			Vector current_vertex = this->vertices.at(i);
 			Vector next_vertex    = this->vertices.at(i+1);
 
-			float cross_factor = current_vertex.at(0)*next_vertex.at(1) - next_vertex.at(0)*current_vertex.at(0);
+			float cross_factor = current_vertex[0]*next_vertex[1] - next_vertex[0]*current_vertex[0];
 
-			c_x += (current_vertex.at(0) + next_vertex.at(0)) * cross_factor;
-			c_y += (current_vertex.at(1) + next_vertex.at(1)) * cross_factor;
+			c_x += (current_vertex[0] + next_vertex[0]) * cross_factor;
+			c_y += (current_vertex[1] + next_vertex[1]) * cross_factor;
 		}
 	}
 
@@ -93,7 +81,7 @@ float Object::calculate_signed_area() const {
 			Vector current_vertex = this->vertices.at(i);
 			Vector next_vertex    = this->vertices.at(i+1);
 
-			output += (current_vertex.at(0)*next_vertex.at(1)- next_vertex.at(1)*current_vertex.at(1));
+			output += (current_vertex[0]*next_vertex[1] - next_vertex[0]*current_vertex[1]);
 		}
 	}
 
@@ -108,27 +96,4 @@ void Object::update_centroid_position() {
 	this->set_x(centroid.at(0));
 	this->set_y(centroid.at(1));
 }
-
-Vector Object::get_state() const {
-	Vector state(6);
-
-	state.at(0) = this->x;
-	state.at(1) = this->y;
-	state.at(2) = this->theta;
-
-	state.at(3) = this->d_x;
-	state.at(4) = this->d_y;
-	state.at(5) = this->omega;
-
-	return state;
-}
-
-void Object::set_state(const Vector &state) {
-	this->x = state.at(0);
-	this->y = state.at(1);
-	this->theta = state.at(2);
-
-	this->d_x = state.at(3);
-	this->d_y = state.at(4);
-	this->omega = state.at(5);
-}
+*/

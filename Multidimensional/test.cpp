@@ -2,16 +2,15 @@
 #include <vector>
 
 #include "Matrix.h"
+#include "Vector.h"
 
 using namespace std;
 
 int main(int argc, char **argv) {
 	
-	Matrix *m  = new Matrix("zeros", 10, 5);
+	Vector v("ones", 5);
 
-	
-
-	delete m;
+	printf("%f\n", v.at(5));
 
 	return 0;
 }

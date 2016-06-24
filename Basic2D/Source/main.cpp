@@ -3,13 +3,13 @@
 #include <iostream>
 #include <vector>
 
-#include "World.h"
-#include "EOMSolver.h"
-#include "Object.h"
 #include "Matrix.h"
-#include "Display.h"
 #include "Vector.h"
 #include "Constants.h"
+#include "Display.h"
+#include "Object.h"
+#include "World.h"
+#include "EOMSolver.h"
 
 using namespace std;
 
@@ -17,12 +17,11 @@ void Run(World &world) {
 
 	clock_t clocks_0 = 0;
 	clock_t clocks_1;
-	unsigned int delta_time = 500;
+	unsigned int delta_time = 1000;
 	float elapsed_ms;
 
-	EOMSolver solver;
-
-	while(true) {
+	int count = 0;
+	while(count < 10) {
 		clocks_1 = clock();
 		elapsed_ms = float(clocks_1 - clocks_0) / (CLOCKS_PER_SEC/1000);
 
@@ -31,37 +30,36 @@ void Run(World &world) {
 
 			// Do computations
 			EOMSolver::resolve_time_step(world, delta_time);
+			count++;
 		}
 	}
 }
 
-vector<Object*> generate_objects(int n_objects, int n_vertices) {
-
+vector<Object*> generate_objects(unsigned int n_objects, unsigned int n_vertices) {
 	vector<Object*> objects;
 	vector<Vector> vertices;
 
 	srand(time(NULL));
-
+	
 	for(int i = 0; i < n_objects; i++) {
 		vertices.clear();
-
 		for(int j = 0; j < n_vertices; j++) {
 			Vector vertex(rand() % 20 + 1, rand() % 20 + 1);
 			vertices.push_back(vertex);
 		}
+
 		Object *object = new Object(vertices);
 		objects.push_back(object);
 	}
-
 	return objects;
 }
 
 int main(int argc, char** argv) {
+	vector<Object*> objects = generate_objects(2, 3);
 
-	vector<Object*> objects = generate_objects(4, 4);
 	World world(objects);
 
 	Run(world);
-	
+
 	return 0;
 }

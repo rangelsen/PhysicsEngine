@@ -72,22 +72,14 @@ Matrix::Matrix(string initializer, unsigned int _m, unsigned int _n) : m(_m), n(
 }
 
 Matrix::~Matrix() {
-
-	for(int i = 0; i < this->m; i++) {
-		delete[] this->entries[i];
-	}
+	if(entries)
+		delete[] this->entries;
+	this->m = 0;
+	this->n = 0;
 }
 
 // --- Operators ---
 
-double * Matrix::operator[] (unsigned int m) const {
-	return this->entries[m];
-}
-
-Matrix Matrix::operator= (Matrix *matrix) {
-
-	this = matrix;
-}
 
 // --- Utility ---
 
@@ -140,3 +132,11 @@ void Matrix::print_dimensions() const {
 
 	printf("Matrix dimension: [%u, %u]\n", this->m, this->n);
 }
+
+double & Matrix::at(unsigned int _m, unsigned int _n) const {
+	assert(_m < this->m);
+	assert(_n < this->n);
+
+	return entries[_m][_n];
+}
+

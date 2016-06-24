@@ -25,8 +25,8 @@ public:
 	Matrix(std::string initializer, unsigned int m, unsigned int n);
 	Matrix(std::string initializer, unsigned int diagonal);
 	~Matrix();
+
 	// --- Operators ---
-	double * operator[] (unsigned int m) const;
 	Matrix operator= (Matrix *matrix);
 
 	// --- Utility ---
@@ -34,6 +34,7 @@ public:
 	void set(unsigned int m, unsigned int n, double entry);
 	void print_console() const;
 	void print_dimensions() const;
+	double & at(unsigned int m, unsigned int n) const;
 };
 
 #endif

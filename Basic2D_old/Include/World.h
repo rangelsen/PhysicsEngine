@@ -3,21 +3,18 @@
 
 #include <vector>
 
-class Object;
-
 class World {
 private:
-	std::vector<Object*> objects;
+	// std::vector<Object*> objects;
 public:
 	// --- Constructors ---
 	World();
-	World(std::vector<Object*> _objects);
-	~World();
+	// World(std::vector<Object*> _objects);
 
 	// --- Utility ---
 	// void add_object(Object object);
-	unsigned int get_number_of_objects() const;
-	std::vector<Object*> get_objects() const;
+	// int get_number_of_objects();
+	// std::vector<Object*> get_objects() const;
 };
 
 #endif

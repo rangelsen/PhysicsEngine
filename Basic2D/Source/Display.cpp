@@ -4,36 +4,42 @@
 #include <iostream>
 
 #include "Display.h"
-#include "Object.h"
 #include "Vector.h"
+#include "Object.h"
 
 
 using namespace std;
 
-void Display::object(Object* object, Color color) {
+void Display::vector(const Vector &v, Color color) {
 	printf("\x1b[%d;1m", color);
-	printf("Object vertices: \n");
 
-	int n_vertices = object->get_vertices().size();
-	
-	for(int i = 0; i < n_vertices; i++) {
-		Vector vertex = object->get_vertices().at(i);
-		unsigned int dimension = vertex.get_dimension();
-		
-		printf("Vertex: [");
+	const unsigned int m = v.get_dimension();
+	printf("vector = [");
 
-		for(int j = 0; j < dimension; j++) {		
-			printf("%f", vertex[j]);
-			if(j == dimension - 1)
-				printf("]");
-			else
-				printf(", ");
-		}
-		printf("\n");
+	for(int i = 0; i < m; i++) {
+		printf("%f", v.at(i));
+		if(i < m - 1)
+			printf(", ");
 	}
+	printf("]\n");
 	printf("\x1b[0m");
 }
 
 void Display::error(string message) {
 	cout << "\x1b[" << RED << ";1m" << "Error: " << message << "." << "\x1b[0m" << endl;
+}
+
+void Display::object(const Object &object, Color color) {
+	printf("\x1b[%d;1m", color);
+	printf("Object = \n");
+
+	std::vector<Vector> vertices = object.get_vertices();
+
+	for(int i = 0; i < vertices.size(); i++) {
+		printf("\t");
+		Display::vector(vertices.at(i), color);
+	}
+
+	printf("\n");
+	printf("\x1b[0m");
 }

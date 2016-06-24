@@ -4,8 +4,8 @@
 #include <vector>
 #include <string>
 
-class Object;
 class Vector;
+class Object;
 
 typedef enum {
 	BLACK   = 30,
@@ -19,8 +19,9 @@ typedef enum {
 } Color;
 
 struct Display{
-	static void object(Object *object, Color color);
+	static void vector(const Vector &v, Color color);
 	static void error(std::string message);
+	static void object(const Object &object, Color color);
 };
 
 #endif

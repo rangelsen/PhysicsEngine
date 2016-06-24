@@ -2,7 +2,7 @@ TARGET = MatrixTest
 
 LDFLAGS = -std=c++11
 
-$(TARGET): test.o Matrix.o
+$(TARGET): test.o Matrix.o Vector.o
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 test.o: test.cpp Matrix.cpp Matrix.h
@@ -10,6 +10,9 @@ test.o: test.cpp Matrix.cpp Matrix.h
 
 Matrix.o: Matrix.cpp Matrix.h
 	$(CXX) -c $(LDFLAGS) Matrix.cpp
+
+Vector.o: Vector.cpp Vector.h
+	$(CXX) -c $(LDFLAGS) Vector.cpp
 
 clean:
 	rm *.o
