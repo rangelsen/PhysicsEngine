@@ -21,6 +21,7 @@ public:
 	// - - - - - Utility - - - - -
 	double & at(unsigned int m) const;
 	unsigned int get_dimension() const;
+	Vector & vertcat(const Vector &vector);
 };
 
 #endif

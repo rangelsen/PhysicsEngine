@@ -10,21 +10,23 @@ using namespace std;
 // - - - - - Constructors - - - - -
 
 Object::Object() {
-	this->x = 0;
-	this->y = 0;
+	this->position = new Vector(0, 0);
+	this->velocity = new Vector(0, 0);
 	this->theta = 0;
-	this->d_x = 0;
-	this->d_y = 0;
-	this->omega = 0;
+	this->d_theta = 0;
 }
 
 Object::Object(vector<Vector> vertices) {
 	this->vertices = vertices;
+
+	this->position = new Vector(0, 0);
+	this->velocity = new Vector(0, 0);
+
 	this->update_centroid_position();
+
 	this->theta = 0;
-	this->d_x = 0;
-	this->d_y = 0;
-	this->omega = 0;
+	this->d_theta = 0;
+	
 }
 
 Object::~Object() {
@@ -35,14 +37,6 @@ Object::~Object() {
 
 vector<Vector> Object::get_vertices() const {
 	return this->vertices;
-}
-
-void Object::set_x(float position) {
-	this->x = position;
-}
-
-void Object::set_y(float position) {
-	this->y = position;
 }
 
 vector<float> Object::calculate_centroid() const {
@@ -105,30 +99,23 @@ float Object::calculate_signed_area() const {
 void Object::update_centroid_position() {
 	vector<float> centroid = this->calculate_centroid();
 	
-	this->set_x(centroid.at(0));
-	this->set_y(centroid.at(1));
+	this->position->at(0) = centroid.at(0);
+	this->position->at(1) = centroid.at(1);
 }
 
-Vector Object::get_state() const {
-	Vector state(6);
-
-	state.at(0) = this->x;
-	state.at(1) = this->y;
-	state.at(2) = this->theta;
-
-	state.at(3) = this->d_x;
-	state.at(4) = this->d_y;
-	state.at(5) = this->omega;
-
-	return state;
+Vector * Object::get_position() const {
+	return this->position;
+}
+Vector * Object::get_velocity() const {
+	return this->velocity;
 }
 
-void Object::set_state(const Vector &state) {
-	this->x = state.at(0);
-	this->y = state.at(1);
-	this->theta = state.at(2);
+void Object::set_position(Vector position) {
+	this->position->at(0) = position.at(0);
+	this->position->at(1) = position.at(1);
+}
 
-	this->d_x = state.at(3);
-	this->d_y = state.at(4);
-	this->omega = state.at(5);
+void Object::set_velocity(Vector velocity) {
+	this->velocity->at(0) = velocity.at(0);
+	this->velocity->at(1) = velocity.at(1);
 }

@@ -36,3 +36,25 @@ Vector Vector::operator+ (const Vector &rhs) const {
 unsigned int Vector::get_dimension() const {
 	return this->rows();
 }
+
+Vector & Vector::vertcat(const Vector &vector) {
+	const unsigned int m_expanded = this->m + vector.get_dimension();
+
+	// Reallocate
+	double **expanded = new double*[m_expanded];
+	for(int i = 0; i < m_expanded; i++)
+		expanded[i] = new double[1];
+
+	// Copy entries and add entries from vector
+	for(int i = 0; i < m_expanded; i++) {
+		if(i < this->m)
+			expanded[i][0] = this->entries[i][0];
+		else
+			expanded[i][0] = vector.at(i - this->m);
+	}
+
+	this->m = m_expanded;
+	this->entries = expanded;
+
+	return *this;
+}

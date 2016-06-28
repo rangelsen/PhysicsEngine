@@ -10,9 +10,9 @@ class Object {
 private:
 
 	std::vector<Vector> vertices;
-	float x, y;
-	float d_x, d_y;
-	float theta, omega;
+	Vector *position;
+	Vector *velocity;
+	double theta, d_theta;
 
 public:
 	
@@ -28,8 +28,10 @@ public:
 	std::vector<float> calculate_centroid() const;
 	float calculate_signed_area() const;
 	void update_centroid_position();
-	Vector get_state() const;
-	void set_state(const Vector &state);
+	Vector * get_position() const;
+	Vector * get_velocity() const;
+	void set_position(Vector position);
+	void set_velocity(Vector velocity);
 };
 
 #endif

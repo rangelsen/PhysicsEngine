@@ -22,15 +22,3 @@ Constants* Constants::Instance() {
 	instance = new Constants;
 	return instance; 
 }
-
-/*
-_________
-dx      | 0    0    0     1     0     0 | x 
-dy      | 0    0    0     0     1     0 | y
-dtheta  | 0    0    0     0     0     1 | theta
-ddx     | 0    0    0  -f/m     0     0 | dx
-ddy     | 0    0    0     0  -f/m     0 | dy
-ddtheta | 0    0    0     0     0     0 | dtheta
-_________
-
-*/

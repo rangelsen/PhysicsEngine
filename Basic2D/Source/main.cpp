@@ -55,8 +55,8 @@ vector<Object*> generate_objects(unsigned int n_objects, unsigned int n_vertices
 }
 
 int main(int argc, char** argv) {
-	Constants::Instance()->A->print_console();
-	vector<Object*> objects = generate_objects(1, 3);
+
+	vector<Object*> objects = generate_objects(2, 3);
 
 	World world(objects);
 

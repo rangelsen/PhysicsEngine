@@ -10,16 +10,18 @@ class Vector;
 
 class Matrix {
 
+protected:
+	double **entries;
+	unsigned int m;
+	unsigned int n;
+	
 private:
 
 	// -- Variables ---
-	double **entries;
 	const std::vector<std::string> initializers = {"zeros", "ones", "identity"};
 
 	// --- Functions ---
 	bool is_valid_initializer(std::string initializer);
-	unsigned int m;
-	unsigned int n;
 	
 public:
 
@@ -42,6 +44,7 @@ public:
 	Vector   operator*  (const Vector &rhs) const;
 
 	// --- Utility ---
+	void invalidate();
 	std::vector<unsigned int> get_dimensions() const;
 	void set(unsigned int m, unsigned int n, double entry);
 	void print_console() const;
@@ -49,6 +52,7 @@ public:
 	double & at(unsigned int m, unsigned int n) const;
 	unsigned int rows() const;
 	unsigned int cols() const;
+	Matrix & vertcat(const Matrix &matrix);
 };
 
 #endif

@@ -96,16 +96,7 @@ Matrix::Matrix(const Matrix &rhs) : m(rhs.rows()), n(rhs.cols()), entries(NULL) 
 }
 
 Matrix::~Matrix() {
-	for(int i = 0; i < this->m; i++) {
-		if(this->entries[i])
-			delete[] this->entries[i];
-	}
-
-	if(this->entries)
-		delete[] entries;
-
-	this->m = 0;
-	this->n = 0;
+	this->invalidate();
 }
 
 // --- Operators ---
@@ -210,6 +201,19 @@ Vector Matrix::operator* (const Vector &rhs) const {
 
 //______________________________UTILITY_____________________________
 
+void Matrix::invalidate() {
+	for(int i = 0; i < this->m; i++) {
+		if(this->entries[i])
+			delete[] this->entries[i];
+	}
+
+	if(this->entries)
+		delete[] entries;
+
+	this->m = 0;
+	this->n = 0;
+}
+
 vector<unsigned int> Matrix::get_dimensions() const {
 
 	vector<unsigned int> dimension(2, 0);
@@ -273,4 +277,36 @@ unsigned int Matrix::rows() const {
 
 unsigned int Matrix::cols() const {
 	return this->n;
+}
+
+Matrix & Matrix::vertcat(const Matrix &matrix) {
+	assert(this->n == matrix.cols());
+
+	// Reallocate entries
+	const unsigned int expanded_m = this->m + matrix.rows();
+	const unsigned int expanded_n = this->n;
+
+	double **expanded = new double*[expanded_m];
+
+	for(int i = 0; i < expanded_m; i++)
+		expanded[i] = new double[expanded_n];
+
+
+	// Copy entries and add entries from matrix
+	for(int i = 0; i < expanded_m; i++) {
+		for(int j = 0; j < expanded_n; j++) {
+			if(i < this->m)
+				expanded[i][j] = this->entries[i][j];
+			else
+				expanded[i][j] = matrix.at(i - this->m, j);
+		}
+	}
+
+	this->invalidate();
+
+	this->m = expanded_m;
+	this->n = expanded_n;
+	this->entries = expanded;
+
+	return *this;
 }
