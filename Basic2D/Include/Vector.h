@@ -17,6 +17,7 @@ public:
 	// - - - - - Operators - - - - -
 	Vector operator* (double rhs)        const;
 	Vector operator+ (const Vector &rhs) const;
+	Vector & operator+= (const Vector &rhs);
 
 	// - - - - - Utility - - - - -
 	double & at(unsigned int m) const;

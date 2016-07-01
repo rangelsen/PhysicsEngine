@@ -33,6 +33,15 @@ Vector Vector::operator+ (const Vector &rhs) const {
 		return Vector();
 }
 
+Vector & Vector::operator+= (const Vector &rhs) {
+	if(this->get_dimension() == rhs.get_dimension()) {
+		for(unsigned int i = 0; i < this->get_dimension(); i++) {
+			this->at(i) += rhs.at(i);
+		}
+	}
+	return *this;
+}
+
 unsigned int Vector::get_dimension() const {
 	return this->rows();
 }

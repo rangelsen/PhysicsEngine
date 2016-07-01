@@ -2,6 +2,7 @@
 #include <time.h>
 #include <iostream>
 #include <vector>
+#include <GL/glut.h>
 
 #include "Matrix.h"
 #include "Vector.h"
@@ -10,28 +11,32 @@
 #include "Object.h"
 #include "World.h"
 #include "EOMSolver.h"
+#include "Scene.h"
 
 using namespace std;
 
-void Run(World &world) {
+World *world;
 
-	clock_t clocks_0 = 0;
-	clock_t clocks_1;
-	unsigned int delta_time = 1000;
-	float elapsed_ms;
+clock_t clocks_0 = 0;
+clock_t clocks_1;
+unsigned int delta_time_ms = 1500;
+double delta_time = delta_time_ms/1000.0;
+float elapsed_ms;
+int count = 0;
 
-	int count = 0;
-	while(count < 10) {
-		clocks_1 = clock();
-		elapsed_ms = float(clocks_1 - clocks_0) / (CLOCKS_PER_SEC/1000);
+void run() {
 
-		if(elapsed_ms >= delta_time) {
-			clocks_0 = clocks_1;
+	clocks_1 = clock();
+	elapsed_ms = float(clocks_1 - clocks_0) / (CLOCKS_PER_SEC/1000);
 
-			// Do computations
-			EOMSolver::resolve_time_step(world, delta_time);
-			count++;
-		}
+	if(elapsed_ms >= delta_time_ms) {
+		clocks_0 = clocks_1;
+
+		EOMSolver::resolve_time_step(*world, delta_time);
+		Scene::render_world(world);
+
+		count++;
+		cout << delta_time * count << endl;
 	}
 }
 
@@ -44,7 +49,7 @@ vector<Object*> generate_objects(unsigned int n_objects, unsigned int n_vertices
 	for(int i = 0; i < n_objects; i++) {
 		vertices.clear();
 		for(int j = 0; j < n_vertices; j++) {
-			Vector vertex(rand() % 20 + 1, rand() % 20 + 1);
+			Vector vertex(rand() % 40 + 1, rand() % 40 + 1);
 			vertices.push_back(vertex);
 		}
 
@@ -56,11 +61,20 @@ vector<Object*> generate_objects(unsigned int n_objects, unsigned int n_vertices
 
 int main(int argc, char** argv) {
 
-	vector<Object*> objects = generate_objects(2, 3);
+	vector<Object*> objects = generate_objects(1, 3);
 
-	World world(objects);
+	world = new World(objects);
 
-	Run(world);
+	glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE);
+    glutInitWindowSize(500, 500);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow("Physics Engine");
+    glutDisplayFunc(run);
+    glutIdleFunc(run);
+    glutMainLoop();
+
+	delete world;
 
 	return 0;
 }

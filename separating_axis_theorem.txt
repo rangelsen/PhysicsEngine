@@ -1,21 +1,23 @@
-SEPARATING AXIS THEOREM
+					---- SEPARATING AXIS THEOREM ----
 
 Used for collision detection of convex objects. This is done by checking all the 
 normals to each face in all the objects that potentially collide and determining 
-if any axis penetrate. That is, if the objects vertices overlap any of the other 
-object's vertices in the direction of a normal. All axis' must penetrate for a
-collision to take place.
+if any axis penetrate. That is, if the distance between any of the vertices on 
+the polygons involved in the collision projected along any of the normals are 
+negative. All axis' must penetrate for a collision to take place.
 
-THE ALGORITHM
+						---- THE ALGORITHM ----
 
 1) Find the normal vectors (pointing out from the center).
 
-2) Determine if the vertex of one polygon located closest to the position of 
-the other polygon penetrate any axis of the other polygon
+2) Loop through all the vertices on the polygons involved in the collision and
+project the distance along any of the normals.
 
-3) If it penetrates all axis' of the other polygon a collision has taken place
+3) If it penetrates all axis' of the other polygon a collision has taken place.
+If the distance projected along any one normal is positive, the collision detection
+algorithm should terminate since no collision is possible
 
-PENETRATING AXIS
+						---- PENETRATING AXIS ----
 
 A point penetrates an axis if the distance between the closest vertices of the 
 two objects along any axis is negative

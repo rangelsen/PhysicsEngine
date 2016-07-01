@@ -8,6 +8,7 @@ class Object;
 class World {
 private:
 	std::vector<Object*> objects;
+
 public:
 	// --- Constructors ---
 	World();
