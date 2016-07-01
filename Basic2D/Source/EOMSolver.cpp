@@ -12,7 +12,7 @@
 
 using namespace std;
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
 #define Debug(x) cout << x
@@ -26,20 +26,19 @@ void EOMSolver::resolve_time_step(World &world, double delta_time) {
 		EOMSolver::simulate_object(*objects.at(i), delta_time);
 
 	}
-	Debug("----------------------------------------" << endl);
+	// Debug("----------------------------------------" << endl);
 }
 
 void EOMSolver::simulate_object(Object &object, double delta_time) {
-	double inv_mass = 1/Constants::Instance()->mass;
+	double inv_mass = 1.0/Constants::Instance()->mass;
 
-	Vector a = EOMSolver::evaluate_forces(object, delta_time) * inv_mass;
+	Vector f = EOMSolver::evaluate_forces(object, delta_time) * inv_mass;
 
-	Vector next_velocity = *object.get_velocity() + a * delta_time;
-	Display::vector(a, MAGENTA);
-	Display::vector(a * delta_time, MAGENTA);
+	Vector next_velocity = *object.get_velocity() + f * delta_time;
 	
 	Vector next_position = *object.get_position() + next_velocity * delta_time;
-	Display::vector(next_position, WHITE);
+	// Display::vector(next_position, MAGENTA);
+	// Display::vector(next_velocity, MAGENTA);
 
 	object.set_velocity(next_velocity);
 	object.set_position(next_position);

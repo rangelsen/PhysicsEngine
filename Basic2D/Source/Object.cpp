@@ -23,6 +23,7 @@ Object::Object(vector<Vector> vertices) {
 	this->velocity = new Vector(0, 0);
 
 	this->update_centroid_position();
+	this->update_vertices_position();
 
 	this->theta = 0;
 	this->d_theta = 0;
@@ -114,12 +115,16 @@ void Object::set_position(Vector position) {
 	this->position->at(0) = position.at(0);
 	this->position->at(1) = position.at(1);
 
-	for(unsigned int i = 0; i < this->vertices.size(); i++) {
-		this->vertices.at(i) += *(this->position);
-	}
+	this->update_vertices_position();
 }
 
 void Object::set_velocity(Vector velocity) {
 	this->velocity->at(0) = velocity.at(0);
 	this->velocity->at(1) = velocity.at(1);
+}
+
+void Object::update_vertices_position() {
+	for(unsigned int i = 0; i < this->vertices.size(); i++) {
+		this->vertices.at(i) += *this->position;
+	}
 }

@@ -11,7 +11,7 @@ private:
 public:
 	const float g = .1;
 	const float drag_coefficient = .8;
-	const float mass = 1;
+	const float mass = .1;
 	const Matrix *A;
 	static Constants *Instance();
 };

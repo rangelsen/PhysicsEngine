@@ -32,6 +32,7 @@ public:
 	Vector *			get_velocity() const;
 	void 				set_position(Vector position);
 	void 				set_velocity(Vector velocity);
+	void 				update_vertices_position();
 };
 
 #endif

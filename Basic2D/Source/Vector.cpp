@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "Vector.h"
+#include "Display.h"
 
 double & Vector::at(unsigned int _m) const {
 	return Matrix::at(_m, 0);
@@ -15,7 +16,7 @@ Vector Vector::operator* (double rhs) const {
 	Vector output(*this);
 
 	for(int i = 0; i < this->get_dimension(); i++) {
-		output.at(i) = this->at(i) * 2;
+		output.at(i) = this->at(i) * rhs;
 	}
 	return output;
 }

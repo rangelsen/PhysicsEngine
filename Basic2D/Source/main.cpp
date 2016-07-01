@@ -19,7 +19,7 @@ World *world;
 
 clock_t clocks_0 = 0;
 clock_t clocks_1;
-unsigned int delta_time_ms = 1500;
+unsigned int delta_time_ms = 10;
 double delta_time = delta_time_ms/1000.0;
 float elapsed_ms;
 int count = 0;
@@ -49,7 +49,7 @@ vector<Object*> generate_objects(unsigned int n_objects, unsigned int n_vertices
 	for(int i = 0; i < n_objects; i++) {
 		vertices.clear();
 		for(int j = 0; j < n_vertices; j++) {
-			Vector vertex(rand() % 40 + 1, rand() % 40 + 1);
+			Vector vertex(rand() % 60 + 20, rand() % 60 + 20);
 			vertices.push_back(vertex);
 		}
 
@@ -61,8 +61,8 @@ vector<Object*> generate_objects(unsigned int n_objects, unsigned int n_vertices
 
 int main(int argc, char** argv) {
 
-	vector<Object*> objects = generate_objects(1, 3);
-
+	vector<Object*> objects = generate_objects(3, 4);
+	objects.at(0)->set_position(Vector(0, 0));
 	world = new World(objects);
 
 	glutInit(&argc, argv);
@@ -73,8 +73,7 @@ int main(int argc, char** argv) {
     glutDisplayFunc(run);
     glutIdleFunc(run);
     glutMainLoop();
-
-	delete world;
+ 	delete world;
 
 	return 0;
 }
