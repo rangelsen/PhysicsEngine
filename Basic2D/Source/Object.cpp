@@ -20,10 +20,10 @@ Object::Object(vector<Vector> vertices) {
 	this->vertices = vertices;
 
 	this->position = new Vector(0, 0);
-	this->velocity = new Vector(0, 0);
+	this->velocity = new Vector(-.5, 4);
 
 	this->update_centroid_position();
-	this->update_vertices_position();
+	this->set_position(Vector(0, 0));
 
 	this->theta = 0;
 	this->d_theta = 0;
