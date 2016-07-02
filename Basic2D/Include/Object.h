@@ -13,6 +13,7 @@ private:
 	Vector *position;
 	Vector *velocity;
 	double theta, d_theta;
+	double mass;
 
 public:
 	
@@ -32,7 +33,9 @@ public:
 	Vector *			get_velocity() const;
 	void 				set_position(Vector position);
 	void 				set_velocity(Vector velocity);
-	void 				update_vertices_position();
+	void 				update_vertices_position(Vector position);
+	void 				set_mass(double mass);
+	double   			get_mass() const;
 };
 
 #endif

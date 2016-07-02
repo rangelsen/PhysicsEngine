@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
+#include <math.h>
+
 #include "Vector.h"
 #include "Display.h"
 
@@ -27,6 +29,19 @@ Vector Vector::operator+ (const Vector &rhs) const {
 
 		for(int i = 0; i < this->get_dimension(); i++)
 			output.at(i) += rhs.at(i);
+
+		return output;
+	}
+	else
+		return Vector();
+}
+
+Vector Vector::operator- (const Vector &rhs) const {
+	if(this->get_dimension() == rhs.get_dimension()) {
+		Vector output(*this);
+
+		for(int i = 0; i < this->get_dimension(); i++)
+			output.at(i) -= rhs.at(i);
 
 		return output;
 	}
@@ -67,4 +82,15 @@ Vector & Vector::vertcat(const Vector &vector) {
 	this->entries = expanded;
 
 	return *this;
+}
+
+// Takes the 2-norm of the vector
+double Vector::norm() const {
+	double sum = 0;
+
+	for(unsigned int i = 0; i < this->get_dimension(); i++) {
+		sum += pow(this->at(i), 2);
+	}
+
+	return sqrt(sum);
 }

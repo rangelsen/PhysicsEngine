@@ -14,20 +14,21 @@ Object::Object() {
 	this->velocity = new Vector(0, 0);
 	this->theta = 0;
 	this->d_theta = 0;
+	this->mass = 0;
 }
 
 Object::Object(vector<Vector> vertices) {
 	this->vertices = vertices;
 
 	this->position = new Vector(0, 0);
-	this->velocity = new Vector(-.5, 4);
+	this->velocity = new Vector(0, 0);
 
 	this->update_centroid_position();
 	this->set_position(Vector(0, 0));
 
 	this->theta = 0;
 	this->d_theta = 0;
-	
+	this->mass = 1;	
 }
 
 Object::~Object() {
@@ -48,17 +49,27 @@ vector<float> Object::calculate_centroid() const {
 
 	unsigned int n_vertices = this->vertices.size();
 
+	float cross_factor;
+
 	if(n_vertices > 2) {
 		for(int i = 0; i < n_vertices - 1; i++) {
 			Vector current_vertex = this->vertices.at(i);
 			Vector next_vertex    = this->vertices.at(i+1);
 
-			float cross_factor = current_vertex.at(0)*next_vertex.at(1) - next_vertex.at(0)*current_vertex.at(0);
+			cross_factor = current_vertex.at(0)*next_vertex.at(1) - next_vertex.at(0)*current_vertex.at(1);
 
 			c_x += (current_vertex.at(0) + next_vertex.at(0)) * cross_factor;
 			c_y += (current_vertex.at(1) + next_vertex.at(1)) * cross_factor;
 		}
 	}
+
+	Vector current_vertex = this->vertices.at(n_vertices - 1);
+	Vector next_vertex    = this->vertices.at(0);
+
+	cross_factor = current_vertex.at(0)*next_vertex.at(1) - next_vertex.at(0)*current_vertex.at(1);
+
+	c_x += (current_vertex.at(0) + next_vertex.at(0)) * cross_factor;
+	c_y += (current_vertex.at(1) + next_vertex.at(1)) * cross_factor;
 
 	vector<float> output;
 
@@ -88,10 +99,14 @@ float Object::calculate_signed_area() const {
 			Vector current_vertex = this->vertices.at(i);
 			Vector next_vertex    = this->vertices.at(i+1);
 
-			output += (current_vertex.at(0)*next_vertex.at(1)- next_vertex.at(1)*current_vertex.at(1));
+			output += (current_vertex.at(0)*next_vertex.at(1)- next_vertex.at(0)*current_vertex.at(1));
 		}
 	}
 
+	Vector current_vertex = this->vertices.at(n_vertices - 1);
+	Vector next_vertex = this->vertices.at(0);
+
+	output += current_vertex.at(0)*next_vertex.at(1) - next_vertex.at(0)*current_vertex.at(1);
 	output /= 2;
 
 	return output;
@@ -112,10 +127,10 @@ Vector * Object::get_velocity() const {
 }
 
 void Object::set_position(Vector position) {
+	this->update_vertices_position(position);
+
 	this->position->at(0) = position.at(0);
 	this->position->at(1) = position.at(1);
-
-	this->update_vertices_position();
 }
 
 void Object::set_velocity(Vector velocity) {
@@ -123,8 +138,18 @@ void Object::set_velocity(Vector velocity) {
 	this->velocity->at(1) = velocity.at(1);
 }
 
-void Object::update_vertices_position() {
+void Object::update_vertices_position(Vector position) {
+	Vector diff = position - *this->position;
+
 	for(unsigned int i = 0; i < this->vertices.size(); i++) {
-		this->vertices.at(i) += *this->position;
+		this->vertices.at(i) += diff;
 	}
+}
+
+void Object::set_mass(double mass) {
+	this->mass = mass;
+}
+
+double Object::get_mass() const {
+	return this->mass;
 }

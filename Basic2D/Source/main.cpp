@@ -34,9 +34,10 @@ void run() {
 
 		EOMSolver::resolve_time_step(*world, delta_time);
 		Scene::render_world(world);
-
-		count++;
-		cout << delta_time * count << endl;
+	/*
+		Display::vector(*world->get_objects().at(0)->get_position(), WHITE);
+		Display::vector(*world->get_objects().at(0)->get_velocity(), MAGENTA);
+	*/
 	}
 }
 
@@ -49,7 +50,7 @@ vector<Object*> generate_objects(unsigned int n_objects, unsigned int n_vertices
 	for(int i = 0; i < n_objects; i++) {
 		vertices.clear();
 		for(int j = 0; j < n_vertices; j++) {
-			Vector vertex(rand() % 60 + 20, rand() % 60 + 20);
+			Vector vertex(rand() % 6 + 2, rand() % 6 + 2);
 			vertices.push_back(vertex);
 		}
 
@@ -62,14 +63,15 @@ vector<Object*> generate_objects(unsigned int n_objects, unsigned int n_vertices
 int main(int argc, char** argv) {
 
 	vector<Object*> objects = generate_objects(2, 3);
-	objects.at(0)->set_position(Vector(0, 0));
-	objects.at(1)->set_position(Vector(0, 0));
+
+	objects.at(0)->set_position(Vector(-4, 3));
+	objects.at(0)->set_mass(5);
 	world = new World(objects);
 
 	glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE);
-    glutInitWindowSize(500, 500);
-    glutInitWindowPosition(100, 100);
+    glutInitWindowSize(700, 500);
+    glutInitWindowPosition(200, 100);
     glutCreateWindow("Physics Engine");
     glutDisplayFunc(run);
     glutIdleFunc(run);

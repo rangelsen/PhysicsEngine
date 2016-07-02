@@ -30,21 +30,19 @@ void EOMSolver::resolve_time_step(World &world, double delta_time) {
 }
 
 void EOMSolver::simulate_object(Object &object, double delta_time) {
-	double inv_mass = 1.0/Constants::Instance()->mass;
+	double inv_mass = 1.0/object.get_mass();
 
-	Vector f = EOMSolver::evaluate_forces(object, delta_time) * inv_mass;
+	Vector f = EOMSolver::evaluate_forces(object);
 
-	Vector next_velocity = *object.get_velocity() + f * delta_time;
+	Vector next_velocity = *object.get_velocity() + f * inv_mass * delta_time;
 	
 	Vector next_position = *object.get_position() + next_velocity * delta_time;
-	// Display::vector(next_position, MAGENTA);
-	// Display::vector(next_velocity, MAGENTA);
 
 	object.set_velocity(next_velocity);
 	object.set_position(next_position);
 }
 
-Vector EOMSolver::evaluate_forces(Object &object, double delta_time) {
+Vector EOMSolver::evaluate_forces(Object &object) {
 	
-	return Vector(0, Constants::Instance()->mass * (-Constants::Instance()->g));
+	return Vector(0, -object.get_mass() * Constants::Instance()->g);
 }
