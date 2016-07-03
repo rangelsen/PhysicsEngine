@@ -10,6 +10,7 @@ class Object {
 private:
 
 	std::vector<Vector> vertices;
+	std::vector<Vector> normals;
 	Vector *position;
 	Vector *velocity;
 	double theta, d_theta;
@@ -36,6 +37,7 @@ public:
 	void 				update_vertices_position(Vector position);
 	void 				set_mass(double mass);
 	double   			get_mass() const;
+	std::vector<Vector> compute_normals(std::vector<Vector> vertices);
 };
 
 #endif

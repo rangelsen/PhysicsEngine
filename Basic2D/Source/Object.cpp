@@ -29,6 +29,8 @@ Object::Object(vector<Vector> vertices) {
 	this->theta = 0;
 	this->d_theta = 0;
 	this->mass = 1;	
+
+	this->normals = this->compute_normals(this->vertices);
 }
 
 Object::~Object() {
@@ -152,4 +154,31 @@ void Object::set_mass(double mass) {
 
 double Object::get_mass() const {
 	return this->mass;
+}
+
+vector<Vector> Object::compute_normals(vector<Vector> vertices) {
+	vector<Vector> normals;
+
+	unsigned int n_vertices = vertices.size();
+
+	for(unsigned int i = 0; i < n_vertices - 1; i++) {
+		Vector current_vertex = vertices.at(i);
+		Vector next_vertex = vertices.at(i + 1);
+
+		Vector face = next_vertex - current_vertex;
+		Vector normal(face.at(1), -face.at(0));
+		normals.push_back(normal);
+
+		Display::vector(normal, BLUE);
+	}
+
+	Vector current_vertex = vertices.at(vertices.size()-1);
+	Vector next_vertex 	  = vertices.at(0);
+	
+	Vector face = next_vertex - current_vertex;
+	Vector normal(face.at(1), -face.at(0));
+	normals.push_back(normal);
+
+	Display::vector(normal, BLUE);
+	return normals;
 }

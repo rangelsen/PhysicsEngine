@@ -62,10 +62,11 @@ vector<Object*> generate_objects(unsigned int n_objects, unsigned int n_vertices
 
 int main(int argc, char** argv) {
 
-	vector<Object*> objects = generate_objects(2, 3);
+	vector<Object*> objects = generate_objects(1, 3);
 
 	objects.at(0)->set_position(Vector(-4, 3));
-	objects.at(0)->set_mass(5);
+
+	Display::object(*objects.at(0), WHITE);
 	world = new World(objects);
 
 	glutInit(&argc, argv);
