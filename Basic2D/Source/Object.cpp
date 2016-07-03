@@ -169,7 +169,6 @@ vector<Vector> Object::compute_normals(vector<Vector> vertices) {
 		Vector normal(face.at(1), -face.at(0));
 		normals.push_back(normal);
 
-		Display::vector(normal, BLUE);
 	}
 
 	Vector current_vertex = vertices.at(vertices.size()-1);
@@ -179,6 +178,5 @@ vector<Vector> Object::compute_normals(vector<Vector> vertices) {
 	Vector normal(face.at(1), -face.at(0));
 	normals.push_back(normal);
 
-	Display::vector(normal, BLUE);
 	return normals;
 }

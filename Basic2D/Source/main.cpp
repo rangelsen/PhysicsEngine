@@ -66,7 +66,6 @@ int main(int argc, char** argv) {
 
 	objects.at(0)->set_position(Vector(-4, 3));
 
-	Display::object(*objects.at(0), WHITE);
 	world = new World(objects);
 
 	glutInit(&argc, argv);
