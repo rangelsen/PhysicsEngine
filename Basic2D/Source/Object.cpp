@@ -15,6 +15,7 @@ Object::Object() {
 	this->theta = 0;
 	this->d_theta = 0;
 	this->mass = 0;
+	this->movable = true;
 }
 
 Object::Object(vector<Vector> vertices) {
@@ -29,7 +30,7 @@ Object::Object(vector<Vector> vertices) {
 	this->theta = 0;
 	this->d_theta = 0;
 	this->mass = 1;	
-
+	this->movable = true;
 	this->normals = this->compute_normals(this->vertices);
 }
 
@@ -179,4 +180,12 @@ vector<Vector> Object::compute_normals(vector<Vector> vertices) {
 	normals.push_back(normal);
 
 	return normals;
+}
+
+bool Object::is_movable() const {
+	return this->movable;
+}
+
+void Object::set_movable(bool movable) {
+	this->movable = movable;
 }

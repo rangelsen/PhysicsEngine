@@ -1,16 +1,15 @@
 #ifndef EOM_SOLVER_H
 #define EOM_SOLVER_H
 
-class World;
 class Object;
 class Vector;
+class Collision;
 
 class EOMSolver {
 
 public:
-	static void resolve_time_step(World &world, double time_step);
-	static void simulate_object(Object &object, double time_step);
-	static Vector evaluate_forces(Object &object);
+	static void simulate_object(Object *object, std::vector<Collision*> collisions, double time_step);
+	static Vector evaluate_forces(Object *object, std::vector<Collision*> collisions);
 };
 
 #endif

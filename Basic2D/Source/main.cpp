@@ -12,6 +12,8 @@
 #include "World.h"
 #include "EOMSolver.h"
 #include "Scene.h"
+#include "Collision.h"
+#include "CollisionDetector.h"
 
 using namespace std;
 
@@ -32,12 +34,18 @@ void run() {
 	if(elapsed_ms >= delta_time_ms) {
 		clocks_0 = clocks_1;
 
-		EOMSolver::resolve_time_step(*world, delta_time);
-		Scene::render_world(world);
-	/*
-		Display::vector(*world->get_objects().at(0)->get_position(), WHITE);
-		Display::vector(*world->get_objects().at(0)->get_velocity(), MAGENTA);
-	*/
+		vector<Collision*> collisions = CollisionDetector::SAT_detect_collisions(world);
+
+		for(unsigned int object_index = 0; object_index < world->get_objects().size(); object_index++) {
+
+			EOMSolver::simulate_object(world->get_objects().at(object_index), collisions, delta_time);
+		}
+
+		Scene::render_world(world, collisions);
+
+		for(unsigned int i = 0; i < collisions.size(); i++) {
+			delete collisions.at(i);
+		}
 	}
 }
 
@@ -57,6 +65,27 @@ vector<Object*> generate_objects(unsigned int n_objects, unsigned int n_vertices
 		Object *object = new Object(vertices);
 		objects.push_back(object);
 	}
+
+	vertices.clear();
+
+	double width = 10;
+	double height = 1;
+
+	Vector v1(-width/2.0, height/2.0);
+	Vector v2(width/2.0, height/2.0);
+	Vector v3(-width/2.0, -height/2.0);
+	Vector v4(width/2.0, -height/2.0);
+
+	vertices.push_back(v1);
+	vertices.push_back(v2);
+	vertices.push_back(v4);
+	vertices.push_back(v3);
+
+	Object *object = new Object(vertices);
+	object->set_movable(false);
+	object->set_position(Vector(0, -8));
+	objects.push_back(object);
+
 	return objects;
 }
 
@@ -65,6 +94,7 @@ int main(int argc, char** argv) {
 	vector<Object*> objects = generate_objects(1, 3);
 
 	objects.at(0)->set_position(Vector(-4, 3));
+	objects.at(0)->set_velocity(Vector(1.5, 8));
 
 	world = new World(objects);
 

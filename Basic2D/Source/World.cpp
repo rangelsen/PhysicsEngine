@@ -2,6 +2,7 @@
 
 #include "World.h"
 #include "Object.h"
+#include "Collision.h"
 
 using namespace std;
 
@@ -23,4 +24,3 @@ unsigned int World::get_number_of_objects() const {
 vector<Object*> World::get_objects() const {
 	return this->objects;
 }
-

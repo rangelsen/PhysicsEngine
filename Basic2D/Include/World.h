@@ -4,6 +4,7 @@
 #include <vector>
 
 class Object;
+class Collision;
 
 class World {
 private:

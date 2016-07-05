@@ -15,7 +15,7 @@ private:
 	Vector *velocity;
 	double theta, d_theta;
 	double mass;
-
+	bool movable;
 public:
 	
 	// --- Constructors ---
@@ -38,6 +38,8 @@ public:
 	void 				set_mass(double mass);
 	double   			get_mass() const;
 	std::vector<Vector> compute_normals(std::vector<Vector> vertices);
+	bool 				is_movable() const;
+	void 				set_movable(bool movable);
 };
 
 #endif
