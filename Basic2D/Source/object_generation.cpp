@@ -17,7 +17,7 @@ vector<Object*> generate_objects() {
 	double size = 2;
 
 	Vector v5(-size, -size);
-	Vector v6(size, 0);
+	Vector v6(size, -2*size);
 	Vector v7(0, size);
 
 	vertices.push_back(v5);
@@ -44,8 +44,6 @@ vector<Object*> generate_objects() {
 	vertices.push_back(v3);
 
 	Object *object = new Object(vertices);
-	object->set_movable(false);
-	object->set_position(Vector(0, -8));
 	objects.push_back(object);
 
 	return objects;

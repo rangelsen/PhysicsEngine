@@ -10,6 +10,7 @@ class EOMSolver {
 public:
 	static void simulate_object(Object *object, double time_step);
 	static Vector evaluate_forces(Object *object);
+	static double evaluate_torque(Object *object);
 };
 
 #endif

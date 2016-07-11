@@ -4,83 +4,156 @@
 #include "CollisionTest.h"
 #include "Object.h"
 #include "Vector.h"
+#include "Display.h"
 
 using namespace std;
 
-Vector CollisionTest::collision_detection_SAT(Object *a, Object *b) {
+bool CollisionTest::collision_detection_SAT(Object *a, Object *b) {
 
 	vector<Vector> vertices_a = a->get_vertices();
 	vector<Vector> vertices_b = b->get_vertices();
+	vector<Vector> normals_a  = a->get_normals();
+	vector<Vector> normals_b  = b->get_normals();
 
-	Vector position_offset = *a->get_position() - *b->get_position();
+	vector<Vector> normals = CollisionTest::merge_Vector(normals_a, normals_b);
 
-	vector<Vector> normals_a = a->get_normals();
+// ____________________________________________________________
 /*
-	cout << "vertices_a.size = " << vertices_a.size() << endl;
-	cout << "normals_a.size = " << normals_a.size() << endl;
+	cout << "Object a: " << endl;
+	Display::object(*a, YELLOW);
+	Display::object(*b, YELLOW);
+
+	cout << "Normals a: " << endl;
+	for(unsigned int i = 0; i < normals_a.size(); i++) {
+		Display::vector(normals_a.at(i), MAGENTA);
+	}
+
+	cout << "Normals b: " << endl;
+	for(unsigned int i = 0; i < normals_b.size(); i++) {
+		Display::vector(normals_b.at(i), MAGENTA);
+	}
+
+	cout << "Normals merged: " << endl;
+	for(unsigned int i = 0; i < normals.size(); i++) {
+		Display::vector(normals.at(i), MAGENTA);
+	}
+
+	cout << "START" << endl;
 */
-	double min_a, min_b;
-	double max_a, max_b;
-	double test, test_1, test_2;
-	double offset;
-	bool flag = false;
+// ____________________________________________________________
 
-	Vector normal(2);
+	Vector current_normal = normals_a.at(0);
 
-	for(unsigned int i = 0; i < vertices_a.size(); i++) {
+	double min_a, max_a;
+	double min_b, max_b;
 
-		normal = normals_a.at(i);
+// ____________________________________________________________
 
-		min_a = normal.dot(vertices_a.at(0));
+	vector<bool> overlaps;
+
+	for(unsigned int i = 0; i < normals.size(); i++) {
+
+		current_normal = normals.at(i);
+	/*
+		cout << "Current normal: " << endl;
+		Display::vector(current_normal, BLUE);
+	*/
+		min_a = vertices_a.at(0).dot(current_normal);
 		max_a = min_a;
-
+		min_b = vertices_b.at(0).dot(current_normal);
+		max_b = min_b;
+	/*
+		cout << "Vertices of a" << endl;
+		cout << "Current vertex : " << endl;
+		Display::vector(vertices_a.at(0), WHITE);
+		
+		cout << "Scalar projection: " << min_a << endl;
+	*/
 		for(unsigned int j = 1; j < vertices_a.size(); j++) {
 
-			test = normal.dot(vertices_a.at(j));
+		/*
+			cout << "Current vertex : " << endl;
+			Display::vector(vertices_a.at(j), WHITE);
+		*/
+			double scalar_projection = vertices_a.at(j).dot(current_normal);
+			
+			// cout << "Scalar projection: " << scalar_projection << endl;
 
-			if(test < min_a)
-				min_a = test;
-			if(test > max_a)
-				max_a = test;
+			if(scalar_projection < min_a) {
+				min_a = scalar_projection;
+			}
+			
+			if(scalar_projection > max_a) {
+				max_a = scalar_projection;
+			}
 		}
-
-		min_b = normal.dot(vertices_b.at(0));
-		max_b = min_b;
-
+	/*
+		cout << "Vertices of b" << endl;
+		cout << "Current vertex : " << endl;
+		cout << "Scalar projection: " << min_b << endl;
+		Display::vector(vertices_b.at(0), WHITE);
+	*/
 		for(unsigned int j = 1; j < vertices_b.size(); j++) {
+			// cout << "Current vertex : " << endl;
+			// Display::vector(vertices_b.at(j), WHITE);
 
-			test = normal.dot(vertices_b.at(j));
+			double scalar_projection = vertices_b.at(j).dot(current_normal);
 
-			if(test < min_b)
-				min_b = test;
-			if(test > max_b)
-				max_b = test;
+			// cout << "Scalar projection: " << scalar_projection << endl;
+
+			if(scalar_projection < min_b) {
+				min_b = scalar_projection;
+			}
+			if(scalar_projection > max_b) {
+				max_b = scalar_projection;
+			}
 		}
-
-		offset = normal.dot(position_offset);
-
-		min_a += offset;
-		max_a += offset;
-
-		test_1 = min_a - max_b;
-		test_2 = min_b - max_a;
-
-		if(test_1 > 0 || test_2 > 0) {
-			flag = true;
-			break;
+	/*
+		cout << "min_a = " << min_a << endl;
+		cout << "max_a = " << max_a << endl;
+		cout << "min_b = " << min_b << endl;
+		cout << "max_b = " << max_b << endl;
+	*/
+		if((min_b - max_a) > 0) {
+			overlaps.push_back(true);
+			// printf("#\n");
 		}
+		else if((min_a - max_b) > 0) {
+			overlaps.push_back(true);
+			// printf("##\n");
+		}
+		else
+			overlaps.push_back(false);
 	}
 
-	if(!flag) {
-		double x = normal.at(0) * (-(max_b - min_a));
-		double y = normal.at(1) * (-(max_b - min_a));
+	bool collision = false;
+	unsigned int n_overlaps = 0;
 
-		cout << "Collision" << endl;
+	// cout << "Overlaps:";
+	for(unsigned int i = 0; i < overlaps.size(); i++) {
+		// cout << " " << overlaps.at(i);
 
-		return Vector(x, y);
+		if(!overlaps.at(i))
+			n_overlaps++;
 	}
-	else{
-		cout << "-----" << endl;
-		return Vector(0, 0);
-	}
+	// cout << endl;
+
+	if(n_overlaps == normals.size())
+		return true;
+	else
+		return false;
+
+}
+
+vector<Vector> CollisionTest::merge_Vector(vector<Vector> vectors_a, vector<Vector> vectors_b) {
+
+    vector<Vector> output;
+    output = vectors_a;
+
+    for(unsigned int i = 0; i < vectors_b.size(); i++) {
+
+    	output.push_back(vectors_b.at(i));
+    }
+
+    return output;
 }

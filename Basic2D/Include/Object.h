@@ -4,6 +4,7 @@
 #include <vector>
 
 class Vector;
+class Matrix;
 
 class Object {
 
@@ -15,6 +16,7 @@ private:
 	Vector *velocity;
 	double theta, d_theta;
 	double mass;
+	double I;
 	bool movable;
 public:
 	
@@ -36,13 +38,17 @@ public:
 	void 				set_velocity(Vector velocity);
 	void				set_orientation(double theta);
 	void 				set_rotation(double d_theta);
+	double 				get_orientation() const;
+	double 				get_rotation() const;
 	void 				update_vertices_position(Vector position);
 	void 				set_mass(double mass);
 	double   			get_mass() const;
+	double 				get_moment_of_inertia() const;
 	std::vector<Vector> compute_normals(std::vector<Vector> vertices);
 	bool 				is_movable() const;
 	void 				set_movable(bool movable);
 	std::vector<Vector> get_normals() const;
+	Matrix *			get_rotation_matrix(double theta) const;
 };
 
 #endif

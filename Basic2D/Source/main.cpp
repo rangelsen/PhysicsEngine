@@ -35,12 +35,16 @@ void run() {
 	if(elapsed_ms >= delta_time_ms) {
 		clocks_0 = clocks_1;
 
-		Vector contact_point = CollisionTest::collision_detection_SAT(world->get_objects().at(0), world->get_objects().at(1));
+		bool collision = CollisionTest::collision_detection_SAT(world->get_objects().at(0), world->get_objects().at(1));
 		
-		for(unsigned int object_index = 0; object_index < world->get_objects().size(); object_index++) {
-			Object *object = world->get_objects().at(object_index);
+		if(!collision) {
 
-			EOMSolver::simulate_object(object, delta_time);
+			for(unsigned int object_index = 0; object_index < world->get_objects().size(); object_index++) {
+				
+				Object *object = world->get_objects().at(object_index);
+
+				EOMSolver::simulate_object(object, delta_time);
+			}
 		}
 
 		Scene::render_world(world);
@@ -51,16 +55,17 @@ int main(int argc, char** argv) {
 
 	vector<Object*> objects = generate_objects();
 
-	objects.at(0)->set_position(Vector(0, 0));
-	objects.at(0)->set_velocity(Vector(0, 0));
+	objects.at(0)->set_position(Vector(0, 4));
+	objects.at(0)->set_velocity(Vector(1, 8));
 
-	for(unsigned int i = 0; i < objects.at(0)->get_normals().size(); i++) {
-		printf("normal: \n");
-		Display::vector(objects.at(0)->get_normals().at(i), WHITE);
+	objects.at(1)->set_movable(false);
+	objects.at(1)->set_position(Vector(0, -8));
 
-		printf("norm: %f\n", objects.at(0)->get_normals().at(i).norm());
-	}
+/*
+	bool collision = CollisionTest::collision_detection_SAT_2(objects.at(0), objects.at(1));
 
+	cout << "Collision: " << collision << endl;
+*/
 	world = new World(objects);
 
 	glutInit(&argc, argv);
@@ -71,7 +76,7 @@ int main(int argc, char** argv) {
     glutDisplayFunc(run);
     glutIdleFunc(run);
     glutMainLoop();
- 	
+	
  	delete world;
 
 	return 0;

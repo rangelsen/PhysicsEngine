@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <vector>
+#include <cmath>
 
 #include "Object.h"
 #include "Vector.h"
 #include "Display.h"
+#include "Matrix.h"
 
 using namespace std;
 
@@ -29,7 +31,8 @@ Object::Object(vector<Vector> vertices) {
 
 	this->theta = 0;
 	this->d_theta = 0;
-	this->mass = 1;	
+	this->mass = 1;
+	this->I    = 1;
 	this->movable = true;
 	this->normals = this->compute_normals(this->vertices);
 }
@@ -152,6 +155,14 @@ void Object::set_rotation(double d_theta) {
 	this->d_theta = d_theta;
 }
 
+double Object::get_orientation() const {
+	return this->theta;
+}
+
+double Object::get_rotation() const {
+	return this->d_theta;
+}
+
 void Object::update_vertices_position(Vector position) {
 	Vector diff = position - *this->position;
 
@@ -166,6 +177,10 @@ void Object::set_mass(double mass) {
 
 double Object::get_mass() const {
 	return this->mass;
+}
+
+double Object::get_moment_of_inertia() const {
+	return this->I;
 }
 
 vector<Vector> Object::compute_normals(vector<Vector> vertices) {
@@ -212,4 +227,15 @@ void Object::set_movable(bool movable) {
 
 vector<Vector> Object::get_normals() const {
 	return this->normals;
+}
+
+Matrix * Object::get_rotation_matrix(double theta) const {
+	Matrix *rotation = new Matrix(2, 2);
+
+	rotation->at(0, 0) = cos(theta);
+	rotation->at(0, 1) = -sin(theta);
+	rotation->at(1, 0) = sin(theta);
+	rotation->at(1, 1) = cos(theta);
+
+	return rotation;
 }
