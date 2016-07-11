@@ -3,12 +3,14 @@
 
 #include <vector>
 
-class Collision;
 class World;
+class Vector;
 
 class CollisionDetector {
 
 public:
-	static std::vector<Collision*> SAT_detect_collisions(World *world);
+	static std::vector<Vector> SAT_detect_collisions(World *world);
+	static std::vector<Vector> merge_normals(std::vector<Vector> normals_a, std::vector<Vector> normals_b);
 };
+
 #endif

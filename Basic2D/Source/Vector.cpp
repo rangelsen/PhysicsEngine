@@ -58,6 +58,29 @@ Vector & Vector::operator+= (const Vector &rhs) {
 	return *this;
 }
 
+Vector & Vector::operator*= (double scalar) {
+
+	for(unsigned int i = 0; i < this->get_dimension(); i++) {
+		this->at(i) *= scalar;
+	}
+	return *this;
+}
+
+bool Vector::operator== (const Vector &rhs) const {
+	assert(this->get_dimension() == rhs.get_dimension());
+
+	bool output = true;
+
+	for(unsigned int i = 0; i < this->get_dimension(); i++) {
+		if(this->at(i) != rhs.at(i)) {
+			output = false;
+			break;
+		}
+	}
+
+	return output;
+}
+
 unsigned int Vector::get_dimension() const {
 	return this->rows();
 }
@@ -93,4 +116,27 @@ double Vector::norm() const {
 	}
 
 	return sqrt(sum);
+}
+
+double Vector::dot(const Vector &rhs) const {
+	assert(this->get_dimension() == rhs.get_dimension());
+
+	double output = 0;
+
+	for(unsigned int i = 0; i < this->get_dimension(); i++) {
+		output += this->at(i) * rhs.at(i);
+	}
+
+	return output;
+}
+
+Vector Vector::project(const Vector &axis) const {
+
+	return *this * (this->dot(axis) / (this->norm() * axis.norm()));
+}
+
+Vector & Vector::normalize() {
+
+	*this *= 1/this->norm();
+	return *this;
 }

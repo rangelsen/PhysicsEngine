@@ -11,12 +11,12 @@
 
 using namespace std;
 
-void EOMSolver::simulate_object(Object *object, vector<Collision*> collisions, double delta_time) {
+void EOMSolver::simulate_object(Object *object, double delta_time) {
 
 	if(object->is_movable()) {
 		double inv_mass = 1.0/object->get_mass();
 
-		Vector f = EOMSolver::evaluate_forces(object, collisions);
+		Vector f = EOMSolver::evaluate_forces(object);
 
 		Vector next_velocity = *object->get_velocity() + f * inv_mass * delta_time;
 		
@@ -27,7 +27,7 @@ void EOMSolver::simulate_object(Object *object, vector<Collision*> collisions, d
 	}
 }
 
-Vector EOMSolver::evaluate_forces(Object *object, vector<Collision*> collisions) {
+Vector EOMSolver::evaluate_forces(Object *object) {
 	
 	return Vector(0, -object->get_mass() * Constants::Instance()->g);
 }

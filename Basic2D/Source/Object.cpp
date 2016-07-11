@@ -36,6 +36,8 @@ Object::Object(vector<Vector> vertices) {
 
 Object::~Object() {
 	printf("deleting object\n");
+	delete this->position;
+	delete this->velocity;
 }
 
 // - - - - - Utility - - - - -
@@ -131,6 +133,7 @@ Vector * Object::get_velocity() const {
 
 void Object::set_position(Vector position) {
 	this->update_vertices_position(position);
+	this->compute_normals(this->vertices);
 
 	this->position->at(0) = position.at(0);
 	this->position->at(1) = position.at(1);
@@ -139,6 +142,14 @@ void Object::set_position(Vector position) {
 void Object::set_velocity(Vector velocity) {
 	this->velocity->at(0) = velocity.at(0);
 	this->velocity->at(1) = velocity.at(1);
+}
+
+void Object::set_orientation(double theta) {
+	this->theta = theta;
+}
+
+void Object::set_rotation(double d_theta) {
+	this->d_theta = d_theta;
 }
 
 void Object::update_vertices_position(Vector position) {
@@ -162,21 +173,30 @@ vector<Vector> Object::compute_normals(vector<Vector> vertices) {
 
 	unsigned int n_vertices = vertices.size();
 
-	for(unsigned int i = 0; i < n_vertices - 1; i++) {
-		Vector current_vertex = vertices.at(i);
-		Vector next_vertex = vertices.at(i + 1);
+	Vector current_vertex(2);
+	Vector next_vertex(2);
+	Vector face(2);
+	Vector normal(2);
 
-		Vector face = next_vertex - current_vertex;
-		Vector normal(face.at(1), -face.at(0));
+	for(unsigned int i = 0; i < n_vertices - 1; i++) {
+		current_vertex = vertices.at(i);
+		next_vertex = vertices.at(i + 1);
+
+		face = next_vertex - current_vertex;
+		normal = Vector(face.at(1), -face.at(0));
+		normal.normalize();
+
 		normals.push_back(normal);
 
 	}
 
-	Vector current_vertex = vertices.at(vertices.size()-1);
-	Vector next_vertex 	  = vertices.at(0);
+	current_vertex = vertices.at(vertices.size()-1);
+	next_vertex	   = vertices.at(0);
 	
-	Vector face = next_vertex - current_vertex;
-	Vector normal(face.at(1), -face.at(0));
+	face = next_vertex - current_vertex;
+	normal = Vector(face.at(1), -face.at(0));
+	normal.normalize();
+
 	normals.push_back(normal);
 
 	return normals;
@@ -188,4 +208,8 @@ bool Object::is_movable() const {
 
 void Object::set_movable(bool movable) {
 	this->movable = movable;
+}
+
+vector<Vector> Object::get_normals() const {
+	return this->normals;
 }

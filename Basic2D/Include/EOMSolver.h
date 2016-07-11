@@ -8,8 +8,8 @@ class Collision;
 class EOMSolver {
 
 public:
-	static void simulate_object(Object *object, std::vector<Collision*> collisions, double time_step);
-	static Vector evaluate_forces(Object *object, std::vector<Collision*> collisions);
+	static void simulate_object(Object *object, double time_step);
+	static Vector evaluate_forces(Object *object);
 };
 
 #endif

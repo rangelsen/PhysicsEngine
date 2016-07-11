@@ -44,15 +44,15 @@ public:
 	Vector   operator*  (const Vector &rhs) const;
 
 	// --- Utility ---
-	void invalidate();
+	void 					  invalidate();
 	std::vector<unsigned int> get_dimensions() const;
-	void set(unsigned int m, unsigned int n, double entry);
-	void print_console() const;
-	void print_dimensions() const;
-	double & at(unsigned int m, unsigned int n) const;
-	unsigned int rows() const;
-	unsigned int cols() const;
-	Matrix & vertcat(const Matrix &matrix);
+	void 					  set(unsigned int m, unsigned int n, double entry);
+	void 					  print_console() const;
+	void 		 			  print_dimensions() const;
+	double & 	 			  at(unsigned int m, unsigned int n) const;
+	unsigned int 			  rows() const;
+	unsigned int 			  cols() const;
+	Matrix & 	 			  vertcat(const Matrix &matrix);
 };
 
 #endif

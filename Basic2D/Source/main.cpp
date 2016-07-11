@@ -12,8 +12,8 @@
 #include "World.h"
 #include "EOMSolver.h"
 #include "Scene.h"
-#include "Collision.h"
-#include "CollisionDetector.h"
+#include "CollisionTest.h"
+#include "object_generation.h"
 
 using namespace std;
 
@@ -25,6 +25,7 @@ unsigned int delta_time_ms = 10;
 double delta_time = delta_time_ms/1000.0;
 float elapsed_ms;
 int count = 0;
+int y_min = -50;
 
 void run() {
 
@@ -34,67 +35,31 @@ void run() {
 	if(elapsed_ms >= delta_time_ms) {
 		clocks_0 = clocks_1;
 
-		vector<Collision*> collisions = CollisionDetector::SAT_detect_collisions(world);
-
+		Vector contact_point = CollisionTest::collision_detection_SAT(world->get_objects().at(0), world->get_objects().at(1));
+		
 		for(unsigned int object_index = 0; object_index < world->get_objects().size(); object_index++) {
+			Object *object = world->get_objects().at(object_index);
 
-			EOMSolver::simulate_object(world->get_objects().at(object_index), collisions, delta_time);
+			EOMSolver::simulate_object(object, delta_time);
 		}
 
-		Scene::render_world(world, collisions);
-
-		for(unsigned int i = 0; i < collisions.size(); i++) {
-			delete collisions.at(i);
-		}
+		Scene::render_world(world);
 	}
-}
-
-vector<Object*> generate_objects(unsigned int n_objects, unsigned int n_vertices) {
-	vector<Object*> objects;
-	vector<Vector> vertices;
-
-	srand(time(NULL));
-	
-	for(int i = 0; i < n_objects; i++) {
-		vertices.clear();
-		for(int j = 0; j < n_vertices; j++) {
-			Vector vertex(rand() % 6 + 2, rand() % 6 + 2);
-			vertices.push_back(vertex);
-		}
-
-		Object *object = new Object(vertices);
-		objects.push_back(object);
-	}
-
-	vertices.clear();
-
-	double width = 10;
-	double height = 1;
-
-	Vector v1(-width/2.0, height/2.0);
-	Vector v2(width/2.0, height/2.0);
-	Vector v3(-width/2.0, -height/2.0);
-	Vector v4(width/2.0, -height/2.0);
-
-	vertices.push_back(v1);
-	vertices.push_back(v2);
-	vertices.push_back(v4);
-	vertices.push_back(v3);
-
-	Object *object = new Object(vertices);
-	object->set_movable(false);
-	object->set_position(Vector(0, -8));
-	objects.push_back(object);
-
-	return objects;
 }
 
 int main(int argc, char** argv) {
 
-	vector<Object*> objects = generate_objects(1, 3);
+	vector<Object*> objects = generate_objects();
 
-	objects.at(0)->set_position(Vector(-4, 3));
-	objects.at(0)->set_velocity(Vector(1.5, 8));
+	objects.at(0)->set_position(Vector(0, 0));
+	objects.at(0)->set_velocity(Vector(0, 0));
+
+	for(unsigned int i = 0; i < objects.at(0)->get_normals().size(); i++) {
+		printf("normal: \n");
+		Display::vector(objects.at(0)->get_normals().at(i), WHITE);
+
+		printf("norm: %f\n", objects.at(0)->get_normals().at(i).norm());
+	}
 
 	world = new World(objects);
 
@@ -106,6 +71,7 @@ int main(int argc, char** argv) {
     glutDisplayFunc(run);
     glutIdleFunc(run);
     glutMainLoop();
+ 	
  	delete world;
 
 	return 0;
