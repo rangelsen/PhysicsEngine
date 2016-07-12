@@ -6,6 +6,7 @@
 #include "Object.h"
 #include "Vector.h"
 #include "Collision.h"
+#include "Matrix.h"
 
 using namespace std;
 
@@ -17,6 +18,25 @@ void Scene::render_world(World *world) {
     for(unsigned int i = 0; i < objects.size(); i++) {
     	render_object(objects.at(i));
     }
+    /*
+    glLineWidth(2.0f); 
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glBegin(GL_LINES);    
+
+        double x_1 = 0;
+        double y_1 = 0;
+        
+        for(unsigned int i = 0; i < world->get_objects().at(0)->get_vertices().size(); i++) {
+
+            double x_2 = world->get_objects().at(0)->get_vertices().at(i).at(0);
+            double y_2 = world->get_objects().at(0)->get_vertices().at(i).at(1);
+
+            glVertex2f(x_1/10, y_1/10);
+            glVertex2f(x_2/10, y_2/10);
+        }
+    glEnd();
+    */
+
     glFlush();
 }
 
@@ -34,6 +54,7 @@ void Scene::render_object(Object *object) {
     glEnd();
 
     // Normals
+    /*
     glLineWidth(2.0f); 
     glColor3f(0.0f, 1.0f, 0.0f);
     glBegin(GL_LINES);    
@@ -49,7 +70,7 @@ void Scene::render_object(Object *object) {
             glVertex2f(x_2/10, y_2/10);
         }
     glEnd();
-
+    */
     // Centroid
 	glPointSize(4.0f);
   	glBegin(GL_POINTS);

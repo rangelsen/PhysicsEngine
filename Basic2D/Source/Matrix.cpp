@@ -5,6 +5,7 @@
 
 #include "Matrix.h"
 #include "Vector.h"
+#include "Display.h"
 
 using namespace std;
 
@@ -192,7 +193,7 @@ Vector Matrix::operator* (const Vector &rhs) const {
 
 	for(int i = 0; i < output.get_dimension(); i++) {
 		for(int j = 0; j < this->n; j++) {
-			output.at(i) += this->at(i, j) * rhs.at(i);
+			output.at(i) += this->at(i, j) * rhs.at(j);
 		}
 	}
 

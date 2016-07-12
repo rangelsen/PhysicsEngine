@@ -148,6 +148,8 @@ void Object::set_velocity(Vector velocity) {
 }
 
 void Object::set_orientation(double theta) {
+	this->update_vertices_orientation(theta);
+	this->compute_normals(this->vertices);
 	this->theta = theta;
 }
 
@@ -238,4 +240,22 @@ Matrix * Object::get_rotation_matrix(double theta) const {
 	rotation->at(1, 1) = cos(theta);
 
 	return rotation;
+}
+
+void Object::update_vertices_orientation(double theta) {
+
+	Matrix *rotation_matrix = this->get_rotation_matrix(theta);
+
+	for(unsigned int i = 0; i < this->vertices.size(); i++) {
+
+		Vector centered_vertex = this->vertices.at(i) - *this->get_position();
+
+		Vector rotated_vertex = *rotation_matrix * centered_vertex;
+
+		Vector translated_back = *this->get_position() + rotated_vertex;
+
+		this->vertices.at(i) = translated_back;
+	}
+
+	delete rotation_matrix;
 }

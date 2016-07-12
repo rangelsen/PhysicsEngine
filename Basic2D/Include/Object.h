@@ -49,6 +49,7 @@ public:
 	void 				set_movable(bool movable);
 	std::vector<Vector> get_normals() const;
 	Matrix *			get_rotation_matrix(double theta) const;
+	void 				update_vertices_orientation(double theta);
 };
 
 #endif

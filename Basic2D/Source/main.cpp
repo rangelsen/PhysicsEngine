@@ -51,21 +51,31 @@ void run() {
 	}
 }
 
+void keyboard(unsigned char key, int x, int y) {
+	switch(key) {
+	case 's':
+		for(unsigned int object_index = 0; object_index < world->get_objects().size(); object_index++) {
+			
+			Object *object = world->get_objects().at(object_index);
+
+			EOMSolver::simulate_object(object, delta_time);
+		}
+
+	    Scene::render_world(world);
+		break;
+	}
+}
+
 int main(int argc, char** argv) {
 
 	vector<Object*> objects = generate_objects();
 
-	objects.at(0)->set_position(Vector(0, 4));
+	objects.at(0)->set_position(Vector(-2, 4));
 	objects.at(0)->set_velocity(Vector(1, 8));
 
 	objects.at(1)->set_movable(false);
 	objects.at(1)->set_position(Vector(0, -8));
 
-/*
-	bool collision = CollisionTest::collision_detection_SAT_2(objects.at(0), objects.at(1));
-
-	cout << "Collision: " << collision << endl;
-*/
 	world = new World(objects);
 
 	glutInit(&argc, argv);
@@ -74,9 +84,10 @@ int main(int argc, char** argv) {
     glutInitWindowPosition(200, 100);
     glutCreateWindow("Physics Engine");
     glutDisplayFunc(run);
+    glutKeyboardFunc(keyboard);
     glutIdleFunc(run);
     glutMainLoop();
-	
+		
  	delete world;
 
 	return 0;

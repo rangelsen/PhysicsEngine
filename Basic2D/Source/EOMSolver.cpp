@@ -35,6 +35,7 @@ void EOMSolver::simulate_object(Object *object, double delta_time) {
 
 		object->set_velocity(next_velocity);
 		object->set_position(next_position);
+		object->set_rotation(next_d_theta);
 		object->set_orientation(next_theta);
 	}
 }
@@ -46,5 +47,5 @@ Vector EOMSolver::evaluate_forces(Object *object) {
 
 double EOMSolver::evaluate_torque(Object *object) {
 
-	return 1;
+	return .005;
 }
