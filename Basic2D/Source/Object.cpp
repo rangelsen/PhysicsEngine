@@ -249,9 +249,7 @@ void Object::update_vertices_orientation(double theta) {
 	for(unsigned int i = 0; i < this->vertices.size(); i++) {
 
 		Vector centered_vertex = this->vertices.at(i) - *this->get_position();
-
 		Vector rotated_vertex = *rotation_matrix * centered_vertex;
-
 		Vector translated_back = *this->get_position() + rotated_vertex;
 
 		this->vertices.at(i) = translated_back;
