@@ -34,7 +34,7 @@ void Scene::render_world(World *world) {
             glVertex2f(x_1/10, y_1/10);
             glVertex2f(x_2/10, y_2/10);
         }
-    glEnd();
+    glEnd(); 
     */
 
     glFlush();
@@ -45,7 +45,7 @@ void Scene::render_object(Object *object) {
 
     // Vertices
 	glBegin(GL_POLYGON);
-	glColor3f(1.0f, 1.0f, 1.0f);
+	glColor3f(0.5f, 0.6f, 0.6f);
 	for(unsigned int i = 0; i < vertices.size(); i++) {
 		double x = vertices.at(i).at(0)/10;
 		double y = vertices.at(i).at(1)/10;

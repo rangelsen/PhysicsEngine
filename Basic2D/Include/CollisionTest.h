@@ -10,6 +10,7 @@ class CollisionTest {
 
 public:
 	static bool collision_detection_SAT(Object *a, Object *b);
+	static Vector collision_detection_contact_SAT(Object *a, Object *b);
 	static std::vector<Vector> merge_Vector(std::vector<Vector> vectors_a, std::vector<Vector> vectors_b);
 };
 
