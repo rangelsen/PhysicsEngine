@@ -7,7 +7,8 @@
 
 using namespace std;
 
-Collision::Collision(Object *object_1, Object *object_2) : object_1(object_1), object_2(object_2) {}
+Collision::Collision(Object *object_1, Object *object_2, Vector axis_of_least_penetration) : object_1(object_1), 
+																							 object_2(object_2) {}
 
 Collision::~Collision() {}
 

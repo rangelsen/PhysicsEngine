@@ -14,7 +14,7 @@ private:
 	Vector *axis_of_penetration;
 	double penetration_depth;
 public:
-	Collision(Object *object_1, Object *object_2);
+	Collision(Object *object_1, Object *object_2, Vector axis_of_least_penetration);
 	~Collision();
 
 	std::vector<Vector> get_contact_points() const;

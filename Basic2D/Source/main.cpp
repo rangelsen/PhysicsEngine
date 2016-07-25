@@ -13,7 +13,9 @@
 #include "EOMSolver.h"
 #include "Scene.h"
 #include "CollisionTest.h"
+#include "CollisionDetector.h"
 #include "object_generation.h"
+#include "Collision.h"
 
 using namespace std;
 
@@ -36,10 +38,25 @@ void run() {
 	if(elapsed_ms >= delta_time_ms) {
 		clocks_0 = clocks_1;
 
-		bool collision = true;
+		// --------------------------------------------------------------------
+		/*
+		vector<Collision> collisions = CollisionDetector::find_collisions(world);
+
+		for(unsigned int i = 0; i < collisions.size(); i++) {
+			cout << "collision" << endl;
+		}
+
+		for(unsigned int i = 0; i < world->get_objects().size(); i++) {
+
+			EOMSolver::simulate_object(world->get_objects().at(i), delta_time);
+		}
+		*/
+		// --------------------------------------------------------------------
+		
 
 		Vector axis_least_penetration = CollisionTest::collision_detection_contact_SAT(world->get_objects().at(0), world->get_objects().at(1));
 		
+
 		if(axis_least_penetration == Vector(0, 0)) {
 
 			for(unsigned int object_index = 0; object_index < world->get_objects().size(); object_index++) {
@@ -54,25 +71,10 @@ void run() {
 				Display::vector(axis_least_penetration, BLUE);
 				flag = true;
 			}
-
-			glLineWidth(2.0f); 
-		    glColor3f(0.0f, 1.0f, 0.0f);
-		    glBegin(GL_LINES);
-
-		    	Object *o = world->get_objects().at(1);
-
-		    	double x1 = o->get_position()->at(0);
-		    	double y1 = o->get_position()->at(1);
-
-		    	double x2 = axis_least_penetration.at(0) + x1;
-		    	double y2 = axis_least_penetration.at(1) + y1;
-
-		    	glVertex2f(x1/10, y1/10);
-		    	glVertex2f(x2/10, y2/10);
-		    glEnd();
 		}
-
+		
 		Scene::render_world(world);
+
 	}
 }
 
@@ -83,6 +85,25 @@ void keyboard(unsigned char key, int x, int y) {
 			
 			Object *object = world->get_objects().at(object_index);
 
+			Vector v = CollisionTest::collision_detection_contact_SAT(world->get_objects().at(0), world->get_objects().at(1));
+
+			if(!(v == Vector(0, 0))) {
+				Display::vector(v, RED);
+
+				glLineWidth(2.0f); 
+			    glColor3f(1.0f, 0.0f, 0.0f);
+			    glBegin(GL_LINES);
+
+			    	double x1 = world->get_objects().at(0)->get_position()->at(0);
+			    	double y1 = world->get_objects().at(0)->get_position()->at(1);
+
+			    	double x2 = v.at(0);
+			    	double y2 = v.at(1);
+
+			    	glVertex2f(x1/10, y1/10);
+			    	glVertex2f(x2/10, y2/10);
+			    glEnd();
+			}
 			EOMSolver::simulate_object(object, delta_time);
 		}
 
@@ -101,8 +122,6 @@ int main(int argc, char** argv) {
 	objects.at(1)->set_movable(false);
 	objects.at(1)->set_position(Vector(0, -8));
 
-	Vector v = CollisionTest::collision_detection_contact_SAT(objects.at(0), objects.at(1));
-
 	world = new World(objects);
 
 	glutInit(&argc, argv);
@@ -111,7 +130,7 @@ int main(int argc, char** argv) {
     glutInitWindowPosition(200, 100);
     glutCreateWindow("Physics Engine");
     glutDisplayFunc(run);
-    glutKeyboardFunc(keyboard);
+    // glutKeyboardFunc(keyboard);
     glutIdleFunc(run);
     glutMainLoop();
 

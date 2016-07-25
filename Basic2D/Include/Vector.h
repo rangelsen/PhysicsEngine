@@ -30,6 +30,7 @@ public:
 	double       dot(const Vector &rhs) const;
 	Vector   	 project(const Vector &rhs) const;
 	Vector & 	 normalize();
+	void 		 set(const Vector &rhs);
 };
 
 #endif

@@ -149,7 +149,7 @@ void Object::set_velocity(Vector velocity) {
 
 void Object::set_orientation(double theta) {
 	this->update_vertices_orientation(theta);
-	this->compute_normals(this->vertices);
+	this->normals = this->compute_normals(this->vertices);
 	this->theta = theta;
 }
 

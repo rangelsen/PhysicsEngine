@@ -54,7 +54,7 @@ void Scene::render_object(Object *object) {
     glEnd();
 
     // Normals
-    /*
+
     glLineWidth(2.0f); 
     glColor3f(0.0f, 1.0f, 0.0f);
     glBegin(GL_LINES);    
@@ -70,7 +70,7 @@ void Scene::render_object(Object *object) {
             glVertex2f(x_2/10, y_2/10);
         }
     glEnd();
-    */
+    
     // Centroid
 	glPointSize(4.0f);
   	glBegin(GL_POINTS);
@@ -94,13 +94,13 @@ void Scene::render_contact_points(vector<Vector> contact_points) {
     glEnd();
 }
 
-void Scene::render_contact_point(Vector *contact_point) {
+void Scene::render_contact_point(Vector contact_point) {
 
     glPointSize(4.0f);
     glBegin(GL_POINTS);
-        glColor3f(0.0f, 1.0f, 0.0f);
-        double x = contact_point->at(0)/10;
-        double y = contact_point->at(1)/10;
+        glColor3f(1.0f, 1.0f, 0.0f);
+        double x = contact_point.at(0)/10;
+        double y = contact_point.at(1)/10;
         glVertex2f(x, y);
     glEnd();
 }

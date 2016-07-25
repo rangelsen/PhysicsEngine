@@ -6,72 +6,135 @@
 #include "Vector.h"
 #include "Object.h"
 #include "World.h"
+#include "Collision.h"
+
+#define INF 100000
 
 using namespace std;
 
-vector<Vector> CollisionDetector::SAT_detect_collisions(World *world) {
+vector<Collision> CollisionDetector::find_collisions(World *world) {
 
-/*
-	for any object
-		for any of the other objects
-			- find penetrating axis and depth
-			- find contact points
-			- move object apart from other object in direction of
-			  penetrating axis with magnitude equal to the depth
-*/
-    vector<Vector> contact_points;
+    vector<Collision> collisions;
 
     vector<Object*> objects = world->get_objects();
 
     for(unsigned int i = 0; i < objects.size(); i++) {
 
-    	for(unsigned int j = 0; j < objects.size(); j++) {
+        if(i < objects.size() - 1) {
 
-    		if(j != i) {
-    			vector<Vector> normals = CollisionDetector::merge_normals(objects.at(i)->get_normals(), objects.at(j)->get_normals());
+            for(unsigned int j = i + 1; j < objects.size(); j++) {
 
-    			vector<Vector> projections_i;
-    			vector<Vector> projections_j;
+                Vector axis_of_least_penetration = CollisionDetector::collision_detection_SAT(objects.at(i), objects.at(j));
 
-    			for(unsigned int n = 0; n < normals.size(); n++) {
+                if(!(axis_of_least_penetration == Vector(0, 0))) {
 
-    				for(unsigned int k = 0; k < objects.at(i)->get_vertices().size(); k++) {
+                    Collision collision(objects.at(i), objects.at(j), axis_of_least_penetration);
 
-    					Vector vertex = objects.at(i)->get_vertices().at(k);
-    					Vector vertex_projection = vertex.project(normals.at(n));
-
-    					projections_i.push_back(vertex_projection);
-    				}
-
-    				for(unsigned int l = 0; l < objects.at(j)->get_vertices().size(); l++) {
-
-    					Vector vertex = objects.at(j)->get_vertices().at(l);
-    					Vector vertex_projection = vertex.project(normals.at(n));
-
-    					projections_j.push_back(vertex_projection);
-    				}
-    			}
-
-                contact_points = projections_i;
-    		}
-    	}
-    }
-
-    return contact_points;
-}
-
-vector<Vector> CollisionDetector::merge_normals(vector<Vector> normals_a, vector<Vector> normals_b) { 
-    vector<Vector> output;
-    output = normals_a;
-
-    for(unsigned int i = 0; i < normals_a.size(); i++) {
-
-        for(unsigned int j = 0; j < normals_b.size(); j++) {
-
-            if(!(output.at(i) == normals_b.at(j))) {
-                output.push_back(normals_b.at(j));
+                    collisions.push_back(collision);
+                }
             }
         }
+    }
+}
+
+Vector CollisionDetector::collision_detection_SAT(Object *a, Object *b) {
+
+    vector<Vector> vertices_a = a->get_vertices();
+    vector<Vector> vertices_b = b->get_vertices();
+    vector<Vector> normals_a  = a->get_normals();
+    vector<Vector> normals_b  = b->get_normals();
+
+    vector<Vector> normals = CollisionDetector::merge_Vector(normals_a, normals_b);
+
+    Vector current_normal = normals_a.at(0);
+
+    double min_a, max_a;
+    double min_b, max_b;
+
+    vector<bool> overlaps;
+
+    Vector axis_least_penetration(2);
+
+    double penetration_depth = -INF;
+
+    for(unsigned int i = 0; i < normals.size(); i++) {
+
+        current_normal = normals.at(i);
+
+        min_a = vertices_a.at(0).dot(current_normal);
+        max_a = min_a;
+
+        min_b = vertices_b.at(0).dot(current_normal);
+        max_b = min_b;
+
+        for(unsigned int j = 1; j < vertices_a.size(); j++) {
+
+            double scalar_projection = vertices_a.at(j).dot(current_normal);
+
+            if(scalar_projection < min_a) {
+                min_a = scalar_projection;
+            }
+            
+            if(scalar_projection > max_a) {
+                max_a = scalar_projection;
+            }
+        }
+
+        for(unsigned int j = 1; j < vertices_b.size(); j++) {
+
+            double scalar_projection = vertices_b.at(j).dot(current_normal);
+
+            if(scalar_projection < min_b) {
+                min_b = scalar_projection;
+            }
+            if(scalar_projection > max_b) {
+                max_b = scalar_projection;
+            }
+        }
+
+
+        double test_1 = min_b - max_a;
+        double test_2 = min_a - max_b;
+
+        if(!(test_1 > 0) && !(test_2 > 0)) {
+
+            if(test_1 > penetration_depth) {
+
+                axis_least_penetration = current_normal;
+                penetration_depth = test_1;
+            }
+            
+            if(test_2 > penetration_depth) {
+
+                axis_least_penetration = current_normal;
+                penetration_depth = test_2;
+            }
+
+            overlaps.push_back(false);
+        }
+    }
+
+    bool collision = (overlaps.size() == normals.size()) ? true : false;
+
+    if(collision) {
+        if(axis_least_penetration.norm() != 1)
+            axis_least_penetration.normalize();
+
+        return axis_least_penetration * penetration_depth;
+    }
+    else{
+        return Vector(0, 0);
+    }
+}
+
+vector<Vector> CollisionDetector::merge_Vector(vector<Vector> vectors_a, vector<Vector> vectors_b) {
+
+    vector<Vector> output;
+    output = vectors_a;
+
+    for(unsigned int i = 0; i < vectors_b.size(); i++) {
+
+        output.push_back(vectors_b.at(i));
     }
 
     return output;

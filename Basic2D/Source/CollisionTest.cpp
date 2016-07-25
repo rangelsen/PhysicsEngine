@@ -5,7 +5,9 @@
 #include "Object.h"
 #include "Vector.h"
 #include "Display.h"
+#include <cmath>
 
+#define INF 100000
 using namespace std;
 
 bool CollisionTest::collision_detection_SAT(Object *a, Object *b) {
@@ -99,7 +101,7 @@ Vector CollisionTest::collision_detection_contact_SAT(Object *a, Object *b) {
 
 	Vector axis_least_penetration(2);
 
-	double penetration_depth = 0;
+	double penetration_depth = -INF;
 
 	for(unsigned int i = 0; i < normals.size(); i++) {
 
@@ -107,6 +109,7 @@ Vector CollisionTest::collision_detection_contact_SAT(Object *a, Object *b) {
 
 		min_a = vertices_a.at(0).dot(current_normal);
 		max_a = min_a;
+
 		min_b = vertices_b.at(0).dot(current_normal);
 		max_b = min_b;
 
@@ -124,6 +127,7 @@ Vector CollisionTest::collision_detection_contact_SAT(Object *a, Object *b) {
 		}
 
 		for(unsigned int j = 1; j < vertices_b.size(); j++) {
+
 			double scalar_projection = vertices_b.at(j).dot(current_normal);
 
 			if(scalar_projection < min_b) {
@@ -138,44 +142,40 @@ Vector CollisionTest::collision_detection_contact_SAT(Object *a, Object *b) {
 		double test_1 = min_b - max_a;
 		double test_2 = min_a - max_b;
 
-		if((test_1 > 0) || (test_2 > 0)) {
+		if(!(test_1 > 0) && !(test_2 > 0)) {
 
-			overlaps.push_back(true);
-		}
-		else{
+			if(test_1 > penetration_depth) {
 
-			if(test_1 < penetration_depth) {
-				penetration_depth = test_1;
 				axis_least_penetration = current_normal;
+				penetration_depth = test_1;
 			}
 			
-			if(test_2 < penetration_depth) {
-				penetration_depth = test_2;
+			if(test_2 > penetration_depth) {
+
 				axis_least_penetration = current_normal;
+				penetration_depth = test_2;
 			}
 
 			overlaps.push_back(false);
 		}
 	}
 
-	bool collision = false;
-	unsigned int n_overlaps = 0;
-
-	for(unsigned int i = 0; i < overlaps.size(); i++) {
-
-		if(!overlaps.at(i))
-			n_overlaps++;
-	}
-
-	if(n_overlaps == normals.size())
-		collision = true;
+	bool collision = (overlaps.size() == normals.size()) ? true : false;
 
 	if(collision) {
-		return axis_least_penetration.normalize() * penetration_depth;
+		if(axis_least_penetration.norm() != 1)
+			axis_least_penetration.normalize();
+
+		return axis_least_penetration * penetration_depth;
 	}
 	else{
 		return Vector(0, 0);
 	}
+}
+
+Vector CollisionTest::get_contact_point(Object *a, Object *b, Vector axis_least_penetration) {
+	
+	return *b->get_position() -axis_least_penetration;
 }
 
 vector<Vector> CollisionTest::merge_Vector(vector<Vector> vectors_a, vector<Vector> vectors_b) {
