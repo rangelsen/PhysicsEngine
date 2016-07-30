@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <GL/glut.h>
+#include <cmath>
 
 #include "Matrix.h"
 #include "Vector.h"
@@ -12,7 +13,6 @@
 #include "World.h"
 #include "EOMSolver.h"
 #include "Scene.h"
-#include "CollisionTest.h"
 #include "CollisionDetector.h"
 #include "object_generation.h"
 #include "Collision.h"
@@ -36,25 +36,9 @@ void run() {
 	elapsed_ms = float(clocks_1 - clocks_0) / (CLOCKS_PER_SEC/1000);
 
 	if(elapsed_ms >= delta_time_ms) {
-		clocks_0 = clocks_1;
+		clocks_0 = clocks_1;		
 
-		// --------------------------------------------------------------------
-		/*
-		vector<Collision> collisions = CollisionDetector::find_collisions(world);
-
-		for(unsigned int i = 0; i < collisions.size(); i++) {
-			cout << "collision" << endl;
-		}
-
-		for(unsigned int i = 0; i < world->get_objects().size(); i++) {
-
-			EOMSolver::simulate_object(world->get_objects().at(i), delta_time);
-		}
-		*/
-		// --------------------------------------------------------------------
-		
-
-		Vector axis_least_penetration = CollisionTest::collision_detection_contact_SAT(world->get_objects().at(0), world->get_objects().at(1));
+		Vector axis_least_penetration = CollisionDetector::collision_detection_contact_SAT(world->get_objects().at(0), world->get_objects().at(1));
 		
 
 		if(axis_least_penetration == Vector(0, 0)) {
@@ -85,7 +69,7 @@ void keyboard(unsigned char key, int x, int y) {
 			
 			Object *object = world->get_objects().at(object_index);
 
-			Vector v = CollisionTest::collision_detection_contact_SAT(world->get_objects().at(0), world->get_objects().at(1));
+			Vector v = CollisionDetector::collision_detection_contact_SAT(world->get_objects().at(0), world->get_objects().at(1));
 
 			if(!(v == Vector(0, 0))) {
 				Display::vector(v, RED);
@@ -113,14 +97,15 @@ void keyboard(unsigned char key, int x, int y) {
 }
 
 int main(int argc, char** argv) {
-
 	vector<Object*> objects = generate_objects();
 
-	objects.at(0)->set_position(Vector(-3, 0));
-	objects.at(0)->set_velocity(Vector(1, 8));
+	objects.at(0)->set_position(Vector(0, -6));
+	objects.at(0)->set_velocity(Vector(0, -10));
 
 	objects.at(1)->set_movable(false);
 	objects.at(1)->set_position(Vector(0, -8));
+
+	Vector aols = CollisionDetector::collision_detection_contact_SAT(objects.at(0), objects.at(1));
 
 	world = new World(objects);
 

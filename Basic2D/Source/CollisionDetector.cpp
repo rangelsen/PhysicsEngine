@@ -1,43 +1,89 @@
-#include <stdio.h>
 #include <vector>
 #include <iostream>
 
 #include "CollisionDetector.h"
-#include "Vector.h"
 #include "Object.h"
-#include "World.h"
-#include "Collision.h"
+#include "Vector.h"
+#include "Display.h"
+#include <cmath>
 
 #define INF 100000
-
 using namespace std;
 
-vector<Collision> CollisionDetector::find_collisions(World *world) {
+bool CollisionDetector::collision_detection_SAT(Object *a, Object *b) {
 
-    vector<Collision> collisions;
+    vector<Vector> vertices_a = a->get_vertices();
+    vector<Vector> vertices_b = b->get_vertices();
+    vector<Vector> normals_a  = a->get_normals();
+    vector<Vector> normals_b  = b->get_normals();
 
-    vector<Object*> objects = world->get_objects();
+    vector<Vector> normals = CollisionDetector::merge_Vector(normals_a, normals_b);
 
-    for(unsigned int i = 0; i < objects.size(); i++) {
+    Vector current_normal = normals_a.at(0);
 
-        if(i < objects.size() - 1) {
+    double min_a, max_a;
+    double min_b, max_b;
 
-            for(unsigned int j = i + 1; j < objects.size(); j++) {
+    vector<bool> overlaps;
 
-                Vector axis_of_least_penetration = CollisionDetector::collision_detection_SAT(objects.at(i), objects.at(j));
+    for(unsigned int i = 0; i < normals.size(); i++) {
 
-                if(!(axis_of_least_penetration == Vector(0, 0))) {
+        current_normal = normals.at(i);
 
-                    Collision collision(objects.at(i), objects.at(j), axis_of_least_penetration);
+        min_a = vertices_a.at(0).dot(current_normal);
+        max_a = min_a;
+        min_b = vertices_b.at(0).dot(current_normal);
+        max_b = min_b;
 
-                    collisions.push_back(collision);
-                }
+        for(unsigned int j = 1; j < vertices_a.size(); j++) {
+
+            double scalar_projection = vertices_a.at(j).dot(current_normal);
+
+            if(scalar_projection < min_a) {
+                min_a = scalar_projection;
+            }
+            
+            if(scalar_projection > max_a) {
+                max_a = scalar_projection;
             }
         }
+
+        for(unsigned int j = 1; j < vertices_b.size(); j++) {
+            double scalar_projection = vertices_b.at(j).dot(current_normal);
+
+            if(scalar_projection < min_b) {
+                min_b = scalar_projection;
+            }
+            if(scalar_projection > max_b) {
+                max_b = scalar_projection;
+            }
+        }
+
+        double test_1 = min_b - max_a;
+        double test_2 = min_a - max_b;
+
+        if((test_1 > 0) || (test_2 > 0))
+            overlaps.push_back(true);
+        else
+            overlaps.push_back(false);
     }
+
+    unsigned int n_overlaps = 0;
+
+    for(unsigned int i = 0; i < overlaps.size(); i++) {
+
+        if(!overlaps.at(i))
+            n_overlaps++;
+    }
+
+    if(n_overlaps == normals.size())
+        return true;
+    else
+        return false;
+
 }
 
-Vector CollisionDetector::collision_detection_SAT(Object *a, Object *b) {
+Vector CollisionDetector::collision_detection_contact_SAT(Object *a, Object *b) {
 
     vector<Vector> vertices_a = a->get_vertices();
     vector<Vector> vertices_b = b->get_vertices();
@@ -114,6 +160,8 @@ Vector CollisionDetector::collision_detection_SAT(Object *a, Object *b) {
         }
     }
 
+    Vector c = get_contact_point(a, b, axis_least_penetration);
+
     bool collision = (overlaps.size() == normals.size()) ? true : false;
 
     if(collision) {
@@ -127,6 +175,47 @@ Vector CollisionDetector::collision_detection_SAT(Object *a, Object *b) {
     }
 }
 
+Vector CollisionDetector::get_contact_point(Object *a, Object *b, Vector axis_least_penetration) {
+
+
+    // Determine which object contains reference face
+    bool b_is_reference = CollisionDetector::get_reference_object(a, b, axis_least_penetration);
+
+    Object *incident  = a;
+    Object *reference = b;
+
+    if(!b_is_reference) {
+    
+        cout << "b is not reference" << endl;
+    
+        incident  = b;
+        reference = a;
+    }
+
+    Display::object(*reference, BLUE);
+    Display::object(*incident, BLUE);
+
+    // Find best faces
+    Vector reference_face = CollisionDetector::get_most_orthogonal_face(reference, axis_least_penetration * -1);
+    Vector incident_face  = CollisionDetector::get_most_orthogonal_face(incident, axis_least_penetration);
+
+    Display::vector(reference_face, MAGENTA);
+    Display::vector(incident_face, MAGENTA);
+
+    return Vector(0, 0);
+}
+
+bool CollisionDetector::get_reference_object(Object *a, Object *b, Vector axis_least_penetration) {
+
+    double distance_along_axis_a = a->get_position()->dot(axis_least_penetration);
+    double distance_along_axis_b = b->get_position()->dot(axis_least_penetration);
+
+    if(distance_along_axis_a < distance_along_axis_b)
+        return true;
+    else
+        return false;
+}
+
 vector<Vector> CollisionDetector::merge_Vector(vector<Vector> vectors_a, vector<Vector> vectors_b) {
 
     vector<Vector> output;
@@ -138,4 +227,84 @@ vector<Vector> CollisionDetector::merge_Vector(vector<Vector> vectors_a, vector<
     }
 
     return output;
+}
+
+Vector CollisionDetector::get_support_point(Object *object, Vector axis) {
+
+    Vector support_point = object->get_vertices().at(0);
+    double distance_along_axis = support_point.dot(axis);
+
+    for(unsigned int i = 1; i < object->get_vertices().size(); i++) {
+
+        Vector current_vertex = object->get_vertices().at(i);
+        double distance = current_vertex.dot(axis);
+
+        if(distance > distance_along_axis) {
+            
+            support_point = current_vertex;
+            distance_along_axis = distance;
+        }
+    }
+
+    return support_point;
+}
+
+unsigned int CollisionDetector::get_support_point_index(Object *object, Vector axis) {
+
+    unsigned int index = 0;
+    Vector support_point = object->get_vertices().at(0);
+    double distance_along_axis = support_point.dot(axis);
+
+    for(unsigned int i = 1; i < object->get_vertices().size(); i++) {
+
+        Vector current_vertex = object->get_vertices().at(i);
+        double distance = current_vertex.dot(axis);
+
+        if(distance > distance_along_axis) {
+            
+            support_point = current_vertex;
+            distance_along_axis = distance;
+            index = i;
+        }
+    }
+
+    return index;
+}
+
+
+Vector CollisionDetector::get_most_orthogonal_face(Object *object, Vector axis) {
+
+    unsigned int support_point_index = CollisionDetector::get_support_point_index(object, axis);
+    unsigned int next_point_index, prev_point_index;
+
+    if(support_point_index == 0) {
+
+        next_point_index = support_point_index + 1;
+        prev_point_index = object->get_vertices().size() - 1;
+    }
+    else if(support_point_index = object->get_vertices().size() - 1) {
+
+        next_point_index = 0;
+        prev_point_index = support_point_index - 1;
+    }
+    else {
+
+        next_point_index = support_point_index + 1;
+        prev_point_index = support_point_index - 1;
+    }
+
+    Vector prev_face = object->get_vertices().at(prev_point_index) + object->get_vertices().at(support_point_index);
+    Vector next_face = object->get_vertices().at(support_point_index) + object->get_vertices().at(next_point_index);
+
+    if(prev_face.dot(axis) < next_face.dot(axis)){
+
+        Display::vector(object->get_vertices().at(support_point_index), WHITE);
+        Display::vector(object->get_vertices().at(next_point_index), WHITE);
+        return next_face;
+    }
+    else{
+        Display::vector(object->get_vertices().at(prev_point_index), WHITE);
+        Display::vector(object->get_vertices().at(support_point_index), WHITE);
+        return prev_face;
+    }
 }
