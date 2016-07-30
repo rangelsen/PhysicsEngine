@@ -282,7 +282,7 @@ Vector CollisionDetector::get_most_orthogonal_face(Object *object, Vector axis) 
         next_point_index = support_point_index + 1;
         prev_point_index = object->get_vertices().size() - 1;
     }
-    else if(support_point_index = object->get_vertices().size() - 1) {
+    else if(support_point_index == object->get_vertices().size() - 1) {
 
         next_point_index = 0;
         prev_point_index = support_point_index - 1;
@@ -293,10 +293,10 @@ Vector CollisionDetector::get_most_orthogonal_face(Object *object, Vector axis) 
         prev_point_index = support_point_index - 1;
     }
 
-    Vector prev_face = object->get_vertices().at(prev_point_index) + object->get_vertices().at(support_point_index);
-    Vector next_face = object->get_vertices().at(support_point_index) + object->get_vertices().at(next_point_index);
+    Vector prev_face = object->get_vertices().at(support_point_index) - object->get_vertices().at(prev_point_index);
+    Vector next_face = object->get_vertices().at(next_point_index) - object->get_vertices().at(support_point_index);
 
-    if(prev_face.dot(axis) < next_face.dot(axis)){
+    if(abs(prev_face.dot(axis)) > abs(next_face.dot(axis))) {
 
         Display::vector(object->get_vertices().at(support_point_index), WHITE);
         Display::vector(object->get_vertices().at(next_point_index), WHITE);
