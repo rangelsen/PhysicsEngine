@@ -40,7 +40,6 @@ void run() {
 
 		Vector axis_least_penetration = CollisionDetector::collision_detection_contact_SAT(world->get_objects().at(0), world->get_objects().at(1));
 		
-
 		if(axis_least_penetration == Vector(0, 0)) {
 
 			for(unsigned int object_index = 0; object_index < world->get_objects().size(); object_index++) {
@@ -51,14 +50,23 @@ void run() {
 			}
 		}
 		else {
+
+			Object *object_a = world->get_objects().at(0);
+			Object *object_b = world->get_objects().at(1);
+
+			Vector contact_point = CollisionDetector::get_contact_point(object_a, object_b, axis_least_penetration * -1);
+
 			if(!flag) {
 				Display::vector(axis_least_penetration, BLUE);
 				flag = true;
 			}
+
+			// EOMSolver::resolve_collision(object_a, object_b, axis_least_penetration, contact_point);
+
+			Scene::render_contact_point(contact_point);
 		}
 		
 		Scene::render_world(world);
-
 	}
 }
 
@@ -99,13 +107,11 @@ void keyboard(unsigned char key, int x, int y) {
 int main(int argc, char** argv) {
 	vector<Object*> objects = generate_objects();
 
-	objects.at(0)->set_position(Vector(0, -6));
-	objects.at(0)->set_velocity(Vector(0, -10));
+	objects.at(0)->set_position(Vector(0, 0));
+	objects.at(0)->set_velocity(Vector(0, 5));
 
 	objects.at(1)->set_movable(false);
 	objects.at(1)->set_position(Vector(0, -8));
-
-	Vector aols = CollisionDetector::collision_detection_contact_SAT(objects.at(0), objects.at(1));
 
 	world = new World(objects);
 

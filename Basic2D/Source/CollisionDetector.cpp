@@ -164,19 +164,15 @@ Vector CollisionDetector::collision_detection_contact_SAT(Object *a, Object *b) 
 
     bool collision = (overlaps.size() == normals.size()) ? true : false;
 
-    if(collision) {
-        if(axis_least_penetration.norm() != 1)
-            axis_least_penetration.normalize();
-
-        return axis_least_penetration * penetration_depth;
-    }
-    else{
+    if(collision) 
+        return axis_least_penetration.normalize() * penetration_depth;
+    else
         return Vector(0, 0);
-    }
 }
 
 Vector CollisionDetector::get_contact_point(Object *a, Object *b, Vector axis_least_penetration) {
 
+    bool debug = false;
 
     // Determine which object contains reference face
     bool b_is_reference = CollisionDetector::get_reference_object(a, b, axis_least_penetration);
@@ -186,23 +182,28 @@ Vector CollisionDetector::get_contact_point(Object *a, Object *b, Vector axis_le
 
     if(!b_is_reference) {
     
-        cout << "b is not reference" << endl;
-    
         incident  = b;
         reference = a;
     }
 
-    Display::object(*reference, BLUE);
-    Display::object(*incident, BLUE);
-
+    if(debug) {
+        Display::object(*reference, BLUE);
+        Display::object(*incident, BLUE);
+    }
+/*
     // Find best faces
     Vector reference_face = CollisionDetector::get_most_orthogonal_face(reference, axis_least_penetration * -1);
     Vector incident_face  = CollisionDetector::get_most_orthogonal_face(incident, axis_least_penetration);
 
-    Display::vector(reference_face, MAGENTA);
-    Display::vector(incident_face, MAGENTA);
+    if(debug) {
+        Display::vector(reference_face, MAGENTA);
+        Display::vector(incident_face, MAGENTA);
+    }
 
-    return Vector(0, 0);
+    Vector contact_point = CollisionDetector::clip(incident)
+*/
+
+    return CollisionDetector::get_support_point(incident, axis_least_penetration);
 }
 
 bool CollisionDetector::get_reference_object(Object *a, Object *b, Vector axis_least_penetration) {
@@ -296,15 +297,8 @@ Vector CollisionDetector::get_most_orthogonal_face(Object *object, Vector axis) 
     Vector prev_face = object->get_vertices().at(support_point_index) - object->get_vertices().at(prev_point_index);
     Vector next_face = object->get_vertices().at(next_point_index) - object->get_vertices().at(support_point_index);
 
-    if(abs(prev_face.dot(axis)) > abs(next_face.dot(axis))) {
-
-        Display::vector(object->get_vertices().at(support_point_index), WHITE);
-        Display::vector(object->get_vertices().at(next_point_index), WHITE);
+    if(abs(prev_face.dot(axis)) > abs(next_face.dot(axis)))
         return next_face;
-    }
-    else{
-        Display::vector(object->get_vertices().at(prev_point_index), WHITE);
-        Display::vector(object->get_vertices().at(support_point_index), WHITE);
+    else
         return prev_face;
-    }
 }
