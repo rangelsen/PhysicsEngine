@@ -19,6 +19,7 @@ public:
 
 	Object * get_object(bool a) const;
 	Vector * get_contact_point() const;
+	Vector * get_axis() const;
 };
 
 #endif

@@ -9,8 +9,10 @@ private:
 	Constants();
 	static Constants *instance;
 public:
-	const float g = 5;
+	const float g 				 = 5;
 	const float drag_coefficient = .8;
+	const float restitution      = .5;
+	
 	const Matrix *A;
 	static Constants *Instance();
 };

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <vector>
+#include <iostream>
 
 #include "EOMSolver.h"
 #include "Object.h"
@@ -24,34 +25,6 @@ void EOMSolver::simulate_world(World *world, double time_step, vector<Collision*
 	}
 }
 
-/*
-void EOMSolver::simulate_object(Object *object, double delta_time) {
-
-	if(object->is_movable()) {
-
-		double inv_inertia = 1.0/object->get_moment_of_inertia();
-
-		double torque = EOMSolver::evaluate_torque(object);
-
-		double next_d_theta = object->get_rotation() + torque * inv_inertia * delta_time;
-		double next_theta = object->get_orientation() + next_d_theta * delta_time;
-
-		// -----------------------------------------------------------------------------
-
-		double inv_mass = 1.0/object->get_mass();
-
-		Vector f = EOMSolver::evaluate_forces(object);
-
-		Vector next_velocity = *object->get_velocity() + f * inv_mass * delta_time;
-		Vector next_position = *object->get_position() + next_velocity * delta_time;
-
-		object->set_velocity(next_velocity);
-		object->set_position(next_position);
-		object->set_rotation(next_d_theta);
-		object->set_orientation(next_theta);
-	}
-}
-*/
 void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collision*> related_collisions) {
 	
 	if(object->is_movable()) {
@@ -67,7 +40,7 @@ void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collis
 
 		double inv_mass = 1.0/object->get_mass();
 
-		Vector f = EOMSolver::evaluate_forces(object, related_collisions);
+		Vector f = EOMSolver::evaluate_forces(object, related_collisions, delta_time);
 
 		Vector next_velocity = *object->get_velocity() + f * inv_mass * delta_time;
 		Vector next_position = *object->get_position() + next_velocity * delta_time;
@@ -79,7 +52,7 @@ void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collis
 	}	
 }
 
-Vector EOMSolver::evaluate_forces(Object *object, vector<Collision*> related_collisions) {
+Vector EOMSolver::evaluate_forces(Object *object, vector<Collision*> related_collisions, double delta_time) {
 	
 	Vector gravity(0, -object->get_mass() * Constants::Instance()->g);
 
@@ -88,7 +61,14 @@ Vector EOMSolver::evaluate_forces(Object *object, vector<Collision*> related_col
 	vector<Vector> contact_forces;
 
 	for(unsigned int i = 0; i < related_collisions.size(); i++) {
-		f += Vector(0, 100);
+		
+		Vector correction = *object->get_position() + *related_collisions.at(i)->get_axis();
+
+		object->set_position(correction);
+
+		double inv_time = 1.0f/delta_time;
+
+		f += *object->get_velocity() * (-Constants::Instance()->restitution - 1) * object->get_mass() * inv_time;
 	}
 
 	return f;
@@ -96,7 +76,7 @@ Vector EOMSolver::evaluate_forces(Object *object, vector<Collision*> related_col
 
 double EOMSolver::evaluate_torque(Object *object, vector<Collision*> related_collisions) {
 
-	return .005;
+	return 0;
 }
 
 vector<Collision*> EOMSolver::get_related_collisions(Object *object, vector<Collision*> collisions) {

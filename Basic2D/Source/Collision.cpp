@@ -32,3 +32,7 @@ Object * Collision::get_object(bool a) const {
 Vector * Collision::get_contact_point() const {
 	return this->contact_point;
 }
+
+Vector * Collision::get_axis() const {
+	return this->axis;
+}
