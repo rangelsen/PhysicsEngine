@@ -8,16 +8,17 @@ class Object;
 
 class Collision {
 private:
-	Object *object_1;
-	Object *object_2;
-	std::vector<Vector> contact_points;
-	Vector *axis_of_penetration;
-	double penetration_depth;
+	Object *object_a;
+	Object *object_b;
+	Vector *contact_point;
+	Vector *axis;
+
 public:
-	Collision(Object *object_1, Object *object_2, Vector axis_of_least_penetration);
+	Collision(Object *object_a, Object *object_b, Vector axis_least_penetration, Vector contact_point);
 	~Collision();
 
-	std::vector<Vector> get_contact_points() const;
+	Object * get_object(bool a) const;
+	Vector * get_contact_point() const;
 };
 
 #endif

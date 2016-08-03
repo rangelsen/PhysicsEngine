@@ -40,6 +40,20 @@ void Scene::render_world(World *world) {
     glFlush();
 }
 
+void Scene::render_world(World *world, vector<Collision*> collisions) {
+    vector<Object*> objects = world->get_objects();
+
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    for(unsigned int i = 0; i < objects.size(); i++) {
+        render_object(objects.at(i));
+    }
+
+    for(unsigned int i = 0; i < collisions.size(); i++) {
+        render_contact_point(*collisions.at(i)->get_contact_point());
+    }
+}
+
 void Scene::render_object(Object *object) {
 	vector<Vector> vertices = object->get_vertices();
 

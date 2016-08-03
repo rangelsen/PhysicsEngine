@@ -26,9 +26,6 @@ clock_t clocks_1;
 unsigned int delta_time_ms = 10;
 double delta_time = delta_time_ms/1000.0;
 float elapsed_ms;
-int count = 0;
-int y_min = -50;
-bool flag = false;
 
 void run() {
 
@@ -36,7 +33,19 @@ void run() {
 	elapsed_ms = float(clocks_1 - clocks_0) / (CLOCKS_PER_SEC/1000);
 
 	if(elapsed_ms >= delta_time_ms) {
-		clocks_0 = clocks_1;		
+		clocks_0 = clocks_1;
+
+		// Find collisions
+		vector<Collision*> collisions = CollisionDetector::get_collisions(world);
+
+		// Apply changes
+		EOMSolver::simulate_world(world, delta_time, collisions);
+
+		// Render
+		Scene::render_world(world, collisions);
+
+		collisions.clear();
+	/* -----------------------------------------------------------------------------------------
 
 		Vector axis_least_penetration = CollisionDetector::collision_detection_contact_SAT(world->get_objects().at(0), world->get_objects().at(1));
 		
@@ -61,15 +70,17 @@ void run() {
 				flag = true;
 			}
 
-			// EOMSolver::resolve_collision(object_a, object_b, axis_least_penetration, contact_point);
-
 			Scene::render_contact_point(contact_point);
 		}
 		
 		Scene::render_world(world);
+
+	------------------------------------------------------------------------------------------- */
+
 	}
 }
 
+/*
 void keyboard(unsigned char key, int x, int y) {
 	switch(key) {
 	case 's':
@@ -77,7 +88,7 @@ void keyboard(unsigned char key, int x, int y) {
 			
 			Object *object = world->get_objects().at(object_index);
 
-			Vector v = CollisionDetector::collision_detection_contact_SAT(world->get_objects().at(0), world->get_objects().at(1));
+			Vector v = CollisionDetector::collision_detection_SAT(world->get_objects().at(0), world->get_objects().at(1));
 
 			if(!(v == Vector(0, 0))) {
 				Display::vector(v, RED);
@@ -103,12 +114,13 @@ void keyboard(unsigned char key, int x, int y) {
 		break;
 	}
 }
+*/
 
 int main(int argc, char** argv) {
 	vector<Object*> objects = generate_objects();
 
-	objects.at(0)->set_position(Vector(0, 0));
-	objects.at(0)->set_velocity(Vector(0, 5));
+	objects.at(0)->set_position(Vector(0, 4));
+	objects.at(0)->set_velocity(Vector(0, 0));
 
 	objects.at(1)->set_movable(false);
 	objects.at(1)->set_position(Vector(0, -8));
