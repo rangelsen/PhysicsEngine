@@ -99,12 +99,13 @@ Vector CollisionDetector::collision_detection_SAT(Object *a, Object *b) {
         return Vector(0, 0);
 }
 
+// ************ WARNING line 5 ************* switched a and b
 Vector CollisionDetector::get_contact_point(Object *a, Object *b, Vector axis_least_penetration) {
 
     bool debug = false;
 
     // Determine which object contains reference face
-    bool b_is_reference = CollisionDetector::get_reference_object(a, b, axis_least_penetration);
+    bool b_is_reference = CollisionDetector::get_reference_object(b, a, axis_least_penetration);
 
     Object *incident  = a;
     Object *reference = b;
@@ -119,20 +120,8 @@ Vector CollisionDetector::get_contact_point(Object *a, Object *b, Vector axis_le
         Display::object(*reference, BLUE);
         Display::object(*incident, BLUE);
     }
-/*
-    // Find best faces
-    Vector reference_face = CollisionDetector::get_most_orthogonal_face(reference, axis_least_penetration * -1);
-    Vector incident_face  = CollisionDetector::get_most_orthogonal_face(incident, axis_least_penetration);
 
-    if(debug) {
-        Display::vector(reference_face, MAGENTA);
-        Display::vector(incident_face, MAGENTA);
-    }
-
-    Vector contact_point = CollisionDetector::clip(incident)
-*/
-
-    return CollisionDetector::get_support_point(incident, axis_least_penetration);
+    return CollisionDetector::get_support_point(incident, axis_least_penetration * -1);
 }
 
 bool CollisionDetector::get_reference_object(Object *a, Object *b, Vector axis_least_penetration) {

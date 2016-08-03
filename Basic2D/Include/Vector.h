@@ -28,6 +28,7 @@ public:
 	Vector &     vertcat(const Vector &vector);
 	double       norm() const;
 	double       dot(const Vector &rhs) const;
+	double       cross2D(const Vector &rhs) const;
 	Vector   	 project(const Vector &rhs) const;
 	Vector & 	 normalize();
 	void 		 set(const Vector &rhs);

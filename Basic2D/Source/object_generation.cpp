@@ -74,8 +74,8 @@ vector<Object*> generate_convex_polygons(unsigned int n_polygons, unsigned int n
 
 	vertices.clear();
 
-	double width = 10;
-	double height = 1;
+	double width = 1;
+	double height = 10;
 
 	Vector v1(-width/2.0, height/2.0);
 	Vector v2(width/2.0, height/2.0);

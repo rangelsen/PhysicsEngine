@@ -130,6 +130,13 @@ double Vector::dot(const Vector &rhs) const {
 	return output;
 }
 
+double Vector::cross2D(const Vector &rhs) const {
+	assert(rhs.get_dimension() == this->get_dimension());
+	assert(this->get_dimension() == 2);
+
+	return -this->at(1) * rhs.at(0) + this->at(0) * rhs.at(1);
+}
+
 Vector Vector::project(const Vector &axis) const {
 
 	return *this * (this->dot(axis) / (this->norm() * axis.norm()));

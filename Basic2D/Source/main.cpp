@@ -38,7 +38,7 @@ void run() {
 		// Find collisions
 		vector<Collision*> collisions = CollisionDetector::get_collisions(world);
 
-		// Apply changes
+		// Simulate
 		EOMSolver::simulate_world(world, delta_time, collisions);
 
 		// Render
@@ -79,42 +79,6 @@ void run() {
 
 	}
 }
-
-/*
-void keyboard(unsigned char key, int x, int y) {
-	switch(key) {
-	case 's':
-		for(unsigned int object_index = 0; object_index < world->get_objects().size(); object_index++) {
-			
-			Object *object = world->get_objects().at(object_index);
-
-			Vector v = CollisionDetector::collision_detection_SAT(world->get_objects().at(0), world->get_objects().at(1));
-
-			if(!(v == Vector(0, 0))) {
-				Display::vector(v, RED);
-
-				glLineWidth(2.0f); 
-			    glColor3f(1.0f, 0.0f, 0.0f);
-			    glBegin(GL_LINES);
-
-			    	double x1 = world->get_objects().at(0)->get_position()->at(0);
-			    	double y1 = world->get_objects().at(0)->get_position()->at(1);
-
-			    	double x2 = v.at(0);
-			    	double y2 = v.at(1);
-
-			    	glVertex2f(x1/10, y1/10);
-			    	glVertex2f(x2/10, y2/10);
-			    glEnd();
-			}
-			EOMSolver::simulate_object(object, delta_time);
-		}
-
-	    Scene::render_world(world);
-		break;
-	}
-}
-*/
 
 int main(int argc, char** argv) {
 	vector<Object*> objects = generate_objects();
