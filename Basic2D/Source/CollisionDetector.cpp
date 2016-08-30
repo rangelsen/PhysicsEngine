@@ -99,35 +99,46 @@ Vector CollisionDetector::collision_detection_SAT(Object *a, Object *b) {
         return Vector(0, 0);
 }
 
-// ************ WARNING line 5 ************* switched a and b
 Vector CollisionDetector::get_contact_point(Object *a, Object *b, Vector axis_least_penetration) {
-
-    bool debug = false;
-
-    // Determine which object contains reference face
-    bool b_is_reference = CollisionDetector::get_reference_object(b, a, axis_least_penetration);
 
     Object *incident  = a;
     Object *reference = b;
 
-    if(!b_is_reference) {
+    Vector collision_axis_normalized = axis_least_penetration.normalize();
+
+    // Determine which object contains reference face
+    Vector most_orthogonal_face_a = CollisionDetector::get_most_orthogonal_face(a, collision_axis_normalized * -1);
+    Vector most_orthogonal_face_b = CollisionDetector::get_most_orthogonal_face(b, collision_axis_normalized * -1);
+
+    double parallelism_a = most_orthogonal_face_a.dot(collision_axis_normalized * -1);
+    double parallelism_b = most_orthogonal_face_b.dot(collision_axis_normalized * -1);
+
+    bool a_is_reference = (parallelism_a < parallelism_b) ? true : false;
+
+    Vector clipping_face = parallelism_b;
     
-        incident  = b;
+    if(a_is_reference) {
         reference = a;
+        incident  = b;
+
+        clipping_face = parallelism_a;
+    }
+    else {
+
     }
 
-    if(debug) {
-        Display::object(*reference, BLUE);
-        Display::object(*incident, BLUE);
-    }
+    // Clipping
+    Vector clipping_face = 
 
     return CollisionDetector::get_support_point(incident, axis_least_penetration * -1);
 }
 
 bool CollisionDetector::get_reference_object(Object *a, Object *b, Vector axis_least_penetration) {
 
-    double distance_along_axis_a = a->get_position()->dot(axis_least_penetration);
-    double distance_along_axis_b = b->get_position()->dot(axis_least_penetration);
+    Vector axis_normalized = axis_least_penetration.normalize();
+
+    double distance_along_axis_a = a->get_position()->dot(axis_normalized);
+    double distance_along_axis_b = b->get_position()->dot(axis_normalized);
 
     if(distance_along_axis_a < distance_along_axis_b)
         return true;

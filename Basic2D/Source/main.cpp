@@ -38,6 +38,9 @@ void run() {
 		// Find collisions
 		vector<Collision*> collisions = CollisionDetector::get_collisions(world);
 
+		if(collisions.size() > 0) {
+			Display::vector(*collisions.at(0)->get_axis(), BLUE);
+		}
 		// Simulate
 		EOMSolver::simulate_world(world, delta_time, collisions);
 
@@ -45,38 +48,6 @@ void run() {
 		Scene::render_world(world, collisions);
 
 		collisions.clear();
-	/* -----------------------------------------------------------------------------------------
-
-		Vector axis_least_penetration = CollisionDetector::collision_detection_contact_SAT(world->get_objects().at(0), world->get_objects().at(1));
-		
-		if(axis_least_penetration == Vector(0, 0)) {
-
-			for(unsigned int object_index = 0; object_index < world->get_objects().size(); object_index++) {
-				
-				Object *object = world->get_objects().at(object_index);
-
-				EOMSolver::simulate_object(object, delta_time);
-			}
-		}
-		else {
-
-			Object *object_a = world->get_objects().at(0);
-			Object *object_b = world->get_objects().at(1);
-
-			Vector contact_point = CollisionDetector::get_contact_point(object_a, object_b, axis_least_penetration * -1);
-
-			if(!flag) {
-				Display::vector(axis_least_penetration, BLUE);
-				flag = true;
-			}
-
-			Scene::render_contact_point(contact_point);
-		}
-		
-		Scene::render_world(world);
-
-	------------------------------------------------------------------------------------------- */
-
 	}
 }
 
@@ -88,7 +59,7 @@ int main(int argc, char** argv) {
 
 	objects.at(1)->set_movable(false);
 	objects.at(1)->set_position(Vector(0, -8));
-
+	
 	world = new World(objects);
 
 	glutInit(&argc, argv);
