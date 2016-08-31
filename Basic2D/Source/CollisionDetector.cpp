@@ -106,30 +106,7 @@ Vector CollisionDetector::get_contact_point(Object *a, Object *b, Vector axis_le
 
     Vector collision_axis_normalized = axis_least_penetration.normalize();
 
-    // Determine which object contains reference face
-    Vector most_orthogonal_face_a = CollisionDetector::get_most_orthogonal_face(a, collision_axis_normalized * -1);
-    Vector most_orthogonal_face_b = CollisionDetector::get_most_orthogonal_face(b, collision_axis_normalized * -1);
-
-    double parallelism_a = most_orthogonal_face_a.dot(collision_axis_normalized * -1);
-    double parallelism_b = most_orthogonal_face_b.dot(collision_axis_normalized * -1);
-
-    bool a_is_reference = (parallelism_a < parallelism_b) ? true : false;
-
-    Vector clipping_face = parallelism_b;
     
-    if(a_is_reference) {
-        reference = a;
-        incident  = b;
-
-        clipping_face = parallelism_a;
-    }
-    else {
-
-    }
-
-    // Clipping
-    Vector clipping_face = 
-
     return CollisionDetector::get_support_point(incident, axis_least_penetration * -1);
 }
 
