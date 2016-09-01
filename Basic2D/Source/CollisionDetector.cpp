@@ -106,12 +106,58 @@ Vector CollisionDetector::get_contact_point(Object *a, Object *b, Vector axis_le
 
     Vector collision_axis_normalized = axis_least_penetration.normalize();
 
+    // Find reference and incident object
+    bool a_is_reference = CollisionDetector::get_reference_object(a, b, collision_axis_normalized);
+
+    if(a_is_reference) {
+        reference = a;
+        incident = b;
+    }
+
+
+    // Take contact point as support point of incident object
     
-    return CollisionDetector::get_support_point(incident, axis_least_penetration * -1);
+    return CollisionDetector::get_support_point(incident, collision_axis_normalized * -1);
 }
 
-bool CollisionDetector::get_reference_object(Object *a, Object *b, Vector axis_least_penetration) {
+// Returns true if object a is the reference object and b is the incident object
+bool CollisionDetector::get_reference_object(Object *a, Object *b, Vector axis_normalized) {
 
+    vector<Vector> normals_a = a->get_normals();
+    vector<Vector> normals_b = b->get_normals();
+
+    double best_a = normals_a.at(0).dot(axis_normalized);
+
+    if(normals_a.size() > 1) {
+        
+        for(unsigned int i = 1; i < normals_a.size(); i++) {
+            
+            double normal_value = normals_a.at(i).dot(axis_normalized);
+
+            if(normal_value > best_a)
+                best_a = normal_value;
+        }
+    }
+
+    double best_b = normals_b.at(0).dot(axis_normalized);
+
+    if(normals_b.size() > 1) {
+
+        for(unsigned int i = 1; i < normals_b.size(); i++) {
+
+            double normal_value = normals_b.at(i).dot(axis_normalized);
+
+            if(normal_value > best_b)
+                best_b = normal_value;
+        }
+    }
+
+    if(best_a > best_b)
+        return true;
+    else
+        return false;
+
+/*
     Vector axis_normalized = axis_least_penetration.normalize();
 
     double distance_along_axis_a = a->get_position()->dot(axis_normalized);
@@ -121,6 +167,7 @@ bool CollisionDetector::get_reference_object(Object *a, Object *b, Vector axis_l
         return true;
     else
         return false;
+*/
 }
 
 vector<Vector> CollisionDetector::merge_Vector(vector<Vector> vectors_a, vector<Vector> vectors_b) {
