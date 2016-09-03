@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <vector>
 #include <cmath>
+#include <iostream>
 
 #include "Object.h"
 #include "Vector.h"
@@ -32,7 +33,7 @@ Object::Object(vector<Vector> vertices) {
 	this->theta = 0;
 	this->d_theta = 0;
 	this->mass = 1;
-	this->I    = 1;
+	this->I    = 10;
 	this->movable = true;
 	this->normals = this->compute_normals(this->vertices);
 }

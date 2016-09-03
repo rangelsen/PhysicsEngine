@@ -37,10 +37,7 @@ void run() {
 
 		// Find collisions
 		vector<Collision*> collisions = CollisionDetector::get_collisions(world);
-
-		if(collisions.size() > 0) {
-			Display::vector(*collisions.at(0)->get_axis(), BLUE);
-		}
+		
 		// Simulate
 		EOMSolver::simulate_world(world, delta_time, collisions);
 
@@ -51,14 +48,31 @@ void run() {
 	}
 }
 
-int main(int argc, char** argv) {
-	vector<Object*> objects = generate_objects();
+void configure_objects_vertical(vector<Object*> objects) {
 
 	objects.at(0)->set_position(Vector(0, 4));
 	objects.at(0)->set_velocity(Vector(0, 0));
+	// objects.at(0)->set_rotation(.3);
 
 	objects.at(1)->set_movable(false);
 	objects.at(1)->set_position(Vector(0, -8));
+	objects.at(1)->set_orientation(3.14/4);
+}
+
+void configure_objects_horizontal(vector<Object*> objects) {
+	objects.at(0)->set_position(Vector(-3, -3));
+	objects.at(0)->set_velocity(Vector(5, 6));
+
+	objects.at(1)->set_movable(false);
+	objects.at(1)->set_position(Vector(8, 0));
+	objects.at(1)->set_orientation(3.14/2);
+}
+
+int main(int argc, char** argv) {
+	vector<Object*> objects = generate_objects();
+
+	configure_objects_vertical(objects);
+	// configure_objects_horizontal(objects);
 	
 	world = new World(objects);
 
