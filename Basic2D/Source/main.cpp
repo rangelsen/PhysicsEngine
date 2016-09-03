@@ -4,6 +4,7 @@
 #include <vector>
 #include <GL/glut.h>
 #include <cmath>
+#include <fstream>
 
 #include "Matrix.h"
 #include "Vector.h"
@@ -27,6 +28,9 @@ unsigned int delta_time_ms = 10;
 double delta_time = delta_time_ms/1000.0;
 float elapsed_ms;
 
+ofstream theta_file;
+ofstream d_theta_file;
+
 void run() {
 
 	clocks_1 = clock();
@@ -39,7 +43,7 @@ void run() {
 		vector<Collision*> collisions = CollisionDetector::get_collisions(world);
 		
 		// Simulate
-		EOMSolver::simulate_world(world, delta_time, collisions);
+		EOMSolver::simulate_world(world, delta_time, collisions, theta_file, d_theta_file);
 
 		// Render
 		Scene::render_world(world, collisions);
@@ -56,7 +60,6 @@ void configure_objects_vertical(vector<Object*> objects) {
 
 	objects.at(1)->set_movable(false);
 	objects.at(1)->set_position(Vector(0, -8));
-	objects.at(1)->set_orientation(3.14/4);
 }
 
 void configure_objects_horizontal(vector<Object*> objects) {
@@ -74,6 +77,8 @@ int main(int argc, char** argv) {
 	configure_objects_vertical(objects);
 	// configure_objects_horizontal(objects);
 	
+	theta_file.open("theta.txt");
+	d_theta_file.open("d_theta.txt");
 	world = new World(objects);
 
 	glutInit(&argc, argv);

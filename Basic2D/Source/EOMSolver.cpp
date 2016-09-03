@@ -14,7 +14,7 @@
 
 using namespace std;
 
-void EOMSolver::simulate_world(World *world, double time_step, vector<Collision*> collisions) {
+void EOMSolver::simulate_world(World *world, double time_step, vector<Collision*> collisions, ofstream& theta_file, ofstream& d_theta_file) {
 
 	vector<Object*> objects = world->get_objects();
 
@@ -22,11 +22,11 @@ void EOMSolver::simulate_world(World *world, double time_step, vector<Collision*
 
 		vector<Collision*> related_collisions = EOMSolver::get_related_collisions(objects.at(i), collisions);
 
-		EOMSolver::simulate_object(objects.at(i), time_step, related_collisions);
+		EOMSolver::simulate_object(objects.at(i), time_step, related_collisions, theta_file, d_theta_file);
 	}
 }
 
-void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collision*> related_collisions) {
+void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collision*> related_collisions, ofstream& theta_file, ofstream& d_theta_file) {
 	
 	if(object->is_movable()) {
 
@@ -44,8 +44,11 @@ void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collis
 
 		double impulse = EOMSolver::compute_impulse(object, related_collisions);
 
-		double next_d_theta = object->get_rotation() + impulse * inv_inertia;
+		double next_d_theta = .003;
 		double next_theta   = object->get_orientation() + object->get_rotation() * delta_time;
+
+		theta_file << next_theta << endl;
+		d_theta_file << next_d_theta << endl;
 
 		cout << "EOMSolver: theta = "   << next_theta << endl;
 		cout << "EOMSolver: d_theta = " << next_d_theta << endl;
