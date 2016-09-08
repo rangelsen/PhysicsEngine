@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
 #include "EOMSolver.h"
 #include "Object.h"
@@ -48,7 +49,7 @@ void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collis
 
 		double impulse = EOMSolver::compute_impulse(object, related_collisions);
 
-		double next_d_theta = .3;
+		double next_d_theta = object->get_angular_velocity() + impulse * inv_inertia;
 		double next_theta   = object->get_orientation() + object->get_angular_velocity() * delta_time;	
 
 		object->set_velocity(next_velocity);
@@ -110,17 +111,17 @@ double EOMSolver::compute_impulse(Object *a, vector<Collision*> related_collisio
 		if(b == a)
 			b = related_collisions.at(i)->get_object(true);
 
-		Vector r_a = *related_collisions.at(i)->get_contact_point() - *a->get_position();
-
-	/*
-		cout << "r_a" << endl;
-		Display::vector(r_a, WHITE);
-	*/
 		Vector n = *related_collisions.at(i)->get_axis();
 
-		Vector vp_a = *a->get_velocity() + Vector(-r_a.at(1), r_a.at(0)) * a->get_angular_velocity();
+		Vector r_a = *related_collisions.at(i)->get_contact_point() - *a->get_position();
+		Vector r_b = *related_collisions.at(i)->get_contact_point() - *b->get_position();
 
-		double num = -(1 + Constants::Instance()->elasticity) * vp_a.dot(n);
+		Vector v_ap1 = *a->get_velocity() + Vector(-r_a.at(1), r_a.at(0)) * a->get_angular_velocity();
+		Vector v_bp1 = *b->get_velocity() + Vector(-r_b.at(1), r_b.at(0)) * b->get_angular_velocity();
+
+		Vector v_ab = v_ap1 - v_bp1;
+
+		double num = -(1 + Constants::Instance()->elasticity) * v_ap1.dot(n);
 
 		double inv_mass_a = 1/a->get_mass();
 
@@ -131,18 +132,30 @@ double EOMSolver::compute_impulse(Object *a, vector<Collision*> related_collisio
 		double den = inv_mass_a + rot_term_a;
 
 	/*
+		cout << "r_a = " << endl;
+		Display::vector(r_a, WHITE);
+
+		cout << "r_b = " << endl;
+		Display::vector(r_b, WHITE);
+
 		cout << "num = " << num << endl;
 		cout << "den = " << den << endl;
 		cout << "inv_mass_a = " << inv_mass_a << endl;
 		cout << "rot_term_a = " << rot_term_a << endl;
+		cout << "r_cross_n_a = " << r_cross_n_a << endl;
 	*/
+
 		impulse = num / den;
+
+		if(r_cross_n_a < 0)
+			impulse *= -1;
+
+	/*
+		if(abs(impulse) < Constants::Instance()->impulse_tolerance)
+			impulse = 0;
+	*/
+		
 	}
 
 	return impulse;
-}
-
-void EOMSolver::apply_angular_impulse(double& next_d_theta, double impulse, double I) {
-
-	next_d_theta += impulse/I;
 }

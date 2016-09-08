@@ -20,3 +20,6 @@ clean:
 
 deepclean:
 	rm $(OBJECTDIR)/*.o PhysicsEngine
+
+remake:
+	make deepclean; make

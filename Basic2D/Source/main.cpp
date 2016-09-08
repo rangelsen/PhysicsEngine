@@ -45,6 +45,12 @@ void run() {
 		// Simulate
 		EOMSolver::simulate_world(world, delta_time, collisions, theta_file, d_theta_file);
 
+	/*
+		if(collisions.size() > 0) {
+			Display::message("angular velocity", MAGENTA);
+			cout << world->get_objects().at(0)->get_angular_velocity() << endl;
+		}
+	*/
 		// Render
 		Scene::render_world(world, collisions);
 
@@ -70,6 +76,7 @@ void configure_objects_horizontal(vector<Object*> objects) {
 	objects.at(1)->set_orientation(3.14/2);
 }
 
+
 int main(int argc, char** argv) {
 	vector<Object*> objects = generate_objects();
 
@@ -93,3 +100,13 @@ int main(int argc, char** argv) {
 
 	return 0;
 }
+
+/*
+
+// Test main
+int main(int argc, char** argv) {
+
+
+}
+
+*/
