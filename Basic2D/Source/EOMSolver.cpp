@@ -27,7 +27,11 @@ void EOMSolver::simulate_world(World *world, double time_step, vector<Collision*
 }
 
 void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collision*> related_collisions, ofstream& theta_file, ofstream& d_theta_file) {
-	
+
+/*	
+	Display::message("Simulating object ", YELLOW);
+	cout << object << endl;
+*/
 	if(object->is_movable()) {
 
 		double inv_mass = 1.0f/object->get_mass();
@@ -44,19 +48,13 @@ void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collis
 
 		double impulse = EOMSolver::compute_impulse(object, related_collisions);
 
-		double next_d_theta = .003;
-		double next_theta   = object->get_orientation() + object->get_rotation() * delta_time;
-
-		theta_file << next_theta << endl;
-		d_theta_file << next_d_theta << endl;
-
-		cout << "EOMSolver: theta = "   << next_theta << endl;
-		cout << "EOMSolver: d_theta = " << next_d_theta << endl;
+		double next_d_theta = .3;
+		double next_theta   = object->get_orientation() + object->get_angular_velocity() * delta_time;	
 
 		object->set_velocity(next_velocity);
 		object->set_position(next_position);
 
-		object->set_rotation(next_d_theta);
+		object->set_angular_velocity(next_d_theta);
 		object->set_orientation(next_theta);
 	}	
 }
@@ -72,7 +70,7 @@ Vector EOMSolver::evaluate_forces(Object *object, vector<Collision*> related_col
 
 		object->set_position(correction);
 
-		f += *object->get_velocity() * (-Constants::Instance()->restitution - 1) * object->get_mass() * inv_time + Vector(0, 100);
+		f += *object->get_velocity() * (-Constants::Instance()->restitution - 1) * object->get_mass() * inv_time + Vector(0, 0);
 	}
 
 	return f;
@@ -120,7 +118,7 @@ double EOMSolver::compute_impulse(Object *a, vector<Collision*> related_collisio
 	*/
 		Vector n = *related_collisions.at(i)->get_axis();
 
-		Vector vp_a = *a->get_velocity() + Vector(-r_a.at(1), r_a.at(0)) * a->get_rotation();
+		Vector vp_a = *a->get_velocity() + Vector(-r_a.at(1), r_a.at(0)) * a->get_angular_velocity();
 
 		double num = -(1 + Constants::Instance()->elasticity) * vp_a.dot(n);
 

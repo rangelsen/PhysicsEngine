@@ -16,7 +16,7 @@ $(OBJECTDIR)/%.o: $(SOURCEDIR)/%.cpp
 	$(CXX) $(CFLAGS) -c $^ -o $@
 
 clean:
-	rm $(OBJECTDIR)/*.o
+	rm $(OBJECTDIR)/*.o theta.txt d_theta.txt
 
 deepclean:
 	rm $(OBJECTDIR)/*.o PhysicsEngine

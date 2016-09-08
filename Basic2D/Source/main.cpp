@@ -41,7 +41,7 @@ void run() {
 
 		// Find collisions
 		vector<Collision*> collisions = CollisionDetector::get_collisions(world);
-		
+
 		// Simulate
 		EOMSolver::simulate_world(world, delta_time, collisions, theta_file, d_theta_file);
 
@@ -56,7 +56,6 @@ void configure_objects_vertical(vector<Object*> objects) {
 
 	objects.at(0)->set_position(Vector(0, 4));
 	objects.at(0)->set_velocity(Vector(0, 0));
-	// objects.at(0)->set_rotation(.3);
 
 	objects.at(1)->set_movable(false);
 	objects.at(1)->set_position(Vector(0, -8));
@@ -87,7 +86,6 @@ int main(int argc, char** argv) {
     glutInitWindowPosition(200, 100);
     glutCreateWindow("Physics Engine");
     glutDisplayFunc(run);
-    // glutKeyboardFunc(keyboard);
     glutIdleFunc(run);
     glutMainLoop();
 

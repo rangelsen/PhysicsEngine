@@ -37,9 +37,9 @@ public:
 	void 				set_position(Vector position);
 	void 				set_velocity(Vector velocity);
 	void				set_orientation(double theta);
-	void 				set_rotation(double d_theta);
+	void 				set_angular_velocity(double d_theta);
 	double 				get_orientation() const;
-	double 				get_rotation() const;
+	double 				get_angular_velocity() const;
 	void 				update_vertices_position(Vector position);
 	void 				set_mass(double mass);
 	double   			get_mass() const;

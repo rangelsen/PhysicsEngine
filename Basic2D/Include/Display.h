@@ -22,6 +22,7 @@ struct Display{
 	static void vector(const Vector &v, Color color);
 	static void error(std::string message);
 	static void object(const Object &object, Color color);
+	static void message(std::string, Color color);
 };
 
 #endif

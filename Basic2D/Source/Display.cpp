@@ -43,3 +43,7 @@ void Display::object(const Object &object, Color color) {
 	printf("\n");
 	printf("\x1b[0m");
 }
+
+void Display::message(string message, Color color) {
+	cout << "\x1b[" << color << ";1m" << message << "\x1b[0m" << endl; 
+}

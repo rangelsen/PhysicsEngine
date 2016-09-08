@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <vector>
-#include <cmath>
+#include <math.h>
 #include <iostream>
 
 #include "Object.h"
@@ -149,12 +149,13 @@ void Object::set_velocity(Vector velocity) {
 }
 
 void Object::set_orientation(double theta) {
-	this->update_vertices_orientation(theta);
+
+	this->update_vertices_orientation(theta - this->theta);
 	this->normals = this->compute_normals(this->vertices);
 	this->theta = theta;
 }
 
-void Object::set_rotation(double d_theta) {
+void Object::set_angular_velocity(double d_theta) {
 	this->d_theta = d_theta;
 }
 
@@ -162,7 +163,7 @@ double Object::get_orientation() const {
 	return this->theta;
 }
 
-double Object::get_rotation() const {
+double Object::get_angular_velocity() const {
 	return this->d_theta;
 }
 
@@ -245,6 +246,11 @@ Matrix * Object::get_rotation_matrix(double theta) const {
 
 void Object::update_vertices_orientation(double theta) {
 
+/*
+	Display::message("update_orientation: ", GREEN);
+	cout << this << endl;
+
+*/
 	Matrix *rotation_matrix = this->get_rotation_matrix(theta);
 
 	for(unsigned int i = 0; i < this->vertices.size(); i++) {
