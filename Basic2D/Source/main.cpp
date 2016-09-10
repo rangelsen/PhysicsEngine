@@ -69,7 +69,7 @@ void configure_objects_vertical(vector<Object*> objects) {
 
 void configure_objects_horizontal(vector<Object*> objects) {
 	objects.at(0)->set_position(Vector(-3, -3));
-	objects.at(0)->set_velocity(Vector(5, 6));
+	objects.at(0)->set_velocity(Vector(10, 6));
 
 	objects.at(1)->set_movable(false);
 	objects.at(1)->set_position(Vector(8, 0));
