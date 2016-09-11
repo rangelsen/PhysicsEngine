@@ -10,7 +10,7 @@
 
 using namespace std;
 
-// - - - - - Constructors - - - - -
+/* ------------------------------- Constructors ------------------------------- */
 
 Object::Object() {
 	this->position = new Vector(0, 0);
@@ -44,7 +44,7 @@ Object::~Object() {
 	delete this->velocity;
 }
 
-// - - - - - Utility - - - - -
+
 
 vector<Vector> Object::get_vertices() const {
 	return this->vertices;
@@ -98,6 +98,7 @@ vector<float> Object::calculate_centroid() const {
 	return output;
 }
 
+/* ------------------------------- Utility ------------------------------- */
 
 float Object::calculate_signed_area() const {
 	float output = 0;
@@ -246,11 +247,6 @@ Matrix * Object::get_rotation_matrix(double theta) const {
 
 void Object::update_vertices_orientation(double theta) {
 
-/*
-	Display::message("update_orientation: ", GREEN);
-	cout << this << endl;
-
-*/
 	Matrix *rotation_matrix = this->get_rotation_matrix(theta);
 
 	for(unsigned int i = 0; i < this->vertices.size(); i++) {

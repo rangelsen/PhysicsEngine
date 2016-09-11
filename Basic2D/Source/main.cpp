@@ -42,12 +42,6 @@ void run() {
 		// Simulate
 		EOMSolver::simulate_world(world, delta_time, collisions);
 
-	/*
-		if(collisions.size() > 0) {
-			Display::message("angular velocity", MAGENTA);
-			cout << world->get_objects().at(0)->get_angular_velocity() << endl;
-		}
-	*/
 		// Render
 		Scene::render_world(world, collisions);
 

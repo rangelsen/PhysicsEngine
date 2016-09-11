@@ -156,18 +156,6 @@ bool CollisionDetector::get_reference_object(Object *a, Object *b, Vector axis_n
         return true;
     else
         return false;
-
-/*
-    Vector axis_normalized = axis_least_penetration.normalize();
-
-    double distance_along_axis_a = a->get_position()->dot(axis_normalized);
-    double distance_along_axis_b = b->get_position()->dot(axis_normalized);
-
-    if(distance_along_axis_a < distance_along_axis_b)
-        return true;
-    else
-        return false;
-*/
 }
 
 vector<Vector> CollisionDetector::merge_Vector(vector<Vector> vectors_a, vector<Vector> vectors_b) {
@@ -258,8 +246,6 @@ Vector CollisionDetector::get_most_orthogonal_face(Object *object, Vector axis) 
 
 vector<Collision*> CollisionDetector::get_collisions(World *world) {
     
-    // Display::message("get_collisions", BLUE);
-
     vector<Collision*> collisions;
 
     vector<Object*> objects = world->get_objects();
@@ -268,10 +254,10 @@ vector<Collision*> CollisionDetector::get_collisions(World *world) {
         Object *object_a = objects.at(i);
 
         if(i < objects.size() - 1) {
+
             for(unsigned int j = i + 1; j < objects.size(); j++) {
                 Object *object_b = objects.at(j);
 
-                // cout << object_a << " to " << object_b << endl;
                 Vector axis_least_penetration = CollisionDetector::collision_detection_SAT(object_a, object_b);
 
                 if(!(axis_least_penetration == Vector(0, 0))) {

@@ -17,7 +17,7 @@ protected:
 	
 private:
 
-	// -- Variables ---
+	// --- Variables ---
 	const std::vector<std::string> initializers = {"zeros", "ones", "identity"};
 
 	// --- Functions ---
