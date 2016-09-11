@@ -6,7 +6,7 @@
 
 using namespace std;
 
-vector<Object*> generate_objects() {
+vector<Object*> generate_test_objects() {
 	vector<Object*> objects;
 	vector<Vector> vertices;
 
@@ -18,11 +18,13 @@ vector<Object*> generate_objects() {
 
 	Vector v5(-size, -size);
 	Vector v6(size, -2*size);
-	Vector v7(0, size);
+	Vector v7(size, size);
+	Vector v8(0, size);
 
 	vertices.push_back(v5);
 	vertices.push_back(v6);
 	vertices.push_back(v7);
+	vertices.push_back(v8);
 
 	Object *object_1 = new Object(vertices);
 

@@ -53,6 +53,7 @@ void configure_objects_vertical(vector<Object*> objects) {
 
 	objects.at(0)->set_position(Vector(0, 4));
 	objects.at(0)->set_velocity(Vector(0, 0));
+	objects.at(0)->set_angular_velocity(.6);
 
 	objects.at(1)->set_movable(false);
 	objects.at(1)->set_position(Vector(0, -8));
@@ -69,7 +70,7 @@ void configure_objects_horizontal(vector<Object*> objects) {
 
 
 int main(int argc, char** argv) {
-	vector<Object*> objects = generate_objects();
+	vector<Object*> objects = generate_test_objects();
 
 	configure_objects_vertical(objects);
 	// configure_objects_horizontal(objects);

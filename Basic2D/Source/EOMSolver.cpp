@@ -51,6 +51,8 @@ void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collis
 			next_velocity += impulse * inv_mass;
 			
 			next_angular_velocity += r.cross2D(impulse) * inv_inertia;
+
+			Display::vector(impulse, YELLOW);
 		}
 
 		Vector gravity(0, -Constants::Instance()->g);
@@ -149,6 +151,9 @@ Vector EOMSolver::compute_impulse(Object *a, Collision *collision) {
 	double impulse_scalar = num / den;
 
 	impulse = collision->get_axis()->normalize() * impulse_scalar;
+
+	if(impulse.norm() < Constants::Instance()->impulse_tolerance)
+		impulse = Vector(0, 0);
 
 	return impulse;
 }

@@ -5,7 +5,7 @@
 
 class Object;
 
-std::vector<Object*> generate_objects();
+std::vector<Object*> generate_test_objects();
 std::vector<Object*> generate_convex_polygons(unsigned int n_polygons, unsigned int n_vertices);
 
 #endif
