@@ -91,7 +91,7 @@ Vector CollisionDetector::collision_detection_SAT(Object *a, Object *b) {
 
     Vector c = get_contact_point(a, b, axis_least_penetration);
 
-    bool collision = (overlaps.size() == normals.size()) ? true : false;
+    bool collision = (overlaps.size() == normals.size());
 
     if(collision) 
         return axis_least_penetration.normalize() * penetration_depth;
@@ -287,4 +287,12 @@ vector<Collision*> CollisionDetector::get_collisions(World *world) {
     }
 
     return collisions;
+}
+
+void CollisionDetector::compute_apply_positional_correction(Object *object, Collision *collision) {
+
+    Vector correction = *collision->get_axis();
+    Vector corrected_position = *object->get_position() + correction;
+
+    object->set_position(corrected_position);
 }

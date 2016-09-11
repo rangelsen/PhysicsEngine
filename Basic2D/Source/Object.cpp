@@ -32,7 +32,7 @@ Object::Object(vector<Vector> vertices) {
 
 	this->theta = 0;
 	this->d_theta = 0;
-	this->mass = 1;
+	this->mass = .05;
 	this->I    = .5;
 	this->movable = true;
 	this->normals = this->compute_normals(this->vertices);

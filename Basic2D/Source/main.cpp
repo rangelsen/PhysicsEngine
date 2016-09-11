@@ -28,9 +28,6 @@ unsigned int delta_time_ms = 10;
 double delta_time = delta_time_ms/1000.0;
 float elapsed_ms;
 
-ofstream theta_file;
-ofstream d_theta_file;
-
 void run() {
 
 	clocks_1 = clock();
@@ -43,7 +40,7 @@ void run() {
 		vector<Collision*> collisions = CollisionDetector::get_collisions(world);
 
 		// Simulate
-		EOMSolver::simulate_world(world, delta_time, collisions, theta_file, d_theta_file);
+		EOMSolver::simulate_world(world, delta_time, collisions);
 
 	/*
 		if(collisions.size() > 0) {
@@ -82,9 +79,7 @@ int main(int argc, char** argv) {
 
 	configure_objects_vertical(objects);
 	// configure_objects_horizontal(objects);
-	
-	theta_file.open("theta.txt");
-	d_theta_file.open("d_theta.txt");
+
 	world = new World(objects);
 
 	glutInit(&argc, argv);
@@ -100,13 +95,3 @@ int main(int argc, char** argv) {
 
 	return 0;
 }
-
-/*
-
-// Test main
-int main(int argc, char** argv) {
-
-
-}
-
-*/
