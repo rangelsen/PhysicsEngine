@@ -14,17 +14,13 @@ vector<Object*> generate_test_objects() {
 	
 	vertices.clear();
 
+	// Object 1
 	double size = 2;
 
-	Vector v5(-size, -size);
-	Vector v6(size, -2*size);
-	Vector v7(size, size);
-	Vector v8(0, size);
-
-	vertices.push_back(v5);
-	vertices.push_back(v6);
-	vertices.push_back(v7);
-	vertices.push_back(v8);
+	vertices.push_back(Vector(-size, -size));
+	vertices.push_back(Vector(size, -2*size));
+	vertices.push_back(Vector(size, size));
+	vertices.push_back(Vector(0, size));
 
 	Object *object_1 = new Object(vertices);
 
@@ -32,21 +28,17 @@ vector<Object*> generate_test_objects() {
 
 	vertices.clear();
 
+	// Object 2
 	double width = 10;
 	double height = 1;
 
-	Vector v1(-width/2.0, height/2.0);
-	Vector v2(width/2.0, height/2.0);
-	Vector v3(-width/2.0, -height/2.0);
-	Vector v4(width/2.0, -height/2.0);
+	vertices.push_back(Vector(-width/2.0, height/2.0));
+	vertices.push_back(Vector(width/2.0, height/2.0));
+	vertices.push_back(Vector(width/2.0, -height/2.0));
+	vertices.push_back(Vector(-width/2.0, -height/2.0));
 
-	vertices.push_back(v1);
-	vertices.push_back(v2);
-	vertices.push_back(v4);
-	vertices.push_back(v3);
-
-	Object *object = new Object(vertices);
-	objects.push_back(object);
+	Object *object_2 = new Object(vertices);
+	objects.push_back(object_2);
 
 	return objects;
 }
