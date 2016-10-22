@@ -71,20 +71,20 @@ void configure_objects_horizontal(vector<Object*> objects) {
 
 int main(int argc, char** argv) {
 	vector<Object*> objects = generate_test_objects();
-
+	
 	configure_objects_vertical(objects);
-	// configure_objects_horizontal(objects);
+        // configure_objects_horizontal(objects);
 
 	world = new World(objects);
 
 	glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE);
-    glutInitWindowSize(800, 600);
-    glutInitWindowPosition(200, 100);
-    glutCreateWindow("Physics Engine");
-    glutDisplayFunc(run);
-    glutIdleFunc(run);
-    glutMainLoop();
+        glutInitDisplayMode(GLUT_SINGLE);
+        glutInitWindowSize(800, 600);
+        glutInitWindowPosition(200, 100);
+        glutCreateWindow("Physics Engine");
+        glutDisplayFunc(run);
+        glutIdleFunc(run);
+        glutMainLoop();
 
  	delete world;
 
