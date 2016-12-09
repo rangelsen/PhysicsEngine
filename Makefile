@@ -1,11 +1,10 @@
-TARGET = PhysicsEngine
-
-INCLUDEDIR = Include
-SOURCEDIR  = Source
-OBJECTDIR  = Object
+INCLUDEDIR = /home/roy/Documents/Programmering/PhysicsEngine/Basic2D/Include
+SOURCEDIR = /home/roy/Documents/Programmering/PhysicsEngine/Basic2D/Source
+OBJECTDIR = /home/roy/Documents/Programmering/PhysicsEngine/Basic2D/Object
 
 CFLAGS = -I$(INCLUDEDIR) -std=c++11
 LDFLAGS = -lGL -lglut
+TARGET = PhysicsEngine
 
 SOURCES = $(shell find $(SOURCEDIR) -name '*.cpp')
 OBJECTS = $(patsubst $(SOURCEDIR)/%.cpp, $(OBJECTDIR)/%.o, $(SOURCES))
@@ -20,7 +19,7 @@ clean:
 	rm $(OBJECTDIR)/*.o
 
 deepclean:
-	rm $(OBJECTDIR)/*.o $(TARGET)
+	rm $(OBJECTDIR)/*.o PhysicsEngine
 
 remake:
 	make deepclean; make

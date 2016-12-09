@@ -11,10 +11,11 @@ class Collision;
 class CollisionDetector {
 
 private:
-	static bool   		get_reference_object(Object *a, Object *b, Vector axis_least_penetration); // Returns true if object a is the reference object, false if b.
-	static Vector 		get_most_orthogonal_face(Object *object, Vector axis_least_penetration);
-	static Vector 		get_support_point(Object *object, Vector axis);
+	static bool         get_reference_object(Object *a, Object *b, Vector axis_least_penetration); 
+	static Vector       get_most_orthogonal_face(Object *object, Vector axis_least_penetration);
+	static Vector 	    get_support_point(Object *object, Vector axis);
 	static unsigned int get_support_point_index(Object *object, Vector axis);
+        static std::vector<Vector> clip(Object* reference, Object* incident, unsigned int vertex_index, Vector axis);
 
 public:
 	static Vector 			       collision_detection_SAT(Object *a, Object *b);
