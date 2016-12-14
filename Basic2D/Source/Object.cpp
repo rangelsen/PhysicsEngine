@@ -2,6 +2,7 @@
 #include <vector>
 #include <math.h>
 #include <iostream>
+#include <assert.h>
 
 #include "Object.h"
 #include "Vector.h"
@@ -259,4 +260,43 @@ void Object::update_vertices_orientation(double theta) {
 	}
 
 	delete rotation_matrix;
+}
+
+/**
+    Get index of first vertex in edge that is
+    most perpendicular to specified axis
+
+    @param: Axis to check
+    @return: Starting index such that the edge
+             is from vertex at index to index+1
+*/
+int Object::get_best_edge_index(Vector axis) const {
+
+    double min = axis.dot(this->vertices.at(0) - *this->position);
+    int index = 0;
+
+    for(size_t i = 1; i < this->vertices.size(); i++) {
+        double d = axis.dot(this->vertices.at(i) - *this->position);
+
+        if(d < min)
+            index = i; 
+    }
+
+    return index;
+} 
+
+/**
+    Get the vector from index to index+1
+
+    @param: start edge index
+    @return: Vector from start index to index+1
+*/
+Vector Object::get_edge(int index) const {
+    
+    assert(index < this->get_vertices().size());
+
+    if(index == this->vertices.size() - 1)
+        return this->vertices.at(0) - this->vertices.at(index);
+    else
+        return this->vertices.at(index + 1) - this->vertices.at(index);
 }

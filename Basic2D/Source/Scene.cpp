@@ -11,7 +11,7 @@
 using namespace std;
 
 void Scene::render_world(World *world) {
-	vector<Object*> objects = world->get_objects();
+    vector<Object*> objects = world->get_objects();
 
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -25,6 +25,8 @@ void Scene::render_world(World *world) {
 void Scene::render_world(World *world, vector<Collision*> collisions) {
     vector<Object*> objects = world->get_objects();
 
+    float c = .3f;
+    glClearColor(c, c, c, c);
     glClear(GL_COLOR_BUFFER_BIT);
 
     for(unsigned int i = 0; i < objects.size(); i++) {
@@ -41,7 +43,7 @@ void Scene::render_object(Object *object) {
 
     // Vertices
 	glBegin(GL_POLYGON);
-	glColor3f(0.5f, 0.6f, 0.6f);
+	glColor3f(0.7f, 0.7f, 0.7f);
 	for(unsigned int i = 0; i < vertices.size(); i++) {
 		double x = vertices.at(i).at(0)/10;
 		double y = vertices.at(i).at(1)/10;

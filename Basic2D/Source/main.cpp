@@ -20,6 +20,10 @@
 
 using namespace std;
 
+/*
+    TODO: Implement MathLib instead (might be heck of a job)
+*/
+
 World *world;
 
 clock_t clocks_0 = 0;

@@ -1,0 +1,10 @@
+1) Find best edges of a and b
+    The left/right vertex that is farthest along the collision axis for b
+    and farthest along the negative collision axis for a. The left/right 
+    is chosen according to whichever has the most perpendicular edge
+    w.r.t. the collision axis
+
+2) Do the clipping
+    The objective here is to eliminate parts of the incident object
+    such that one is left with a contact manifold that contains the
+    contact points

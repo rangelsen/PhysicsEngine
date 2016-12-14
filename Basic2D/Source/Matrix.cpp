@@ -200,8 +200,6 @@ Vector Matrix::operator* (const Vector &rhs) const {
 	return output;
 }
 
-//______________________________UTILITY_____________________________
-
 void Matrix::invalidate() {
 	for(int i = 0; i < this->m; i++) {
 		if(this->entries[i])

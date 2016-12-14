@@ -18,53 +18,45 @@ using namespace std;
 
 void EOMSolver::simulate_world(World *world, double time_step, vector<Collision*> collisions) {
 
-	vector<Object*> objects = world->get_objects();
+    vector<Object*> objects = world->get_objects();
 
-	for(unsigned int i = 0; i < objects.size(); i++) {
-
-		vector<Collision*> related_collisions = EOMSolver::get_related_collisions(objects.at(i), collisions);
-
-		EOMSolver::simulate_object(objects.at(i), time_step, related_collisions);
-	}
+    for(unsigned int i = 0; i < objects.size(); i++) {
+        vector<Collision*> related_collisions = EOMSolver::get_related_collisions(objects.at(i), collisions);
+        EOMSolver::simulate_object(objects.at(i), time_step, related_collisions);
+    }
 }
 
 void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collision*> related_collisions) {
 
-	if(object->is_movable()) {
+    if(object->is_movable()) {
+        double inv_mass = 1.0f/object->get_mass();
+        double inv_inertia = 1.0f/object->get_moment_of_inertia();
 
-		double inv_mass = 1.0f/object->get_mass();
-		double inv_inertia = 1.0f/object->get_moment_of_inertia();
+        Vector next_velocity = *object->get_velocity();
+        double next_angular_velocity = object->get_angular_velocity();
 
-		Vector next_velocity = *object->get_velocity();
-		double next_angular_velocity = object->get_angular_velocity();
+        for(unsigned int i = 0; i < related_collisions.size(); i++) {
+            Collision *current_collision = related_collisions.at(i);
+            CollisionDetector::compute_apply_positional_correction(object, current_collision);
+            
+            Vector impulse        = EOMSolver::compute_impulse(object, current_collision);
+            Vector r              = *current_collision->get_contact_point() - *object->get_position();
+            next_velocity         += impulse * inv_mass;
+            next_angular_velocity += r.cross2D(impulse) * inv_inertia;
+        }
 
-		for(unsigned int i = 0; i < related_collisions.size(); i++) {
+        Vector gravity(0, -Constants::Instance()->g);
+        next_velocity +=  gravity * delta_time;
 
-			Collision *current_collision = related_collisions.at(i);
+        Vector next_position    = *object->get_position() + next_velocity * delta_time;
+        double next_orientation = object->get_orientation() + object->get_angular_velocity() * delta_time;
 
-			CollisionDetector::compute_apply_positional_correction(object, current_collision);
+        object->set_velocity(next_velocity);
+        object->set_position(next_position);
 
-			Vector impulse = EOMSolver::compute_impulse(object, current_collision);
-
-			Vector r = *current_collision->get_contact_point() - *object->get_position();
-
-			next_velocity += impulse * inv_mass;
-			
-			next_angular_velocity += r.cross2D(impulse) * inv_inertia;
-		}
-
-		Vector gravity(0, -Constants::Instance()->g);
-		next_velocity +=  gravity * delta_time;
-
-		Vector next_position    = *object->get_position() + next_velocity * delta_time;
-		double next_orientation = object->get_orientation() + object->get_angular_velocity() * delta_time;
-
-		object->set_velocity(next_velocity);
-		object->set_position(next_position);
-
-		object->set_angular_velocity(next_angular_velocity);
-		object->set_orientation(next_orientation);
-	}	
+        object->set_angular_velocity(next_angular_velocity);
+        object->set_orientation(next_orientation);
+    }	
 }
 
 Vector EOMSolver::evaluate_forces(Object *object, vector<Collision*> related_collisions, double delta_time) {
