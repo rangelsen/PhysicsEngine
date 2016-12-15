@@ -50,8 +50,10 @@ public:
 	std::vector<Vector> get_normals() const;
 	Matrix *	    get_rotation_matrix(double theta) const;
 	void 		    update_vertices_orientation(double theta);
-        int                 get_best_edge_index(Vector n) const;
-        Vector              get_edge(int index) const;
+        std::pair<Vector, Vector> get_best_edge(Vector n) const;
+        std::pair<Vector, Vector> get_edge(int index) const;
+        int                 get_support_point(Vector axis) const;
+        int                 get_neighbor_index(int index, int dir) const;
 };
 
 #endif
