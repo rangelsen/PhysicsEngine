@@ -271,19 +271,23 @@ void Object::update_vertices_orientation(double theta) {
 
     @param: Axis to check
     @return: Return pair of start and end vertex
-    TODO: Implement get_support_point_index()
+    TODO: Does not return best edge. Suspect it
+          returns the most perpenticular edge instead
 */
 pair<Vector, Vector> Object::get_best_edge(Vector axis) const {
     int support_point_index = this->get_support_point(axis);
     Vector support_point    = this->vertices.at(support_point_index);
 
-    Vector v1_left = this->vertices.at(this->get_neighbor_index(support_point_index, -1));
+    Display::message("support_point:", BLUE);
+    Display::vector(support_point, BLUE); 
+
+    Vector v1_left  = this->vertices.at(this->get_neighbor_index(support_point_index, -1));
     Vector v2_right = this->vertices.at(this->get_neighbor_index(support_point_index, 1));
 
     Vector left  = support_point - v1_left;
     Vector right = v2_right - support_point;
 
-    if(abs(axis.dot(left)) > abs(axis.dot(right)))
+    if(abs(axis.dot(left)) < abs(axis.dot(right)))
         return make_pair(v1_left, support_point);
     else
         return make_pair(support_point, v2_right);
@@ -314,9 +318,8 @@ pair<Vector, Vector> Object::get_edge(int index) const {
     @return: The point with the max distance
 */
 int Object::get_support_point(Vector axis) const {
-    Vector support_point = axis.dot(this->vertices.at(0));
     int index = 0;
-    double max_distance = axis.dot(support_point);
+    double max_distance = axis.dot(this->vertices.at(0));
 
     for(size_t i = 1; i < this->vertices.size(); i++) {
         double distance = axis.dot(this->vertices.at(i));

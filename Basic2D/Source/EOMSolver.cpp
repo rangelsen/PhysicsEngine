@@ -66,7 +66,7 @@ Vector EOMSolver::evaluate_forces(Object *object, vector<Collision*> related_col
 
 	for(unsigned int i = 0; i < related_collisions.size(); i++) {
 		
-		Vector correction = *object->get_position() + *related_collisions.at(i)->get_axis();
+		Vector correction = *object->get_position() - *related_collisions.at(i)->get_axis();
 
 		object->set_position(correction);
 
@@ -93,54 +93,39 @@ double EOMSolver::evaluate_torque(Object *object, Vector force, vector<Collision
 }
 
 vector<Collision*> EOMSolver::get_related_collisions(Object *object, vector<Collision*> collisions) {
+    vector<Collision*> related_collisions;
 
-	vector<Collision*> related_collisions;
+    for(unsigned int i = 0; i < collisions.size(); i++) {
+        if(collisions.at(i)->get_object(true) == object || collisions.at(i)->get_object(false) == object)
+            related_collisions.push_back(collisions.at(i));
+    }
 
-	for(unsigned int i = 0; i < collisions.size(); i++) {
-
-		if(collisions.at(i)->get_object(true) == object || collisions.at(i)->get_object(false) == object) {
-
-			related_collisions.push_back(collisions.at(i));
-		}
-	}
-
-	return related_collisions;
+    return related_collisions;
 }
 
 // Returns the impulse vector that the given collision contributes to object a
 Vector EOMSolver::compute_impulse(Object *a, Collision *collision) {
+    Vector impulse(0, 0);
+    Object *b = collision->get_object(false);
 
-	Vector impulse(0, 0);
+    if(b == a)
+        b = collision->get_object(true);
 
-	Object *b = collision->get_object(false);
+    Vector n     = *collision->get_axis() * -1;
+    Vector r_a   = *collision->get_contact_point() - *a->get_position();
+    Vector r_b   = *collision->get_contact_point() - *b->get_position();
+    Vector v_ap1 = *a->get_velocity() + Vector(-r_a.at(1), r_a.at(0)) * a->get_angular_velocity();
+    Vector v_bp1 = *b->get_velocity() + Vector(-r_b.at(1), r_b.at(0)) * b->get_angular_velocity();
+    Vector v_ab  = v_ap1 - v_bp1;
 
-	if(b == a) {
-		b = collision->get_object(true);
-	}
+    double num            = -(1 + Constants::Instance()->restitution) * v_ap1.dot(n.normalize());
+    double inv_mass_a     = 1/a->get_mass();
+    double r_cross_n_a    = r_a.cross2D(n.normalize());
+    double rot_term_a     = r_cross_n_a * r_cross_n_a / a->get_moment_of_inertia();
+    double den            = inv_mass_a + rot_term_a;
+    double impulse_scalar = num / den;
 
-	Vector n = *collision->get_axis();
+    impulse = n.normalize() * impulse_scalar;
 
-	Vector r_a = *collision->get_contact_point() - *a->get_position();
-	Vector r_b = *collision->get_contact_point() - *b->get_position();
-
-	Vector v_ap1 = *a->get_velocity() + Vector(-r_a.at(1), r_a.at(0)) * a->get_angular_velocity();
-	Vector v_bp1 = *b->get_velocity() + Vector(-r_b.at(1), r_b.at(0)) * b->get_angular_velocity();
-
-	Vector v_ab = v_ap1 - v_bp1;
-
-	double num = -(1 + Constants::Instance()->restitution) * v_ap1.dot(n.normalize());
-
-	double inv_mass_a = 1/a->get_mass();
-
-	double r_cross_n_a = r_a.cross2D(n.normalize());
-
-	double rot_term_a = r_cross_n_a * r_cross_n_a / a->get_moment_of_inertia();
-
-	double den = inv_mass_a + rot_term_a;
-
-	double impulse_scalar = num / den;
-
-	impulse = collision->get_axis()->normalize() * impulse_scalar;
-
-	return impulse;
+    return impulse;
 }
