@@ -11,7 +11,7 @@ private:
 public:
 	const float g                 =  5;	
 	const float drag_coefficient  = .8;
-	const float restitution       = .9;
+	const float restitution       = .6;
 	const float impulse_tolerance = .01;
 	const Matrix *A;
 	static Constants *Instance();

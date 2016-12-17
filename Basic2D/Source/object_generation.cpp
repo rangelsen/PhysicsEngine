@@ -32,10 +32,10 @@ vector<Object*> generate_test_objects() {
 	double width = 10;
 	double height = 1;
 
-	vertices.push_back(Vector(-width/2.0, height/2.0));
-	vertices.push_back(Vector(width/2.0, height/2.0));
-	vertices.push_back(Vector(width/2.0, -height/2.0));
 	vertices.push_back(Vector(-width/2.0, -height/2.0));
+	vertices.push_back(Vector(width/2.0, -height/2.0));
+	vertices.push_back(Vector(width/2.0, height/2.0));
+	vertices.push_back(Vector(-width/2.0, height/2.0));
 
 	Object *object_2 = new Object(vertices);
 	objects.push_back(object_2);
@@ -111,10 +111,10 @@ vector<Object*> generate_test_objects_simple() {
 	double width = 10;
 	double height = 1;
 
-	vertices.push_back(Vector(-width/2.0, height/2.0));
-	vertices.push_back(Vector(width/2.0, height/2.0));
-	vertices.push_back(Vector(width/2.0, -height/2.0));
 	vertices.push_back(Vector(-width/2.0, -height/2.0));
+	vertices.push_back(Vector(width/2.0, -height/2.0));
+	vertices.push_back(Vector(width/2.0, height/2.0));
+	vertices.push_back(Vector(-width/2.0, height/2.0));
 
 	Object *object_2 = new Object(vertices);
 	objects.push_back(object_2);

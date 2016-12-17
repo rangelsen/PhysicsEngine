@@ -1,5 +1,7 @@
 #include <GL/glut.h>
 #include <vector>
+#include <utility>
+#include <iostream>
 
 #include "Scene.h"
 #include "World.h"
@@ -97,8 +99,47 @@ void Scene::render_contact_point(Vector contact_point) {
     glPointSize(4.0f);
     glBegin(GL_POINTS);
         glColor3f(1.0f, 1.0f, 0.0f);
-        double x = contact_point.at(0)/10;
-        double y = contact_point.at(1)/10;
+        double x = contact_point.at(0)/10.0;
+        double y = contact_point.at(1)/10.0;
         glVertex2f(x, y);
     glEnd();
 }
+
+void Scene::render_debug(pair<Vector, Vector> ref,
+                         pair<Vector, Vector> inc,
+                         Vector ref_normal) {
+
+    /* Reference edge */
+    glColor3f(1.0, 0.0, 0.0);    
+    Scene::draw_line(get<0>(ref), get<1>(ref), 1.0, 0, 0);
+
+    /* Incident edge */
+    glColor3f(0.0, 1.0, 0.0);    
+    Scene::draw_line(get<0>(inc), get<1>(inc), 0.0, 1.0, 0.0);
+    
+    /* Reference normal */
+    Vector ref_normal_n = ref_normal.normalize();
+    pair<Vector, Vector> ref_norm_p = make_pair(get<0>(ref), get<0>(ref) + ref_normal_n);
+    Scene::draw_line(get<0>(ref_norm_p), get<1>(ref_norm_p), 1.0, 0.0, 0.0);                                                
+}
+                         
+void Scene::draw_line(Vector v1, Vector v2, double r, double g, double b) {
+   glColor3f(r, g, b);
+   glLineWidth(3.0);
+   glBegin(GL_LINE_STRIP);
+        glVertex2f(v1.at(0)/10.0, v1.at(1)/10.0);
+        glVertex2f(v2.at(0)/10.0, v2.at(1)/10.0);
+    glEnd();
+    glFlush();
+}
+
+void Scene::draw_point(Vector p, double r, double b, double g) {
+    cout << "Drawing point" << endl;    
+    glColor3f(r, g, b);
+    glPointSize(4.0);
+    glBegin(GL_POINTS);
+        glVertex2f(p.at(0)/10.0, p.at(1)/10.0);
+    glEnd();
+    glFlush();
+}
+        

@@ -39,8 +39,8 @@ void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collis
             Collision *current_collision = related_collisions.at(i);
             CollisionDetector::compute_apply_positional_correction(object, current_collision);
             
-            Vector impulse        = EOMSolver::compute_impulse(object, current_collision);
-            Vector r              = *current_collision->get_contact_point() - *object->get_position();
+            Vector impulse         = EOMSolver::compute_impulse(object, current_collision);
+            Vector r               = *current_collision->get_contact_point() - *object->get_position();
             next_velocity         += impulse * inv_mass;
             next_angular_velocity += r.cross2D(impulse) * inv_inertia;
         }
@@ -57,39 +57,6 @@ void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collis
         object->set_angular_velocity(next_angular_velocity);
         object->set_orientation(next_orientation);
     }	
-}
-
-Vector EOMSolver::evaluate_forces(Object *object, vector<Collision*> related_collisions, double delta_time) {
-	
-	Vector f(0, 0);
-	double inv_time = 1.0f/delta_time;
-
-	for(unsigned int i = 0; i < related_collisions.size(); i++) {
-		
-		Vector correction = *object->get_position() - *related_collisions.at(i)->get_axis();
-
-		object->set_position(correction);
-
-		f += *object->get_velocity() * (-Constants::Instance()->restitution - 1) * object->get_mass() * inv_time + Vector(0, 0);
-	}
-
-	return f;
-}
-
-double EOMSolver::evaluate_torque(Object *object, Vector force, vector<Collision*> related_collisions, double delta_time) {
-  	double t = 0;
-  	double inv_time = 1.0f/delta_time;
-  
- 	for(unsigned int i = 0; i < related_collisions.size(); i++) {
-
- 		Vector arm = *related_collisions.at(i)->get_contact_point() - *object->get_position();
-
- 		// double h = object->get_velocity()->cross2D(arm);
- 		double h = arm.cross2D(*object->get_velocity());
- 		t += h * delta_time;
-
-	}
-  	return t;
 }
 
 vector<Collision*> EOMSolver::get_related_collisions(Object *object, vector<Collision*> collisions) {
@@ -111,7 +78,7 @@ Vector EOMSolver::compute_impulse(Object *a, Collision *collision) {
     if(b == a)
         b = collision->get_object(true);
 
-    Vector n     = *collision->get_axis() * -1;
+    Vector n     = *collision->get_axis();
     Vector r_a   = *collision->get_contact_point() - *a->get_position();
     Vector r_b   = *collision->get_contact_point() - *b->get_position();
     Vector v_ap1 = *a->get_velocity() + Vector(-r_a.at(1), r_a.at(0)) * a->get_angular_velocity();
@@ -126,6 +93,9 @@ Vector EOMSolver::compute_impulse(Object *a, Collision *collision) {
     double impulse_scalar = num / den;
 
     impulse = n.normalize() * impulse_scalar;
+
+    Display::message("Impulse:", WHITE);
+    Display::vector(impulse, WHITE);
 
     return impulse;
 }
