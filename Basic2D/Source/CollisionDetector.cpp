@@ -232,8 +232,6 @@ vector<Vector> CollisionDetector::get_contact_points(Object *a, Object *b, Vecto
         Display::vector(clipped_points.at(i), MAGENTA);
     }
 
-    /* PAUSE */
-    cin >> dummy;
     return clipped_points;
 }
 
@@ -244,8 +242,6 @@ vector<Vector> CollisionDetector::get_contact_points(Object *a, Object *b, Vecto
     @param: Incident vertices, normalized reference vector,
             offset from where to start clipping
     @return: Contact points
-
-    TODO: If it's not tested it's broken!
 */
 
 vector<Vector> CollisionDetector::clip(Vector v1, Vector v2, Vector n, double offset) {
@@ -270,6 +266,16 @@ vector<Vector> CollisionDetector::clip(Vector v1, Vector v2, Vector n, double of
     return clipped_points;
 }
 
+/*
+    Finds all collisions between any combination
+    of objects with
+
+    @param: The entire world containing all objects
+    @return: vector of Collision pointers
+
+    TODO: Make sure object a and b are right 
+          according to the collision axis
+*/
 vector<Collision*> CollisionDetector::get_collisions(World *world) {
     
     vector<Collision*> collisions;
@@ -283,15 +289,21 @@ vector<Collision*> CollisionDetector::get_collisions(World *world) {
             for(unsigned int j = i + 1; j < objects.size(); j++) {
                 Object *object_b                    = objects.at(j);
                 pair<bool, Vector> collision_status = CollisionDetector::collision_detection_SAT(object_a, object_b);
-                bool has_collision                  = get<0>(collision_status);
-                Vector axis_least_penetration       = get<1>(collision_status);
+
+                bool has_collision  = get<0>(collision_status);
+                Vector axis         = get<1>(collision_status);
 
                 if(has_collision) {
                     Display::message("collision", RED);
-                    Display::vector(axis_least_penetration, WHITE);
-                    vector<Vector> contact_points = CollisionDetector::get_contact_points(object_a, object_b,
-                                                                                        axis_least_penetration);
-                    collisions.push_back(new Collision(object_a, object_b, axis_least_penetration, contact_points.at(0)));
+                    Display::vector(axis, WHITE);
+
+                    if(axis.dot(*object_a->get_position()) > axis.dot(*object_b->get_position())) {
+                        Object* temp = object_a;
+                        object_a = object_b;
+                        object_b = temp;
+                    }
+                    vector<Vector> contact_points = CollisionDetector::get_contact_points(object_a, object_b, axis);
+                    collisions.push_back(new Collision(object_a, object_b, axis, contact_points.at(0)));
                 }
             }
         }

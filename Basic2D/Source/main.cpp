@@ -55,12 +55,18 @@ void run() {
 
 void configure_objects_vertical(vector<Object*> objects) {
 
-    objects.at(0)->set_position(Vector(0, 4));
+    objects.at(0)->set_position(Vector(-1.0, 4));
     objects.at(0)->set_velocity(Vector(0, 0));
-    objects.at(0)->set_orientation(-.3);
+    objects.at(0)->set_orientation(-.8);
 
     objects.at(1)->set_movable(false);
     objects.at(1)->set_position(Vector(0, -8));
+
+    if(objects.size() == 3) {
+        objects.at(2)->set_position(Vector(2.5, 10.0));
+        objects.at(2)->set_velocity(Vector(0, -1.0));
+        objects.at(2)->set_orientation(-.2);
+    }
 }
 
 void configure_objects_horizontal(vector<Object*> objects) {
@@ -75,7 +81,7 @@ void configure_objects_horizontal(vector<Object*> objects) {
 
 int main(int argc, char** argv) {
     
-    vector<Object*> objects = generate_test_objects();
+    vector<Object*> objects = generate_test_objects_multiple();
     configure_objects_vertical(objects);
     // configure_objects_horizontal(objects);
 

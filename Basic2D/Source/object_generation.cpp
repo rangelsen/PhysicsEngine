@@ -121,3 +121,50 @@ vector<Object*> generate_test_objects_simple() {
 
 	return objects;
 }
+
+vector<Object*> generate_test_objects_multiple() {
+	vector<Object*> objects;
+	vector<Vector> vertices;
+
+	vertices.clear();
+
+	/* Object 1 */
+	double size = 2;
+
+	vertices.push_back(Vector(-size, -size));
+	vertices.push_back(Vector(size, -2*size));
+	vertices.push_back(Vector(size, size));
+	vertices.push_back(Vector(0, size));
+
+	Object *object_1 = new Object(vertices);
+
+	objects.push_back(object_1);
+
+	vertices.clear();
+
+	/* Object 2 */
+	double width = 10;
+	double height = 1;
+
+	vertices.push_back(Vector(-width/2.0, -height/2.0));
+	vertices.push_back(Vector(width/2.0, -height/2.0));
+	vertices.push_back(Vector(width/2.0, height/2.0));
+	vertices.push_back(Vector(-width/2.0, height/2.0));
+
+	Object *object_2 = new Object(vertices);
+	objects.push_back(object_2);
+        vertices.clear();
+
+        /* Object 3 */
+        width = 2.0;
+        height = 1.0;
+
+        vertices.push_back(Vector(-width/2.0, -height/2.0));
+        vertices.push_back(Vector(width/2.0, -height/2.0));
+        vertices.push_back(Vector(width/2.0, height/2.0));
+        vertices.push_back(Vector(-width/2.0, height/2.0));
+
+        Object* object_3 = new Object(vertices);
+        objects.push_back(object_3);
+	return objects;
+}
