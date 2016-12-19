@@ -29,18 +29,13 @@ void combine(vector<char> v) {
 
 int main(int argc, char** argv) {
     
-    vector<char> v;
-    v.push_back('a');
-    v.push_back('b');
-    v.push_back('c');
-    v.push_back('d');
-    v.push_back('e');
-    v.push_back('f');
-    v.push_back('g');
-    v.push_back('h');
-    v.push_back('i');
-    v.push_back('j');
+    int i = 0;
+    char b = 'x';
+    int e = 5;
+    i = e + 1;
 
-    combine(v);
+    b = 'x';
+
+    return 0;
 }
 

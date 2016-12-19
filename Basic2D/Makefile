@@ -16,6 +16,11 @@ $(TARGET): $(OBJECTS)
 $(OBJECTDIR)/%.o: $(SOURCEDIR)/%.cpp
 	$(CXX) $(CFLAGS) -c $^ -o $@
 
+.PHONY: debug
+debug: CFLAGS += -g
+debug: $(TARGET)
+
+.PHONY: clean
 clean:
 	rm $(OBJECTDIR)/*.o
 

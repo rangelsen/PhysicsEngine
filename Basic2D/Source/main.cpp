@@ -40,13 +40,13 @@ void run() {
     if(elapsed_ms >= delta_time_ms) {
         clocks_0 = clocks_1;
 
-        // Find collisions
+        /* Find collisions */
         vector<Collision*> collisions = CollisionDetector::get_collisions(world);
 
-        // Simulate
+        /* Simulate */
         EOMSolver::simulate_world(world, delta_time, collisions);
 
-        // Render
+        /* Render */
         Scene::render_world(world, collisions);
 
         collisions.clear();
@@ -64,7 +64,7 @@ void configure_objects_vertical(vector<Object*> objects) {
 
     if(objects.size() == 3) {
         objects.at(2)->set_position(Vector(2.5, 10.0));
-        objects.at(2)->set_velocity(Vector(0, -1.0));
+        objects.at(2)->set_velocity(Vector(0, 10.0));
         objects.at(2)->set_orientation(-.2);
     }
 }

@@ -91,14 +91,9 @@ pair<bool, Vector> CollisionDetector::collision_detection_SAT(Object *a, Object 
     Finds the contact point of the collision
     between object a and object b
 
-    Param: Objects involved in collision,
-    and collision axis of penetration
-    Return: Contact point
-
-    TODO: Verify that the clipping works
-    TODO: clipped points are not correct
-          which points to the clipping not
-          being correct
+    @param: Objects involved in collision,
+            and collision axis of penetration
+    @return: Contact point
 */
 vector<Vector> CollisionDetector::get_contact_points(Object *a, Object *b, Vector axis) {
     string dummy;
@@ -226,12 +221,6 @@ vector<Vector> CollisionDetector::get_contact_points(Object *a, Object *b, Vecto
         
     Scene::render_debug(ref, inc, ref_normal);
 
-    cout << "N Contact points: " << clipped_points.size() << endl;
-    for(size_t i = 0; i < clipped_points.size(); i++) {
-        Scene::draw_point(clipped_points.at(i), 1.0, 0.0, 0.0);
-        Display::vector(clipped_points.at(i), MAGENTA);
-    }
-
     return clipped_points;
 }
 
@@ -273,8 +262,6 @@ vector<Vector> CollisionDetector::clip(Vector v1, Vector v2, Vector n, double of
     @param: The entire world containing all objects
     @return: vector of Collision pointers
 
-    TODO: Make sure object a and b are right 
-          according to the collision axis
 */
 vector<Collision*> CollisionDetector::get_collisions(World *world) {
     
@@ -296,7 +283,8 @@ vector<Collision*> CollisionDetector::get_collisions(World *world) {
                 if(has_collision) {
                     Display::message("collision", RED);
                     Display::vector(axis, WHITE);
-
+                    
+                    // TODO: Move to Utility::swap function
                     if(axis.dot(*object_a->get_position()) > axis.dot(*object_b->get_position())) {
                         Object* temp = object_a;
                         object_a = object_b;
@@ -312,12 +300,43 @@ vector<Collision*> CollisionDetector::get_collisions(World *world) {
     return collisions;
 }
 
-void CollisionDetector::compute_apply_positional_correction(Object *object, Collision *collision) {
+/**
+    Compute and apply the necessary separation
+    between objects due to collision overlap
 
-    Vector correction         = *collision->get_axis();
-    Vector corrected_position = *object->get_position() + correction;
+    @param: Collision object contains all info
+*/
+void CollisionDetector::compute_apply_positional_correction(Collision *collision) {
 
-    object->set_position(corrected_position);
+    Vector axis = *collision->get_axis();
+    Object* a = collision->get_object(true);
+    Object* b = collision->get_object(false);
+
+    Vector correction_b(2);
+    Vector correction_a(2);
+
+    if(a->is_movable() && b->is_movable()) {
+        correction_a = axis *  .5;
+        correction_b = axis * -.5;
+    }
+    else if(a->is_movable() && !b->is_movable()) {
+        correction_a = axis;
+        correction_b = Vector(0.0, 0.0);
+    }
+    else if(!a->is_movable() && b->is_movable()) {
+        correction_a = Vector(0.0, 0.0);
+        correction_b = axis * -1;
+    }
+    else if(!a->is_movable() && !b->is_movable()) {
+        correction_a = Vector(0.0, 0.0);
+        correction_b = Vector(0.0, 0.0);
+    }
+
+    Vector corrected_position_a = *a->get_position() + correction_a;
+    Vector corrected_position_b = *b->get_position() + correction_b;
+    
+    a->set_position(corrected_position_a);
+    b->set_position(corrected_position_b);
 }
  
 vector<Vector> CollisionDetector::merge_Vector(vector<Vector> vectors_a, vector<Vector> vectors_b) {

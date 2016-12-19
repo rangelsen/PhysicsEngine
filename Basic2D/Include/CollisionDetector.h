@@ -22,7 +22,7 @@ public:
 	static std::vector<Vector>     get_contact_points(Object *a, Object *b, Vector axis_least_penetration);
 	static std::vector<Vector>     merge_Vector(std::vector<Vector> vectors_a, std::vector<Vector> vectors_b);
 	static std::vector<Collision*> get_collisions(World *world);
-	static void 	               compute_apply_positional_correction(Object *object, Collision *collision);
+	static void 	               compute_apply_positional_correction(Collision *collision);
 };
 
 #endif
