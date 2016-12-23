@@ -137,9 +137,7 @@ vector<Object*> generate_test_objects_multiple() {
 	vertices.push_back(Vector(0, size));
 
 	Object *object_1 = new Object(vertices);
-
 	objects.push_back(object_1);
-
 	vertices.clear();
 
 	/* Object 2 */

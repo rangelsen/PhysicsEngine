@@ -111,7 +111,7 @@ void Scene::render_debug(pair<Vector, Vector> ref,
 
     /* Reference edge */
     glColor3f(1.0, 0.0, 0.0);    
-    Scene::draw_line(get<0>(ref), get<1>(ref), 1.0, 0, 0);
+    Scene::draw_line(get<0>(ref), get<1>(ref), 1.0, 0.0, 0.0);
 
     /* Incident edge */
     glColor3f(0.0, 1.0, 0.0);    
@@ -121,6 +121,7 @@ void Scene::render_debug(pair<Vector, Vector> ref,
     Vector ref_normal_n = ref_normal.normalize();
     pair<Vector, Vector> ref_norm_p = make_pair(get<0>(ref), get<0>(ref) + ref_normal_n);
     Scene::draw_line(get<0>(ref_norm_p), get<1>(ref_norm_p), 1.0, 0.0, 0.0);                                                
+    Scene::draw_point(get<1>(ref_norm_p), 0.0, 0.0, 0.0);
 }
                          
 void Scene::draw_line(Vector v1, Vector v2, double r, double g, double b) {

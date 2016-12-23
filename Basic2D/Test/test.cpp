@@ -27,14 +27,18 @@ void combine(vector<char> v) {
     }
 }
 
+typedef struct{
+    double a;
+    char c;
+} S;
+
 int main(int argc, char** argv) {
     
-    int i = 0;
-    char b = 'x';
-    int e = 5;
-    i = e + 1;
+    S s;
+    s.a = 2.3;
+    s.c = 'x';
 
-    b = 'x';
+    S* sp = &s;
 
     return 0;
 }

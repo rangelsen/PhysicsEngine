@@ -157,3 +157,4 @@ void Vector::set(const Vector &rhs) {
 		this->at(i) = rhs.at(i);
 	}
 }
+

@@ -32,6 +32,7 @@ public:
 	Vector       project(const Vector &rhs) const;
 	Vector &     normalize();
 	void 	     set(const Vector &rhs);
+        Vector       cross2Dscalar(double scalar) const;
 };
 
 #endif

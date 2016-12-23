@@ -17,10 +17,10 @@ using namespace std;
 /**
     Determines of objects a and b collide
 
-    Param: Objects to test for collision
-    Return: Pair consisting of a flag for
-    collision and the axis of least separation
-    which is the vector pointing from a to b
+    @param: Objects to test for collision
+    @return: Pair consisting of a flag for
+             collision and the axis of least separation
+             which is the vector pointing from a to b
 */
 pair<bool, Vector> CollisionDetector::collision_detection_SAT(Object *a, Object *b) {
 
@@ -36,7 +36,7 @@ pair<bool, Vector> CollisionDetector::collision_detection_SAT(Object *a, Object 
     Vector axis_least_penetration(2);
     double penetration_depth = -INF;
 
-    for(unsigned int i = 0; i < normals.size(); i++) {
+    for(size_t i = 0; i < normals.size(); i++) {
 
         current_normal = normals.at(i);
         min_a = vertices_a.at(0).dot(current_normal);
@@ -44,7 +44,7 @@ pair<bool, Vector> CollisionDetector::collision_detection_SAT(Object *a, Object 
         min_b = vertices_b.at(0).dot(current_normal);
         max_b = min_b;
 
-        for(unsigned int j = 1; j < vertices_a.size(); j++) {
+        for(size_t j = 1; j < vertices_a.size(); j++) {
             double scalar_projection = vertices_a.at(j).dot(current_normal);
 
             if(scalar_projection < min_a) {
@@ -55,7 +55,7 @@ pair<bool, Vector> CollisionDetector::collision_detection_SAT(Object *a, Object 
             }
         }
 
-        for(unsigned int j = 1; j < vertices_b.size(); j++) {
+        for(size_t j = 1; j < vertices_b.size(); j++) {
             double scalar_projection = vertices_b.at(j).dot(current_normal);
 
             if(scalar_projection < min_b)
@@ -96,7 +96,6 @@ pair<bool, Vector> CollisionDetector::collision_detection_SAT(Object *a, Object 
     @return: Contact point
 */
 vector<Vector> CollisionDetector::get_contact_points(Object *a, Object *b, Vector axis) {
-    string dummy;
     Display::message("A pos", YELLOW);
     Display::vector(*a->get_position(), YELLOW);
     Display::message("A vertices", YELLOW);
@@ -109,7 +108,6 @@ vector<Vector> CollisionDetector::get_contact_points(Object *a, Object *b, Vecto
     for(size_t i = 0; i < b->get_vertices().size(); i++)
         Display::vector(b->get_vertices().at(i), GREEN);
 
-    cout << "DEBUG: #1" << endl;
     Vector axis_n = axis.normalize();
 
     vector<Vector> vertices_a = a->get_vertices();
@@ -132,22 +130,19 @@ vector<Vector> CollisionDetector::get_contact_points(Object *a, Object *b, Vecto
     pair<Vector, Vector> inc = make_pair(Vector(2), Vector(2));
 
     /* Find the reference edge */
-    bool b_is_ref = false;
-
-    if(abs(vec_b.dot(axis_n)) >= abs(vec_a.dot(axis_n))) {
+    bool flip = false;
+    if(abs(vec_a.dot(axis_n)) <= abs(vec_b.dot(axis_n))) {
         ref = edge_a;
         inc = edge_b;
-        b_is_ref = true;
     }
     else {
         ref = edge_b;
         inc = edge_a;
+        flip = true;
     }
 
-    cout << "DEBUG: #2" << endl;
-
     /* First clipping operation */
-    // TODO: ref_vec_n not correct
+    // TODO: get precomputed normal instead
     Vector v1_inc    = get<0>(inc);
     Vector v2_inc    = get<1>(inc);
     Vector v1_ref    = get<0>(ref);
@@ -164,13 +159,19 @@ vector<Vector> CollisionDetector::get_contact_points(Object *a, Object *b, Vecto
     Display::message("v2_ref", BLUE);
     Display::vector(v2_ref, BLUE);
     
+    Display::message("v1_inc", BLUE);
+    Display::vector(v1_inc, BLUE);
+
+    Display::message("v2_inc", BLUE);
+    Display::vector(v2_inc, BLUE);
+
     Display::message("ref_vec_n", GREEN);
     Display::vector(ref_vec_n, GREEN);
 
     Display::message("ref_normal", GREEN);
     Display::vector(ref_normal, GREEN);
     
-    cout << "b_is_ref: " << b_is_ref << endl;
+    cout << "flip: " << flip << endl;
 
     vector<Vector> clipped_points = CollisionDetector::clip(v1_inc, v2_inc,
                                                             ref_vec_n, offset);
@@ -181,15 +182,11 @@ vector<Vector> CollisionDetector::get_contact_points(Object *a, Object *b, Vecto
         Scene::draw_point(clipped_points.at(i), 1.0, 1.0, 1.0);
     }
 
-    /* PAUSE */
-    // cin >> dummy;
-
     if(clipped_points.size() < 2)
         Display::error("Clipping #1 failed");
 
     /* Second clipping operation */
-    cout << "DEBUG: #3" << endl;
-
+    // TODO: returns wrong points?
     offset = ref_vec_n.dot(v2_ref);
     clipped_points = CollisionDetector::clip(clipped_points.at(0),
                                              clipped_points.at(1),
@@ -198,11 +195,8 @@ vector<Vector> CollisionDetector::get_contact_points(Object *a, Object *b, Vecto
     if(clipped_points.size() < 2)
         Display::error("Clipping #2 failed");
 
-    /* Third clipping operation */
-    cout << "DEBUG: #4" << endl;
-
-    
-    if(b_is_ref) ref_normal = ref_normal * -1;
+    // TODO: Not sure what is supposed to happen here
+    // if(flip) ref_normal = ref_normal * -1;
 
     double depth_1 = ref_normal.dot(clipped_points.at(0) - v1_ref);
     double depth_2 = ref_normal.dot(clipped_points.at(1) - v1_ref);
@@ -232,7 +226,6 @@ vector<Vector> CollisionDetector::get_contact_points(Object *a, Object *b, Vecto
             offset from where to start clipping
     @return: Contact points
 */
-
 vector<Vector> CollisionDetector::clip(Vector v1, Vector v2, Vector n, double offset) {
     vector<Vector> clipped_points;    
     
@@ -245,11 +238,11 @@ vector<Vector> CollisionDetector::clip(Vector v1, Vector v2, Vector n, double of
     if(d2 >= 0.0) clipped_points.push_back(v2);
 
     if(d1 * d2 < 0.0) {
-        Vector diff = v2 - v1;
-        double slope = d1 /(d2 - d1);
-        diff *= slope;
-        Vector new_point = diff + v1;
-        clipped_points.push_back(new_point);
+        Vector e = v2 - v1;
+        double slope = d1 /(d1 - d2);
+        e = e * slope;
+        e = e + v1;
+        clipped_points.push_back(e);
     }
 
     return clipped_points;
@@ -268,12 +261,12 @@ vector<Collision*> CollisionDetector::get_collisions(World *world) {
     vector<Collision*> collisions;
     vector<Object*> objects = world->get_objects();
 
-    for(unsigned int i = 0; i < objects.size(); i++) {
+    for(size_t i = 0; i < objects.size(); i++) {
         Object *object_a = objects.at(i);
 
         if(i < objects.size() - 1) {
 
-            for(unsigned int j = i + 1; j < objects.size(); j++) {
+            for(size_t j = i + 1; j < objects.size(); j++) {
                 Object *object_b                    = objects.at(j);
                 pair<bool, Vector> collision_status = CollisionDetector::collision_detection_SAT(object_a, object_b);
 
@@ -284,7 +277,6 @@ vector<Collision*> CollisionDetector::get_collisions(World *world) {
                     Display::message("collision", RED);
                     Display::vector(axis, WHITE);
                     
-                    // TODO: Move to Utility::swap function
                     if(axis.dot(*object_a->get_position()) > axis.dot(*object_b->get_position())) {
                         Object* temp = object_a;
                         object_a = object_b;
@@ -340,14 +332,11 @@ void CollisionDetector::compute_apply_positional_correction(Collision *collision
 }
  
 vector<Vector> CollisionDetector::merge_Vector(vector<Vector> vectors_a, vector<Vector> vectors_b) {
-
     vector<Vector> output;
     output = vectors_a;
 
-    for(unsigned int i = 0; i < vectors_b.size(); i++) {
-
+    for(size_t i = 0; i < vectors_b.size(); i++)
         output.push_back(vectors_b.at(i));
-    }
 
     return output;
 }
