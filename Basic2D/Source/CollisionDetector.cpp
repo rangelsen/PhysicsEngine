@@ -195,9 +195,6 @@ vector<Vector> CollisionDetector::get_contact_points(Object *a, Object *b, Vecto
     if(clipped_points.size() < 2)
         Display::error("Clipping #2 failed");
 
-    // TODO: Not sure what is supposed to happen here
-    // if(flip) ref_normal = ref_normal * -1;
-
     double depth_1 = ref_normal.dot(clipped_points.at(0) - v1_ref);
     double depth_2 = ref_normal.dot(clipped_points.at(1) - v1_ref);
 
@@ -308,8 +305,8 @@ void CollisionDetector::compute_apply_positional_correction(Collision *collision
     Vector correction_a(2);
 
     if(a->is_movable() && b->is_movable()) {
-        correction_a = axis *  .5;
-        correction_b = axis * -.5;
+        correction_a = axis *  1.5;
+        correction_b = axis * -1.5;
     }
     else if(a->is_movable() && !b->is_movable()) {
         correction_a = axis;
@@ -317,7 +314,7 @@ void CollisionDetector::compute_apply_positional_correction(Collision *collision
     }
     else if(!a->is_movable() && b->is_movable()) {
         correction_a = Vector(0.0, 0.0);
-        correction_b = axis * -1;
+        correction_b = axis * -1.0;
     }
     else if(!a->is_movable() && !b->is_movable()) {
         correction_a = Vector(0.0, 0.0);

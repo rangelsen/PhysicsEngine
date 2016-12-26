@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
     
     vector<Object*> objects = generate_test_objects_multiple();
     configure_objects_vertical(objects);
-    // x configure_objects_horizontal(objects);
+    // configure_objects_horizontal(objects);
 
     world = new World(objects);
 

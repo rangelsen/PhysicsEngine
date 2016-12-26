@@ -26,6 +26,7 @@ void EOMSolver::simulate_world(World *world, double time_step, vector<Collision*
     }
 }
 
+// TODO: Needs to be restructured
 void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collision*> related_collisions) {
 
     if(object->is_movable()) {
@@ -35,11 +36,11 @@ void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collis
         Vector next_velocity = *object->get_velocity();
         double next_angular_velocity = object->get_angular_velocity();
 
-        for(unsigned int i = 0; i < related_collisions.size(); i++) {
+        for(size_t i = 0; i < related_collisions.size(); i++) {
             Collision *current_collision = related_collisions.at(i);
             CollisionDetector::compute_apply_positional_correction(current_collision);
             
-            Vector impulse         = EOMSolver::compute_impulse(current_collision);
+            Vector impulse         = EOMSolver::compute_impulse_two(current_collision);
             Vector r               = *current_collision->get_contact_point() - *object->get_position();
             next_velocity         += impulse * inv_mass;
             next_angular_velocity += r.cross2D(impulse) * inv_inertia;
@@ -59,6 +60,14 @@ void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collis
     }	
 }
 
+/**
+    Gets all collision that involve a given object
+    among the detected collisions
+    
+    @param: Object to check and all detected collisions
+    @return: Vector containing all collisions that
+             involve the given object parameter
+*/
 vector<Collision*> EOMSolver::get_related_collisions(Object *object, vector<Collision*> collisions) {
     vector<Collision*> related_collisions;
 
@@ -70,7 +79,16 @@ vector<Collision*> EOMSolver::get_related_collisions(Object *object, vector<Coll
     return related_collisions;
 }
 
-// Returns the impulse vector that the given collision contributes to object a
+/**
+    Returns the impulse vector that the
+    given collision contributes to object a
+
+    @param: Collision between objects
+    @return: Impulse vector
+
+    TODO: Does not apply impulse to both objects
+    TODO: Compute impulse between two movable objects.
+*/
 Vector EOMSolver::compute_impulse(Collision *collision) {
     Object *a = collision->get_object(true);
     Object *b = collision->get_object(false);
@@ -92,5 +110,32 @@ Vector EOMSolver::compute_impulse(Collision *collision) {
     Vector impulse(2);
     impulse = n.normalize() * impulse_scalar;
 
+    return impulse;
+}
+
+Vector EOMSolver::compute_impulse_two(Collision *collision) {
+    Object *a = collision->get_object(true);
+    Object *b = collision->get_object(false);
+
+    Vector n      = *collision->get_axis();
+    Vector n_norm = n.normalize(); 
+    Vector r_ap   = *collision->get_contact_point() - *a->get_position();
+    Vector r_bp   = *collision->get_contact_point() - *b->get_position();
+    Vector v_ap1  = *a->get_velocity() + Vector(-r_ap.at(1), r_ap.at(0)) * a->get_angular_velocity();
+    Vector v_bp1  = *b->get_velocity() + Vector(-r_bp.at(1), r_bp.at(0)) * b->get_angular_velocity();
+    Vector v_ab   = v_ap1 - v_bp1;
+
+    double inv_mass_a = 1.0/a->get_mass();
+    double inv_mass_b = 1.0/b->get_mass();
+
+    double num         = -(1.0 + Constants::Instance()->restitution) * v_ap1.dot(n.normalize());
+    double r_cross_n_a = r_ap.cross2D(n_norm);
+    double r_cross_n_b = r_bp.cross2D(n_norm);
+    double rot_term_a  = r_cross_n_a * r_cross_n_a / a->get_moment_of_inertia();
+    double rot_term_b  = r_cross_n_b * r_cross_n_b / b->get_moment_of_inertia();
+    double den         = inv_mass_a + inv_mass_b + rot_term_a + rot_term_b;
+    double impulse_mag = num / den;
+
+    Vector impulse = n_norm * impulse_mag;
     return impulse;
 }

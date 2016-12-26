@@ -16,6 +16,7 @@ public:
 	static void 		       simulate_object        (Object *object, double time_step);
 	static void 		       simulate_object        (Object *object, double time_step, std::vector<Collision*> related_collisions);
 	static Vector		       compute_impulse        (Collision *collision);
+	static Vector		       compute_impulse_two    (Collision *collision);
 	static void 		       apply_angular_impulse  (double& next_d_theta, double impulse, double I);
 };
 
