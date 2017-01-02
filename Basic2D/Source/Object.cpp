@@ -278,9 +278,6 @@ pair<Vector, Vector> Object::get_best_edge(Vector axis) const {
     int support_point_index = this->get_support_point(axis);
     Vector support_point    = this->vertices.at(support_point_index);
 
-    Display::message("support_point:", BLUE);
-    Display::vector(support_point, BLUE); 
-
     Vector v1_left  = this->vertices.at(this->get_neighbor_index(support_point_index, -1));
     Vector v2_right = this->vertices.at(this->get_neighbor_index(support_point_index, 1));
 
@@ -354,3 +351,6 @@ int Object::get_neighbor_index(int index, int dir) const {
 
     return output;
 }
+
+
+

@@ -135,7 +135,6 @@ void Scene::draw_line(Vector v1, Vector v2, double r, double g, double b) {
 }
 
 void Scene::draw_point(Vector p, double r, double b, double g) {
-    cout << "Drawing point" << endl;    
     glColor3f(r, g, b);
     glPointSize(4.0);
     glBegin(GL_POINTS);

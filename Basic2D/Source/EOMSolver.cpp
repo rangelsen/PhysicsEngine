@@ -16,8 +16,41 @@
 
 using namespace std;
 
-void EOMSolver::simulate_world(World *world, double time_step, vector<Collision*> collisions) {
+// TODO: Which impulse direction to apply to which object is still unclear
+void EOMSolver::resolve_collisions(World* world, vector<Collision*> collisions, double time_step) {
 
+	for(size_t i = 0; i < collisions.size(); i++) {
+		Collision* collision = collisions.at(i);
+		Object* a = collision->get_object(true);
+		Object* b = collision->get_object(false);
+		Vector contact_point = *collision->get_contact_point();
+
+		/* Separate objects */
+		// TODO: Change to get correction vector and move manually ?
+		CollisionDetector::compute_apply_positional_correction(collision);
+		
+		/* Compute impulse */
+		Vector impulse(2);
+		if(a->is_movable() && b->is_movable())
+			impulse = EOMSolver::compute_impulse_two(collision);
+		else	
+			impulse = EOMSolver::compute_impulse(collision);
+
+		/* Apply negative impulse to A */
+		EOMSolver::apply_impulse(a, impulse*1.0, contact_point, time_step); 
+
+		/* Apply impulse to B */
+		EOMSolver::apply_impulse(b, impulse*-1.0, contact_point, time_step); 
+	}
+	
+	vector<Object*> objects = world->get_objects();
+	for(size_t i = 0; i < objects.size(); i++) {
+		EOMSolver::step(objects.at(i), time_step);
+	}
+}
+
+// ========================================= OLD ===================================
+void EOMSolver::simulate_world(World *world, double time_step, vector<Collision*> collisions) {
     vector<Object*> objects = world->get_objects();
 
     for(size_t i = 0; i < objects.size(); i++) {
@@ -36,6 +69,7 @@ void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collis
         Vector next_velocity = *object->get_velocity();
         double next_angular_velocity = object->get_angular_velocity();
 
+		/* Resolves collisions */
         for(size_t i = 0; i < related_collisions.size(); i++) {
             Collision *current_collision = related_collisions.at(i);
             CollisionDetector::compute_apply_positional_correction(current_collision);
@@ -58,6 +92,52 @@ void EOMSolver::simulate_object(Object *object, double delta_time, vector<Collis
         object->set_angular_velocity(next_angular_velocity);
         object->set_orientation(next_orientation);
     }	
+}
+// =========================================================================================================
+
+/**
+	Applies the impulse vector to the object in
+	order to generate the next angular and linear
+	velocities
+
+	@param the object the impulse is applied to
+	@param the impulse vector
+	@param the contact point where the impulse
+		   occurred
+	@param the size of the time step	
+*/
+void EOMSolver::apply_impulse(Object* object, Vector impulse, Vector contact_point, double time_step) {
+	double inv_mass    = 1.0/object->get_mass();
+	double inv_inertia = 1.0/object->get_moment_of_inertia();
+	Vector r               		 = contact_point - *object->get_position();
+	double next_angular_velocity = object->get_angular_velocity() + r.cross2D(impulse) * inv_inertia;
+	Vector next_velocity 		 = *object->get_velocity() + Vector(0, -Constants::Instance()->g) * time_step;
+	next_velocity        += impulse * inv_mass;
+
+	object->set_velocity(next_velocity);
+	object->set_angular_velocity(next_angular_velocity);
+}
+
+/**
+	Uses Euler's direct integration scheme
+	to compute the new position and orientation
+	of the object
+
+	@param the object for which to compute the updates
+	@param the time step of integration	
+*/
+void EOMSolver::step(Object* object, double time_step) {
+	/* Early out if object is non movable */
+	if(!object->is_movable())
+		return;
+	Vector gravity_vel_contrib = *object->get_velocity() + Vector(0, -Constants::Instance()->g) * time_step;
+	object->set_velocity(gravity_vel_contrib);
+
+	Vector next_position    = *object->get_position()   + *object->get_velocity()		 * time_step;
+	double next_orientation = object->get_orientation() + object->get_angular_velocity() * time_step;
+
+	object->set_position(next_position);
+	object->set_orientation(next_orientation);
 }
 
 /**
@@ -86,7 +166,6 @@ vector<Collision*> EOMSolver::get_related_collisions(Object *object, vector<Coll
     @param: Collision between objects
     @return: Impulse vector
 
-    TODO: Does not apply impulse to both objects
     TODO: Compute impulse between two movable objects.
 */
 Vector EOMSolver::compute_impulse(Collision *collision) {
