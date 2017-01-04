@@ -21,8 +21,11 @@
 using namespace std;
 
 /*
-    TODO: Implement MathLib instead (might be heck of a job)
+    TODO: Implement MathLib instead
 */
+
+int window_w = 800;
+int window_h = 600;
 
 World *world;
 
@@ -46,26 +49,51 @@ void run() {
         /* Simulate */
 		EOMSolver::resolve_collisions(world, collisions, delta_time);
 
-        // EOMSolver::simulate_world(world, delta_time, collisions);
-
         /* Render */
-        Scene::render_world(world, collisions);
+        Scene::render_world(world); //, collisions);
 
         collisions.clear();
     }
 }
 
+void mouse(int button, int state, int x, int y) {
+  	if(state == GLUT_DOWN)
+	switch(button) {
+		case GLUT_LEFT_BUTTON:
+		{
+			srand(time(NULL));
+			double w = rand() % 2 + 1; 
+			double h = rand() % 2 + 1; 
+			double orientation = rand() % 1 + 1;
+
+			Object* rect = generate_rect(w, h);
+			rect->set_position(Vector((x - window_w)/200.0, (-y - window_h)/200.0));
+			rect->set_orientation(orientation);
+			world->add_object(rect);
+		}	
+		break;
+		case GLUT_RIGHT_BUTTON:
+		{
+			cout << world->get_objects().size() << endl;
+			for(size_t i = 0; i < world->get_objects().size(); i++) {
+				Display::vector(*world->get_objects().at(i)->get_position(), MAGENTA);
+			}
+		}
+		break;
+	}
+}
+
 void configure_objects_vertical(vector<Object*> objects) {
-    objects.at(0)->set_position(Vector(-1.0, 4.0));
+    objects.at(0)->set_position(Vector(-1.5, 4.0));
     objects.at(0)->set_velocity(Vector(0, 0));
-    objects.at(0)->set_orientation(-.6);
+    objects.at(0)->set_orientation(-.7);
 
     objects.at(1)->set_movable(false);
     objects.at(1)->set_position(Vector(0, -8));
 
     if(objects.size() == 3) {
-        objects.at(2)->set_position(Vector(2.5, 10.0));
-        objects.at(2)->set_velocity(Vector(0, 10.0));
+        objects.at(2)->set_position(Vector(1.5, 10.0));
+        objects.at(2)->set_velocity(Vector(0.0, 2.0));
         objects.at(2)->set_orientation(-.2);
     }
 }
@@ -83,18 +111,19 @@ void configure_objects_horizontal(vector<Object*> objects) {
 
 int main(int argc, char** argv) {
     
-    vector<Object*> objects = generate_test_objects();
-    configure_objects_horizontal(objects);
+    vector<Object*> objects = generate_test_objects_multiple();
+    configure_objects_vertical(objects);
     // configure_objects_horizontal(objects);
 
     world = new World(objects);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE);
-    glutInitWindowSize(800, 600);
+    glutInitWindowSize(window_w, window_h);
     glutInitWindowPosition(200, 100);
     glutCreateWindow("Physics Engine");
     glutDisplayFunc(run);
+	glutMouseFunc(mouse);
     glutIdleFunc(run);
     glutMainLoop();
 

@@ -24,3 +24,7 @@ unsigned int World::get_number_of_objects() const {
 vector<Object*> World::get_objects() const {
 	return this->objects;
 }
+
+void World::add_object(Object* object) {
+	this->objects.push_back(object);
+}

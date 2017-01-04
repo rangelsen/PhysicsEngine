@@ -9,5 +9,6 @@ std::vector<Object*> generate_test_objects();
 std::vector<Object*> generate_convex_polygons(unsigned int n_polygons, unsigned int n_vertices);
 std::vector<Object*> generate_test_objects_simple();
 std::vector<Object*> generate_test_objects_multiple();
+Object* 			 generate_rect(double w, double h);
 
 #endif

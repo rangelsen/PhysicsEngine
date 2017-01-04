@@ -130,10 +130,20 @@ double Vector::dot(const Vector &rhs) const {
 	return output;
 }
 
-double Vector::cross2D(const Vector &rhs) const {
-	assert(rhs.get_dimension() == this->get_dimension());
+/**
+	Calculates the cross product between
+	the v = [v1 v2 0] and u = [0 0 u3]
+	
+	@param u3
+	@return Cross product vector
+*/
+Vector Vector::cross2D(double x) const {
 	assert(this->get_dimension() == 2);
+	return Vector(-x*this->at(1), x*this->at(0));
+}
 
+double Vector::cross2D(const Vector& rhs) const {
+	assert(this->get_dimension() == 2);
 	return -this->at(1) * rhs.at(0) + this->at(0) * rhs.at(1);
 }
 
@@ -144,7 +154,7 @@ Vector Vector::project(const Vector &axis) const {
 
 Vector & Vector::normalize() {
 
-	*this *= 1/this->norm();
+	*this *= 1.0/this->norm();
 	return *this;
 }
 

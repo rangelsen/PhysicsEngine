@@ -205,12 +205,10 @@ vector<Vector> CollisionDetector::get_contact_points(Object *a, Object *b, Vecto
 
     if(depth_1 > 0.0) {
         clipped_points.erase(clipped_points.begin());
-        // Display::message("erased", YELLOW);
     }
 
     if(depth_2 > 0.0) {
         clipped_points.erase(clipped_points.end());
-        // Display::message("erased", YELLOW);
     }
         
     Scene::render_debug(ref, inc, ref_normal);
@@ -222,9 +220,9 @@ vector<Vector> CollisionDetector::get_contact_points(Object *a, Object *b, Vecto
     Clips the incident edge's vertices along the
     reference edge, given the offset
 
-    @param: Incident vertices, normalized reference vector,
+    @param Incident vertices, normalized reference vector,
             offset from where to start clipping
-    @return: Contact points
+    @return Contact points
 */
 vector<Vector> CollisionDetector::clip(Vector v1, Vector v2, Vector n, double offset) {
     vector<Vector> clipped_points;    
@@ -246,7 +244,7 @@ vector<Vector> CollisionDetector::clip(Vector v1, Vector v2, Vector n, double of
     return clipped_points;
 }
 
-/*
+/**
     Finds all collisions between any combination
     of objects with
 
@@ -272,14 +270,12 @@ vector<Collision*> CollisionDetector::get_collisions(World *world) {
                 Vector axis         = get<1>(collision_status);
 
                 if(has_collision) {
-                    // Display::message("collision", RED);
-                    // Display::vector(axis, WHITE);
-                    
                     if(axis.dot(*object_a->get_position()) > axis.dot(*object_b->get_position())) {
                         Object* temp = object_a;
                         object_a = object_b;
                         object_b = temp;
                     }
+				
                     vector<Vector> contact_points = CollisionDetector::get_contact_points(object_a, object_b, axis);
                     collisions.push_back(new Collision(object_a, object_b, axis, contact_points.at(0)));
                 }
@@ -310,7 +306,7 @@ void CollisionDetector::compute_apply_positional_correction(Collision *collision
         correction_b = axis * -1.5;
     }
     else if(a->is_movable() && !b->is_movable()) {
-        correction_a = axis;
+        correction_a = axis * 1.5;
         correction_b = Vector(0.0, 0.0);
     }
     else if(!a->is_movable() && b->is_movable()) {

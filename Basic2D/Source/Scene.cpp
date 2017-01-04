@@ -15,6 +15,8 @@ using namespace std;
 void Scene::render_world(World *world) {
     vector<Object*> objects = world->get_objects();
 
+    float c = .3f;
+    glClearColor(c, c, c, c);
     glClear(GL_COLOR_BUFFER_BIT);
 
     for(unsigned int i = 0; i < objects.size(); i++) {

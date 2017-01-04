@@ -34,12 +34,31 @@ typedef struct{
 
 int main(int argc, char** argv) {
     
-    S s;
-    s.a = 2.3;
-    s.c = 'x';
+	int int_1 = 23;
+	int int_2 = 91;
 
-    S* sp = &s;
+	int* p1 = &int_1;
+	int* p2 = &int_2;
 
-    return 0;
+	cout << "p1: " << p1 << endl;
+	cout << "*p1: " << *p1 << endl;
+
+	cout << "p2: " << p2 << endl;
+	cout << "*p2: " << *p2 << endl;
+
+	cout << "EXCHANGE" << endl;
+	
+	int* temp = p1;
+	p1 = p2;
+	p2 = temp;
+
+	cout << "OUTPUT" << endl;
+
+	cout << "p1: " << p1 << endl;
+	cout << "*p1: " << *p1 << endl;
+
+	cout << "p2: " << p2 << endl;
+	cout << "*p2: " << *p2 << endl;
+
 }
 
