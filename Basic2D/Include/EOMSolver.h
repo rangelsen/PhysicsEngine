@@ -11,13 +11,11 @@ class World;
 class EOMSolver {
 
 public:
-	static void 	           	   resolve_collisions	  (World* world, std::vector<Collision*> collisions, double time_step);
-	static void 			   	   apply_impulse 		  (Object* object, Vector impulse, Vector contact_point, double time_step);
-	static void 			   	   step                   (Object* object, double time_step);
-	static std::vector<Collision*> get_related_collisions (Object *object, std::vector<Collision*> collisions);
-	static Vector		       	   compute_impulse        (Collision *collision);
-	static Vector		       	   compute_impulse_two    (Collision *collision);
+	static void   resolve_collisions  (World* world, std::vector<Collision*> collisions, double time_step);
+	static void   apply_impulse		  (Object* object, Vector impulse, Vector contact_point, double time_step);
+	static void   step				  (Object* object, double time_step);
+	static Vector compute_impulse     (Collision *collision);
+	static Vector compute_impulse_two (Collision *collision);
 };
 
 #endif
-

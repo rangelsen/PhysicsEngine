@@ -6,7 +6,6 @@
 #include <cmath>
 #include <fstream>
 
-#include "Matrix.h"
 #include "Vector.h"
 #include "Constants.h"
 #include "Display.h"
@@ -35,6 +34,14 @@ unsigned int delta_time_ms = 10;
 double delta_time = delta_time_ms/1000.0;
 float elapsed_ms;
 
+void clear_collisions(vector<Collision*> collisions) {
+	for(size_t i = 0; i < collisions.size(); i++) {
+		delete collisions.at(i);	
+	}
+	
+	collisions.clear();
+}
+
 void run() {
 
     clocks_1 = clock();
@@ -50,9 +57,10 @@ void run() {
 		EOMSolver::resolve_collisions(world, collisions, delta_time);
 
         /* Render */
-        Scene::render_world(world); //, collisions);
+        Scene::render_world(world);
 
-        collisions.clear();
+		/* Clear from heap */
+		clear_collisions(collisions);
     }
 }
 
@@ -67,20 +75,32 @@ void mouse(int button, int state, int x, int y) {
 			double orientation = rand() % 1 + 1;
 
 			Object* rect = generate_rect(w, h);
-			rect->set_position(Vector((x - window_w)/200.0, (-y - window_h)/200.0));
+			double x_obj =  (x - window_w/2)/10;
+			double y_obj = -(y - window_h/2)/10;
+			cout << "x = " << x_obj << endl;
+			cout << "y = " << y_obj << endl;
+			rect->set_position(Vector(x_obj, y_obj));
 			rect->set_orientation(orientation);
 			world->add_object(rect);
 		}	
 		break;
 		case GLUT_RIGHT_BUTTON:
 		{
-			cout << world->get_objects().size() << endl;
-			for(size_t i = 0; i < world->get_objects().size(); i++) {
-				Display::vector(*world->get_objects().at(i)->get_position(), MAGENTA);
-			}
+			cout << "x = " << x << endl;
+			cout << "y = " << y << endl;
+			cout << "x_t = " << x - window_w/2 << endl;
+			cout << "y_t = " << -(y - window_h/2) << endl;
 		}
 		break;
 	}
+}
+
+void reshape(int w, int h)
+{
+    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
 }
 
 void configure_objects_vertical(vector<Object*> objects) {
@@ -123,8 +143,9 @@ int main(int argc, char** argv) {
     glutInitWindowPosition(200, 100);
     glutCreateWindow("Physics Engine");
     glutDisplayFunc(run);
-	glutMouseFunc(mouse);
     glutIdleFunc(run);
+	glutMouseFunc(mouse);
+	glutReshapeFunc(reshape);
     glutMainLoop();
 
     delete world;

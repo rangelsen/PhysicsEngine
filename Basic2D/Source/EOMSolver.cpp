@@ -16,6 +16,13 @@
 
 using namespace std;
 
+/**
+	Resolves all collision in the given world
+
+	@param world in which collision takes place
+	@param collection of collisions in given world
+	@param simulation time step
+*/
 void EOMSolver::resolve_collisions(World* world, vector<Collision*> collisions, double time_step) {
 	
 	for(size_t i = 0; i < collisions.size(); i++) {
@@ -24,29 +31,17 @@ void EOMSolver::resolve_collisions(World* world, vector<Collision*> collisions, 
 		Object* b = collision->get_object(false);
 
 		// TODO: Error when multiple objects collide with an object at the same time
-		// TODO: Positive som weird shit happening when multiple object collide at once
-	/*
-		cout << "objects" << endl;
-		for(size_t j = 0; j < world->get_objects().size(); j++)
-			cout << world->get_objects().at(j) << endl;
-		
-		cout << "a: " << a << endl;
-		cout << "b: " << b << endl << endl;
-	*/
 		Vector contact_point = *collision->get_contact_point();
-
 
 		/* Separate objects */
 		CollisionDetector::compute_apply_positional_correction(collision);
 		
 		/* Compute impulse */
 		Vector impulse(2);
-		if(a->is_movable() && b->is_movable()) {
+		if(a->is_movable() && b->is_movable())
 			impulse = EOMSolver::compute_impulse_two(collision);
-		}
-		else {
+		else
 			impulse = EOMSolver::compute_impulse(collision);
-		}
 		
 		/* Apply impulse */
 		EOMSolver::apply_impulse(a, impulse*1.0, contact_point, time_step); 
@@ -110,33 +105,11 @@ void EOMSolver::step(Object* object, double time_step) {
 }
 
 /**
-    Gets all collision that involve a given object
-    among the detected collisions
-    
-    @param: Object to check and all detected collisions
-    @return: Vector containing all collisions that
-             involve the given object parameter
-*/
-vector<Collision*> EOMSolver::get_related_collisions(Object *object, vector<Collision*> collisions) {
-    vector<Collision*> related_collisions;
-
-    for(size_t i = 0; i < collisions.size(); i++) {
-        if(collisions.at(i)->get_object(true) == object ||
-		   collisions.at(i)->get_object(false) == object)
-            related_collisions.push_back(collisions.at(i));
-    }
-
-    return related_collisions;
-}
-
-/**
     Returns the impulse vector that the
     given collision contributes to object a
 
     @param: Collision between objects
     @return: Impulse vector
-
-    TODO: Compute impulse between two movable objects.
 */
 Vector EOMSolver::compute_impulse(Collision *collision) {
     Object *a = collision->get_object(true);
