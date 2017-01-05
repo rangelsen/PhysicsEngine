@@ -6,7 +6,7 @@
 
 using namespace std;
 
-vector<Object*> generate_test_objects() {
+vector<Object*> OBJ_generate_test_objects() {
 	vector<Object*> objects;
 	vector<Vector> vertices;
 
@@ -43,7 +43,7 @@ vector<Object*> generate_test_objects() {
 	return objects;
 }
 
-vector<Object*> generate_test_objects_simple() {
+vector<Object*> OBJ_generate_test_objects_simple() {
 	vector<Object*> objects;
 	vector<Vector> vertices;
 
@@ -78,7 +78,7 @@ vector<Object*> generate_test_objects_simple() {
 	return objects;
 }
 
-vector<Object*> generate_test_objects_multiple() {
+vector<Object*> OBJ_generate_test_objects_multiple() {
 	vector<Object*> objects;
 	vector<Vector> vertices;
 
@@ -123,7 +123,7 @@ vector<Object*> generate_test_objects_multiple() {
 	return objects;
 }
 
-Object* generate_rect(double w, double h) {
+Object* OBJ_generate_rect(double w, double h) {
 	vector<Vector> vertices;
 	vertices.push_back(Vector(-w, -h));
 	vertices.push_back(Vector(w, -h));
@@ -133,3 +133,43 @@ Object* generate_rect(double w, double h) {
 	Object* rect = new Object(vertices);
 	return rect;
 }
+
+Object* OBJ_generate_platform(double x, double y) {
+	vector<Vector> vertices;
+	vertices.push_back(Vector(-5.0, -1.0));	
+	vertices.push_back(Vector(5.0, -1.0));	
+	vertices.push_back(Vector(5.0, 1.0));	
+	vertices.push_back(Vector(-5.0, 1.0));	
+
+	Object* platform = new Object(vertices);
+	platform->set_position(Vector(x, y));
+	platform->set_movable(false);
+	return platform;
+
+}
+
+void OBJ_configure_objects_vertical(vector<Object*> objects) {
+    objects.at(0)->set_position(Vector(-1.5, 4.0));
+    objects.at(0)->set_velocity(Vector(0, 0));
+    objects.at(0)->set_orientation(-.7);
+
+    objects.at(1)->set_movable(false);
+    objects.at(1)->set_position(Vector(0, -8));
+
+    if(objects.size() == 3) {
+        objects.at(2)->set_position(Vector(1.5, 10.0));
+        objects.at(2)->set_velocity(Vector(0.0, 2.0));
+        objects.at(2)->set_orientation(-.2);
+    }
+}
+
+void OBJ_configure_objects_horizontal(vector<Object*> objects) {
+    objects.at(0)->set_position(Vector(-3, -3));
+    objects.at(0)->set_velocity(Vector(10, 6));
+	objects.at(0)->set_orientation(.4);
+
+    objects.at(1)->set_movable(false);
+    objects.at(1)->set_position(Vector(8, 0));
+    objects.at(1)->set_orientation(3.14/2.0);
+}
+

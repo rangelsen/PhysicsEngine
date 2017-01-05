@@ -72,25 +72,17 @@ void mouse(int button, int state, int x, int y) {
 			srand(time(NULL));
 			double w = rand() % 2 + 1; 
 			double h = rand() % 2 + 1; 
-			double orientation = rand() % 1 + 1;
-
-			Object* rect = generate_rect(w, h);
 			double x_obj =  (x - window_w/2)/10;
 			double y_obj = -(y - window_h/2)/10;
-			cout << "x = " << x_obj << endl;
-			cout << "y = " << y_obj << endl;
+			double orientation = rand() % 1 + 1;
+
+			Object* rect = OBJ_generate_rect(w, h);
 			rect->set_position(Vector(x_obj, y_obj));
 			rect->set_orientation(orientation);
 			world->add_object(rect);
 		}	
 		break;
 		case GLUT_RIGHT_BUTTON:
-		{
-			cout << "x = " << x << endl;
-			cout << "y = " << y << endl;
-			cout << "x_t = " << x - window_w/2 << endl;
-			cout << "y_t = " << -(y - window_h/2) << endl;
-		}
 		break;
 	}
 }
@@ -103,39 +95,20 @@ void reshape(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 }
 
-void configure_objects_vertical(vector<Object*> objects) {
-    objects.at(0)->set_position(Vector(-1.5, 4.0));
-    objects.at(0)->set_velocity(Vector(0, 0));
-    objects.at(0)->set_orientation(-.7);
-
-    objects.at(1)->set_movable(false);
-    objects.at(1)->set_position(Vector(0, -8));
-
-    if(objects.size() == 3) {
-        objects.at(2)->set_position(Vector(1.5, 10.0));
-        objects.at(2)->set_velocity(Vector(0.0, 2.0));
-        objects.at(2)->set_orientation(-.2);
-    }
-}
-
-void configure_objects_horizontal(vector<Object*> objects) {
-    objects.at(0)->set_position(Vector(-3, -3));
-    objects.at(0)->set_velocity(Vector(10, 6));
-	objects.at(0)->set_orientation(.4);
-
-    objects.at(1)->set_movable(false);
-    objects.at(1)->set_position(Vector(8, 0));
-    objects.at(1)->set_orientation(3.14/2.0);
-}
 
 
 int main(int argc, char** argv) {
-    
-    vector<Object*> objects = generate_test_objects_multiple();
-    configure_objects_vertical(objects);
-    // configure_objects_horizontal(objects);
 
-    world = new World(objects);
+/* ================================================================ */
+    // vector<Object*> objects = OBJ_generate_test_objects_multiple();
+    // OBJ_configure_objects_vertical(objects);
+    // OBJ_configure_objects_horizontal(objects);
+	// world = new World(objects);
+
+/* ================================================================ */
+	Object* platform = OBJ_generate_platform(0.0, -8.0);
+	world = new World();
+	world->add_object(platform);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE);
