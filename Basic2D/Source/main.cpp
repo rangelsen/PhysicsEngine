@@ -22,8 +22,8 @@ using namespace std;
 /*
     TODO: Implement MathLib instead of
 		  generic math framework
-	TODO: Fix multiple collision fuckup
 	TODO: Implement tangential friction
+	TODO: Remove objects that are too far away
 */
 
 int window_w = 800;
@@ -32,10 +32,8 @@ int window_h = 600;
 World *world;
 
 clock_t clocks_0 = 0;
-clock_t clocks_1;
-unsigned int delta_time_ms = 10;
-double delta_time = delta_time_ms/1000.0;
-float elapsed_ms;
+unsigned int timestep_ms = 10;
+double timestep = timestep_ms/1000.0;
 
 void clear_collisions(vector<Collision*> collisions) {
 	for(size_t i = 0; i < collisions.size(); i++) {
@@ -47,17 +45,17 @@ void clear_collisions(vector<Collision*> collisions) {
 
 void run() {
 
-    clocks_1 = clock();
-    elapsed_ms = float(clocks_1 - clocks_0) / (CLOCKS_PER_SEC/1000);
+    clock_t clocks_1 = clock();
+    double elapsed_ms = float(clocks_1 - clocks_0) / (CLOCKS_PER_SEC/1000);
 
-    if(elapsed_ms >= delta_time_ms) {
+    if(elapsed_ms >= timestep_ms) {
         clocks_0 = clocks_1;
 
         /* Find collisions */
         vector<Collision*> collisions = CollisionDetector::get_collisions(world);
 
         /* Simulate */
-		EOMSolver::resolve_collisions(world, collisions, delta_time);
+		EOMSolver::resolve_collisions(world, collisions, timestep);
 
         /* Render */
         Scene::render_world(world);

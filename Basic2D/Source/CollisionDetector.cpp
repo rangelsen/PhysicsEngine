@@ -201,12 +201,20 @@ vector<Collision*> CollisionDetector::get_collisions(World *world) {
     
     vector<Collision*> collisions;
     vector<Object*> objects = world->get_objects();
+	
+	for(size_t i = 0; i < objects.size(); i++) {
+		Object* object_a = objects.at(i);
 
-    for(size_t i = 0; i < objects.size(); i++) {
-        Object* object_a = objects.at(i);
+		for(size_t j = 0; j < objects.size(); j++) {
+			Object* object_b = objects.at(j);
+			
+			bool contains = CollisionDetector::collision_contains(collisions, object_a, object_b);
 
-		for(size_t j = i + 1; j < objects.size(); j++) {
-			Object* object_b                    = objects.at(j);
+			if(object_b == object_a)
+				break;
+			if(contains)
+				break;
+
 			pair<bool, Vector> collision_status = CollisionDetector::collision_detection_SAT(object_a, object_b);
 
 			bool has_collision  = get<0>(collision_status);
@@ -223,8 +231,7 @@ vector<Collision*> CollisionDetector::get_collisions(World *world) {
 				collisions.push_back(new Collision(object_a, object_b, axis, contact_points.at(0)));
 			}
 		}
-    }
-
+	}
     return collisions;
 }
 
@@ -284,3 +291,16 @@ vector<Vector> CollisionDetector::merge_Vector(vector<Vector> vectors_a, vector<
     return output;
 }
 
+bool CollisionDetector::collision_contains(vector<Collision*> collisions, Object* obj_1, Object* obj_2) {
+	bool contains = false;
+
+	for(size_t k = 0; k < collisions.size(); k++) {
+		if((obj_1 == collisions.at(k)->get_object(true)   ||
+			obj_1 == collisions.at(k)->get_object(false)) &&
+			(obj_2 == collisions.at(k)->get_object(true)   ||
+			obj_2 == collisions.at(k)->get_object(false)))   {
+			contains = true;	
+		}
+	}
+	return contains;
+}
