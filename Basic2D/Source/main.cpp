@@ -20,7 +20,10 @@
 using namespace std;
 
 /*
-    TODO: Implement MathLib instead
+    TODO: Implement MathLib instead of
+		  generic math framework
+	TODO: Fix multiple collision fuckup
+	TODO: Implement tangential friction
 */
 
 int window_w = 800;
@@ -110,6 +113,7 @@ int main(int argc, char** argv) {
 	world = new World();
 	world->add_object(platform);
 
+/* ================================================================ */
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE);
     glutInitWindowSize(window_w, window_h);

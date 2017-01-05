@@ -16,6 +16,8 @@
 
 using namespace std;
 
+// TODO: Error when multiple objects collide with an object at the same time
+
 /**
 	Resolves all collision in the given world
 
@@ -30,7 +32,6 @@ void EOMSolver::resolve_collisions(World* world, vector<Collision*> collisions, 
 		Object* a = collision->get_object(true);
 		Object* b = collision->get_object(false);
 
-		// TODO: Error when multiple objects collide with an object at the same time
 		Vector contact_point = *collision->get_contact_point();
 
 		/* Separate objects */
@@ -39,9 +40,9 @@ void EOMSolver::resolve_collisions(World* world, vector<Collision*> collisions, 
 		/* Compute impulse */
 		Vector impulse(2);
 		if(a->is_movable() && b->is_movable())
-			impulse = EOMSolver::compute_impulse_two(collision);
-		else
 			impulse = EOMSolver::compute_impulse(collision);
+		else
+			impulse = EOMSolver::compute_impulse_wall(collision);
 		
 		/* Apply impulse */
 		EOMSolver::apply_impulse(a, impulse*1.0, contact_point, time_step); 
@@ -97,7 +98,7 @@ void EOMSolver::step(Object* object, double time_step) {
 	Vector gravity_vel_contrib = *object->get_velocity() + Vector(0, -Constants::Instance()->g) * time_step;
 	object->set_velocity(gravity_vel_contrib);
 
-	Vector next_position    = *object->get_position()   + *object->get_velocity()		 * time_step;
+	Vector next_position    = 	*object->get_position() + 		 *object->get_velocity() * time_step;
 	double next_orientation = object->get_orientation() + object->get_angular_velocity() * time_step;
 
 	object->set_position(next_position);
@@ -111,7 +112,7 @@ void EOMSolver::step(Object* object, double time_step) {
     @param: Collision between objects
     @return: Impulse vector
 */
-Vector EOMSolver::compute_impulse(Collision *collision) {
+Vector EOMSolver::compute_impulse_wall(Collision *collision) {
     Object *a = collision->get_object(true);
     Object *b = collision->get_object(false);
 
@@ -120,7 +121,7 @@ Vector EOMSolver::compute_impulse(Collision *collision) {
     Vector r_a    = *collision->get_contact_point() - *a->get_position();
     Vector r_b    = *collision->get_contact_point() - *b->get_position();
     Vector v_ap1  = *a->get_velocity() + r_a.cross2D(a->get_angular_velocity());
-    Vector v_bp1  = *b->get_velocity() + r_b.cross2D(b->get_angular_velocity()); // Vector(-r_b.at(1), r_b.at(0)) * b->get_angular_velocity();
+    Vector v_bp1  = *b->get_velocity() + r_b.cross2D(b->get_angular_velocity()); 
     Vector v_ab1  = v_ap1 - v_bp1;
 	
     double num            = -(1 + Constants::Instance()->restitution) * v_ab1.dot(n_norm);
@@ -145,7 +146,7 @@ Vector EOMSolver::compute_impulse(Collision *collision) {
 		    object this is to be applied)
 
 */
-Vector EOMSolver::compute_impulse_two(Collision *collision) {
+Vector EOMSolver::compute_impulse(Collision *collision) {
     Object *a = collision->get_object(true);
     Object *b = collision->get_object(false);
 

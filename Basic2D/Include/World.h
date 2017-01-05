@@ -17,7 +17,6 @@ public:
 	~World();
 
 	// --- Utility ---
-	// void add_object(Object object);
 	unsigned int 		 get_number_of_objects() const;
 	std::vector<Object*> get_objects() const;
 	void 			     add_object(Object* object);

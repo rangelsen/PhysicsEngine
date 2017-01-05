@@ -30,11 +30,11 @@ pair<bool, Vector> CollisionDetector::collision_detection_SAT(Object *a, Object 
     vector<Vector> normals_a  = a->get_normals();
     vector<Vector> normals_b  = b->get_normals();
     vector<Vector> normals = CollisionDetector::merge_Vector(normals_a, normals_b);
+    vector<bool> overlaps;
+    Vector axis_least_penetration(2);
     Vector current_normal = normals_a.at(0);
     double min_a, max_a;
     double min_b, max_b;
-    vector<bool> overlaps;
-    Vector axis_least_penetration(2);
     double penetration_depth = -INF;
 
     for(size_t i = 0; i < normals.size(); i++) {
@@ -48,12 +48,10 @@ pair<bool, Vector> CollisionDetector::collision_detection_SAT(Object *a, Object 
         for(size_t j = 1; j < vertices_a.size(); j++) {
             double scalar_projection = vertices_a.at(j).dot(current_normal);
 
-            if(scalar_projection < min_a) {
+            if(scalar_projection < min_a)
                 min_a = scalar_projection;
-            }
-            if(scalar_projection > max_a) {
+            if(scalar_projection > max_a)
                 max_a = scalar_projection;
-            }
         }
 
         for(size_t j = 1; j < vertices_b.size(); j++) {
@@ -269,6 +267,13 @@ void CollisionDetector::compute_apply_positional_correction(Collision *collision
     b->set_position(corrected_position_b);
 }
  
+/**
+	Appends one vector to another
+
+	@param vector to append to
+	@param vector to append
+	@return merged vector
+*/
 vector<Vector> CollisionDetector::merge_Vector(vector<Vector> vectors_a, vector<Vector> vectors_b) {
     vector<Vector> output;
     output = vectors_a;
